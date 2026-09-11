@@ -14,7 +14,9 @@ export default function SignInPage() {
       const { createClient } = await import("@/lib/supabase/client");
       const { error: authError } = await createClient().auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: window.location.origin },
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/conta`,
+        },
       });
       if (authError) {
         setError(authError.message);
