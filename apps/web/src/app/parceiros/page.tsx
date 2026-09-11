@@ -54,9 +54,21 @@ export default function PartnersPage() {
             que é nosso.
           </p>
           <div className="mt-10 space-y-4 text-sm text-olive-700">
-            <p>✓ Presença no guia local</p>
-            <p>✓ Benefício exclusivo para membros</p>
-            <p>✓ Relação direta com a comunidade</p>
+            <p>✓ Sem mensalidade para participar</p>
+            <p>✓ Define as condições do benefício</p>
+            <p>✓ Atrai novos clientes e ganha visibilidade</p>
+            <p>✓ Acompanha utilizações através do Clube</p>
+          </div>
+          <div className="mt-12">
+            <h2 className="font-display text-3xl text-olive-900">
+              Como funciona para o parceiro
+            </h2>
+            <ol className="mt-5 space-y-3 text-sm leading-6 text-olive-700">
+              <li>1. Criamos a página do estabelecimento.</li>
+              <li>2. Definimos juntos o benefício.</li>
+              <li>3. O membro visita e apresenta o benefício.</li>
+              <li>4. A equipa valida e ganha oportunidade de fidelizar.</li>
+            </ol>
           </div>
         </div>
         <form

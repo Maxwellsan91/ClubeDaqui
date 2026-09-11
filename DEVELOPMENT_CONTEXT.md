@@ -292,6 +292,18 @@ serena memories check
 - Nenhuma credencial, token ou URL temporária de autorização foi guardada neste
   ficheiro.
 
+### 2026-09-11 — Evolução de UX/UI e Clube
+
+- Integrado `next-intl` com idioma persistente PT-PT/EN.
+- Criados componentes reutilizáveis `BusinessCard`, `RatingDisplay`,
+  `ClubBenefitCard`, `SectionHeader` e `EmptyState`.
+- Melhorados Home, Explorar, fichas de estabelecimento e Parceiros.
+- Criada página `/clube` com proposta de valor, adesão de 12 meses, fluxo e FAQ.
+- Adicionado middleware Supabase para redirecionar `/conta` sem autenticação.
+- Mantidos fallbacks sem inventar avaliações, pratos, preços ou dados externos.
+- `npm run check` passou; aviso existente apenas sobre navegação em `/conta`.
+- Próximo passo: expandir tradução para todas as páginas e ligar benefícios reais.
+
 ### Modelo para entradas futuras
 
 ```text

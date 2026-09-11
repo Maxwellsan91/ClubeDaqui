@@ -64,11 +64,11 @@ export default function OffersPage() {
           Benefícios em Almeirim
         </p>
         <h1 className="font-display mt-5 text-5xl tracking-tight text-olive-900 sm:text-7xl">
-          Ofertas para aproveitar a região.
+          Benefícios para aproveitar a região.
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-olive-700">
-          Escolha uma experiência, consulte as condições e descubra as vantagens
-          dos membros.
+          Consulte as condições de cada parceiro e descubra as vantagens
+          reservadas aos membros.
         </p>
         <div className="mt-10 flex flex-wrap gap-2">
           {["Todos", "Comer", "Dormir", "Lazer"].map((item) => (

@@ -100,10 +100,35 @@ export default function HomePage() {
         </div>
       </section>
       <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-16">
+        <div className="text-cream-50 rounded-3xl bg-olive-900 p-8 sm:p-12">
+          <p className="text-gold-500 text-xs font-semibold tracking-[0.25em] uppercase">
+            O Clube Ribatejo
+          </p>
+          <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <h2 className="font-display max-w-2xl text-4xl tracking-tight sm:text-5xl">
+                Aproveite ainda mais sendo membro.
+              </h2>
+              <p className="text-cream-100/75 mt-4 max-w-2xl text-base leading-7">
+                Benefícios exclusivos em restaurantes, experiências e lugares
+                locais selecionados. Uma adesão válida por 12 meses.
+              </p>
+            </div>
+            <Link
+              href="/clube"
+              className="bg-gold-500 inline-flex min-h-11 items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-olive-900"
+            >
+              Conhecer o Clube
+            </Link>
+          </div>
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-16">
         <div className="grid gap-4 md:grid-cols-3">
           {categories.map(([number, label, detail, image]) => (
-            <button
+            <Link
               key={label}
+              href={`/explorar?categoria=${encodeURIComponent(label)}`}
               className="group bg-cream-100 hover:border-gold-500 rounded-3xl border border-olive-900/10 p-7 text-left transition hover:-translate-y-1 hover:shadow-lg"
             >
               <div
@@ -121,7 +146,7 @@ export default function HomePage() {
               <span className="text-wine-700 mt-6 inline-block text-sm font-semibold">
                 {t("seeSelection")}
               </span>
-            </button>
+            </Link>
           ))}
         </div>
       </section>

@@ -2,43 +2,60 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import {
+  BusinessCard,
+  type BusinessCardData,
+} from "@/components/business-card";
+import { EmptyState } from "@/components/empty-state";
 
-const places = [
-  [
-    "A Tasca do Bronze",
-    "Comer",
-    "Restaurante",
-    "Almeirim",
-    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80",
-  ],
-  [
-    "A Adega",
-    "Comer",
-    "Restaurante",
-    "Fazendas de Almeirim",
-    "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80",
-  ],
-  [
-    "Adega Novo Conceito",
-    "Comer",
-    "Adega",
-    "Fazendas de Almeirim",
-    "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
-  ],
-  [
-    "Experiências do Tejo",
-    "Lazer",
-    "Experiência",
-    "Almeirim",
-    "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=80",
-  ],
-  [
-    "Casa Ribatejana",
-    "Dormir",
-    "Alojamento",
-    "Almeirim",
-    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
-  ],
+const places: BusinessCardData[] = [
+  {
+    slug: "a-tasca-do-bronze",
+    name: "A Tasca do Bronze",
+    category: "Comer",
+    kind: "Restaurante",
+    city: "Almeirim",
+    image:
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80",
+    cuisine: "Tradicional portuguesa",
+  },
+  {
+    slug: "a-adega",
+    name: "A Adega",
+    category: "Comer",
+    kind: "Restaurante",
+    city: "Fazendas de Almeirim",
+    image:
+      "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80",
+    cuisine: "Cozinha portuguesa",
+  },
+  {
+    slug: "adega-novo-conceito",
+    name: "Adega Novo Conceito",
+    category: "Comer",
+    kind: "Adega",
+    city: "Fazendas de Almeirim",
+    image:
+      "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    slug: "experiências-do-tejo",
+    name: "Experiências do Tejo",
+    category: "Lazer",
+    kind: "Experiência",
+    city: "Almeirim",
+    image:
+      "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    slug: "casa-ribatejana",
+    name: "Casa Ribatejana",
+    category: "Dormir",
+    kind: "Alojamento",
+    city: "Almeirim",
+    image:
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+  },
 ];
 
 const filters = ["Todos", "Comer", "Dormir", "Lazer"];
@@ -48,7 +65,9 @@ export default function ExplorePage() {
   const [filter, setFilter] = useState("Todos");
   const [query, setQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(9);
-  const [remotePlaces, setRemotePlaces] = useState(places);
+  const [remotePlaces, setRemotePlaces] = useState<BusinessCardData[]>(places);
+  const [loading, setLoading] = useState(Boolean(apiUrl));
+  const [error, setError] = useState(false);
   useEffect(() => {
     if (!apiUrl) return;
     fetch(`${apiUrl}/api/businesses`)
@@ -58,31 +77,37 @@ export default function ExplorePage() {
           setRemotePlaces(
             payload.data.map(
               (item: {
+                id?: string;
                 name: string;
                 category: string;
                 kind: string;
                 city: string;
-              }) => [
-                item.name,
-                item.category,
-                item.kind,
-                item.city,
-                places.find(([name]) => name === item.name)?.[4] ??
+              }) => ({
+                slug: item.name.toLowerCase().replaceAll(" ", "-"),
+                name: item.name,
+                category: item.category,
+                kind: item.kind,
+                city: item.city,
+                image:
+                  places.find((place) => place.name === item.name)?.image ??
                   "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
-              ],
+              }),
             ),
           );
         }
       })
-      .catch(() => undefined);
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
   }, []);
   const visible = useMemo(
     () =>
-      remotePlaces.filter(([name, type, kind, place]) => {
-        const matchesFilter = filter === "Todos" || type === filter;
+      remotePlaces.filter((place) => {
+        const matchesFilter = filter === "Todos" || place.category === filter;
         return (
           matchesFilter &&
-          `${name} ${kind} ${place}`.toLowerCase().includes(query.toLowerCase())
+          `${place.name} ${place.kind} ${place.city}`
+            .toLowerCase()
+            .includes(query.toLowerCase())
         );
       }),
     [filter, query, remotePlaces],
@@ -136,35 +161,34 @@ export default function ExplorePage() {
           {visible.length}{" "}
           {visible.length === 1 ? "lugar encontrado" : "lugares encontrados"}
         </p>
-        <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {displayed.map(([name, , kind, place, image]) => (
-            <article
-              key={name}
-              className="bg-cream-100 rounded-3xl border border-olive-900/10 p-7 transition hover:-translate-y-1 hover:shadow-lg"
-            >
+        {loading ? (
+          <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
               <div
-                className="mb-6 h-48 rounded-2xl bg-cover bg-center"
-                style={{ backgroundImage: `url(${image})` }}
-                aria-label={`Imagem ilustrativa de ${name}`}
+                key={index}
+                className="h-[430px] animate-pulse rounded-3xl bg-olive-900/10"
               />
-              <p className="text-gold-500 text-xs font-semibold tracking-[0.2em] uppercase">
-                {kind}
-              </p>
-              <h2 className="font-display mt-10 text-2xl text-olive-900">
-                {name}
-              </h2>
-              <p className="text-wine-700 mt-2 text-sm font-semibold">
-                {place}
-              </p>
-              <Link
-                href={`/explorar/${name.toLowerCase().replaceAll(" ", "-")}`}
-                className="text-wine-700 decoration-gold-500 mt-7 text-sm font-semibold underline underline-offset-4"
-              >
-                Ver ficha
-              </Link>
-            </article>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : error ? (
+          <EmptyState
+            title="Não foi possível carregar os lugares"
+            description="Tente novamente dentro de instantes."
+          />
+        ) : displayed.length === 0 ? (
+          <div className="mt-5">
+            <EmptyState
+              title="Não encontrámos lugares"
+              description="Experimente outro termo ou remova os filtros."
+            />
+          </div>
+        ) : (
+          <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {displayed.map((place) => (
+              <BusinessCard key={place.slug} place={place} />
+            ))}
+          </div>
+        )}
         {displayed.length < visible.length && (
           <button
             onClick={() => setVisibleCount((count) => count + 9)}
