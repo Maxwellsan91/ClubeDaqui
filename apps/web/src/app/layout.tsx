@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
+import { LanguageProvider } from "@/components/language-provider";
 
 export const metadata: Metadata = {
   title: {
@@ -20,8 +21,10 @@ export default function RootLayout({
   return (
     <html lang="pt-PT">
       <body>
-        {children}
-        <SiteFooter />
+        <LanguageProvider>
+          {children}
+          <SiteFooter />
+        </LanguageProvider>
       </body>
     </html>
   );

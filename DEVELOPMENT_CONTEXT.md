@@ -284,6 +284,14 @@ serena memories check
 - Adicionadas fichas navegáveis em `/explorar/[slug]` com chamada para parceria.
 - Validações passaram; commit publicado: `48127ea`.
 
+### 2026-09-11 — Autenticação do MCP Supabase
+
+- Autenticado com sucesso o servidor MCP `supabase` para o projeto configurado.
+- O primeiro login falhou porque os scopes OAuth implícitos não eram aceites pelo
+  servidor; a repetição com os scopes de gestão suportados foi concluída.
+- Nenhuma credencial, token ou URL temporária de autorização foi guardada neste
+  ficheiro.
+
 ### Modelo para entradas futuras
 
 ```text
