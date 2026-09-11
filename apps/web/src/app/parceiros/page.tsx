@@ -1,6 +1,32 @@
+"use client";
 import Link from "next/link";
+import { FormEvent, useState } from "react";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PartnersPage() {
+  const [status, setStatus] = useState("idle");
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatus("sending");
+    const form = new FormData(event.currentTarget);
+    try {
+      const response = await fetch(`${apiUrl}/api/partner-inquiries`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessName: form.get("businessName"),
+          contactName: form.get("contactName"),
+          contact: form.get("contact"),
+        }),
+      });
+      if (!response.ok) throw new Error();
+      setStatus("success");
+      event.currentTarget.reset();
+    } catch {
+      setStatus("error");
+    }
+  }
   return (
     <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
       <header className="mx-auto flex max-w-7xl items-center justify-between">
@@ -33,7 +59,10 @@ export default function PartnersPage() {
             <p>✓ Relação direta com a comunidade</p>
           </div>
         </div>
-        <form className="text-cream-50 rounded-3xl bg-olive-900 p-8 sm:p-10">
+        <form
+          onSubmit={submit}
+          className="text-cream-50 rounded-3xl bg-olive-900 p-8 sm:p-10"
+        >
           <h2 className="font-display text-3xl">
             Queremos conhecer o seu negócio.
           </h2>
@@ -43,6 +72,7 @@ export default function PartnersPage() {
           <label className="mt-8 block text-sm">
             Nome do estabelecimento
             <input
+              name="businessName"
               className="bg-cream-50 mt-2 w-full rounded-xl px-4 py-3 text-olive-900 outline-none"
               required
             />
@@ -50,6 +80,7 @@ export default function PartnersPage() {
           <label className="mt-5 block text-sm">
             Nome de contacto
             <input
+              name="contactName"
               className="bg-cream-50 mt-2 w-full rounded-xl px-4 py-3 text-olive-900 outline-none"
               required
             />
@@ -57,15 +88,27 @@ export default function PartnersPage() {
           <label className="mt-5 block text-sm">
             Email ou telefone
             <input
+              name="contact"
               className="bg-cream-50 mt-2 w-full rounded-xl px-4 py-3 text-olive-900 outline-none"
               required
             />
           </label>
+          {status === "success" && (
+            <p className="text-gold-500 mt-5 text-sm">
+              Pedido enviado. Entraremos em contacto.
+            </p>
+          )}
+          {status === "error" && (
+            <p className="mt-5 text-sm text-red-200">
+              Não foi possível enviar. Tente novamente.
+            </p>
+          )}
           <button
+            disabled={status === "sending"}
             type="submit"
             className="bg-gold-500 mt-7 rounded-full px-6 py-3 text-sm font-semibold text-olive-900"
           >
-            Quero ser contactado
+            {status === "sending" ? "A enviar…" : "Quero ser contactado"}
           </button>
         </form>
       </section>

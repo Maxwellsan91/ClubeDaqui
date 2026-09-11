@@ -5,6 +5,7 @@ import { validateEnvironment } from "./config/environment.js";
 import { HealthModule } from "./modules/health/health.module.js";
 import { SupabaseModule } from "./infrastructure/supabase/supabase.module.js";
 import { BusinessesModule } from "./modules/businesses/businesses.module.js";
+import { PartnerInquiriesModule } from "./modules/partners/partner-inquiries.module.js";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { BusinessesModule } from "./modules/businesses/businesses.module.js";
     HealthModule,
     SupabaseModule,
     BusinessesModule,
+    PartnerInquiriesModule,
   ],
 })
 export class AppModule {}
