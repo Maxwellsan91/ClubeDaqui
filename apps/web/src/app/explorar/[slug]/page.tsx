@@ -65,6 +65,8 @@ export default async function BusinessPage({
 }) {
   const { slug } = await params;
   let business = details[slug];
+  let benefit:
+    { title: string; description: string; terms: string } | undefined;
   if (apiUrl) {
     try {
       const response = await fetch(`${apiUrl}/api/businesses/${slug}`, {
@@ -83,7 +85,7 @@ export default async function BusinessPage({
             longitude?: number;
           };
         };
-        if (payload.data)
+        if (payload.data) {
           business = {
             name: payload.data.name,
             kind: payload.data.kind ?? payload.data.category ?? "Local",
@@ -97,6 +99,13 @@ export default async function BusinessPage({
                 ? [payload.data.latitude, payload.data.longitude]
                 : undefined,
           };
+          const benefitsResponse = await fetch(
+            `${apiUrl}/api/businesses/${(payload.data as { id?: string }).id}/benefits`,
+            { cache: "no-store" },
+          );
+          if (benefitsResponse.ok)
+            benefit = (await benefitsResponse.json()).data?.[0];
+        }
       }
     } catch {
       /* keep demo fallback */
@@ -145,11 +154,15 @@ export default async function BusinessPage({
         )}
         <div className="text-cream-50 mt-12 rounded-3xl bg-olive-900 p-8">
           <p className="font-display text-2xl">
-            Em breve, um benefício exclusivo neste local.
+            {benefit?.title ?? "Em breve, um benefício exclusivo neste local."}
           </p>
           <p className="text-cream-100/70 mt-3 text-sm">
-            Estamos a falar com os primeiros parceiros de Almeirim.
+            {benefit?.description ??
+              "Estamos a falar com os primeiros parceiros de Almeirim."}
           </p>
+          {benefit?.terms && (
+            <p className="text-cream-100/70 mt-3 text-sm">{benefit.terms}</p>
+          )}
           <p className="text-cream-100/70 mt-3 text-sm">
             O Clube Ribatejo está a criar uma experiência local de benefícios,
             pensada para membros e parceiros da nossa região.
