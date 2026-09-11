@@ -20,12 +20,30 @@ html {
 }
 
 html.dark {
-  --color-cream-50: #18201b;
-  --color-cream-100: #243029;
+  --color-cream-50: #0d120f;
+  --color-cream-100: #18221b;
   --color-olive-700: #c3d0c1;
   --color-olive-900: #f2f0e8;
-  --color-wine-700: #e6a6a1;
-  --color-gold-500: #d6b36b;
+  --color-wine-700: #f0aaa5;
+  --color-gold-500: #e0b96d;
+}
+
+html.dark body {
+  background: #0d120f;
+}
+
+html.dark .bg-white,
+html.dark .bg-white\/70 {
+  background-color: #1b271f;
+  color: #f2f0e8;
+}
+
+html.dark input {
+  color: #f2f0e8;
+}
+
+html.dark input::placeholder {
+  color: #9eada0;
 }
 
 body {
