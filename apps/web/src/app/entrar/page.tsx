@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -11,13 +10,19 @@ export default function SignInPage() {
   async function submit(event: FormEvent) {
     event.preventDefault();
     setError("");
-    const { error: authError } = await createClient().auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin },
-    });
-    if (authError)
-      setError("Não foi possível enviar o acesso. Tente novamente.");
-    else setSent(true);
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const { error: authError } = await createClient().auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: window.location.origin },
+      });
+      if (authError) throw authError;
+      setSent(true);
+    } catch {
+      setError(
+        "Não foi possível enviar o acesso. Verifique a configuração e tente novamente.",
+      );
+    }
   }
   return (
     <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
