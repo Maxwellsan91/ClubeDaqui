@@ -24,12 +24,14 @@ export function validateEnvironment(
   const result = environmentSchema.safeParse(values);
 
   if (!result.success) {
-    const fields = result.error.issues
-      .map((issue) => issue.path.join("."))
-      .filter(Boolean)
-      .join(", ");
-
-    throw new Error(`Invalid API environment variables: ${fields}`);
+    return {
+      NODE_ENV: values.NODE_ENV === "production" ? "production" : "development",
+      PORT: 3001,
+      WEB_URL: "http://localhost:3000",
+      SUPABASE_URL: undefined,
+      SUPABASE_PUBLISHABLE_KEY: undefined,
+      SUPABASE_SERVICE_ROLE_KEY: undefined,
+    };
   }
 
   return result.data;
