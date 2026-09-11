@@ -7,6 +7,8 @@ const businesses = [
     category: "Comer",
     kind: "Restaurante",
     city: "Almeirim",
+    address: "Rua de Coruche, 141, 2080-094 Almeirim",
+    source: "almeirim.city + OpenStreetMap",
   },
   {
     id: "fazendas-a-adega",
@@ -14,6 +16,8 @@ const businesses = [
     category: "Comer",
     kind: "Restaurante",
     city: "Fazendas de Almeirim",
+    address: "2080-562 Fazendas de Almeirim",
+    source: "almeirim.city",
   },
   {
     id: "fazendas-novo-conceito",
@@ -21,6 +25,8 @@ const businesses = [
     category: "Comer",
     kind: "Adega",
     city: "Fazendas de Almeirim",
+    address: "Rua João de Deus, 80, 2080-576 Fazendas de Almeirim",
+    source: "almeirim.city + OpenStreetMap",
   },
   {
     id: "almeirim-tejo",
@@ -28,6 +34,8 @@ const businesses = [
     category: "Lazer",
     kind: "Experiência",
     city: "Almeirim",
+    address: "Almeirim, Santarém",
+    source: "Clube Ribatejo (demo)",
   },
   {
     id: "almeirim-casa-ribatejana",
@@ -35,6 +43,8 @@ const businesses = [
     category: "Dormir",
     kind: "Alojamento",
     city: "Almeirim",
+    address: "Almeirim, Santarém",
+    source: "Clube Ribatejo (demo)",
   },
 ];
 
