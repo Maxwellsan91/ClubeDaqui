@@ -134,9 +134,14 @@ A migration deve ser aplicada primeiro num ambiente de desenvolvimento ou branch
 Crie dois projetos Vercel ligados ao mesmo repositório:
 
 1. Web com Root Directory `apps/web`.
-2. API com Root Directory `apps/api`.
+2. API com Root Directory `apps/api`. A API expõe `api/[...path].ts` como
+   função Serverless e mantém o arranque local com `npm run dev:api`.
 
 Configure as variáveis de ambiente de cada aplicação no respetivo projeto. A região da API deve ficar próxima da região do projeto Supabase.
+
+Na API, configure pelo menos `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`,
+`SUPABASE_SERVICE_ROLE_KEY` (quando forem usadas operações administrativas) e
+`WEB_URL` com o domínio publicado do frontend.
 
 ## Supabase MCP no Codex
 
