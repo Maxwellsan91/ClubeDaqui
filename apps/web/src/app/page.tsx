@@ -1,15 +1,45 @@
 import Link from "next/link";
 
 const categories = [
-  ["01", "Comer", "Restaurantes, cafés e sabores locais"],
-  ["02", "Dormir", "Alojamentos para ficar e descansar"],
-  ["03", "Lazer", "Experiências para viver o Ribatejo"],
+  [
+    "01",
+    "Comer",
+    "Restaurantes, cafés e sabores locais",
+    "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
+  ],
+  [
+    "02",
+    "Dormir",
+    "Alojamentos para ficar e descansar",
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+  ],
+  [
+    "03",
+    "Lazer",
+    "Experiências para viver o Ribatejo",
+    "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=80",
+  ],
 ];
 
 const highlights = [
-  ["A Tasca do Bronze", "Restaurante", "Almeirim"],
-  ["A Adega", "Restaurante", "Fazendas de Almeirim"],
-  ["Adega Novo Conceito", "Adega", "Fazendas de Almeirim"],
+  [
+    "A Tasca do Bronze",
+    "Restaurante",
+    "Almeirim",
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80",
+  ],
+  [
+    "A Adega",
+    "Restaurante",
+    "Fazendas de Almeirim",
+    "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80",
+  ],
+  [
+    "Adega Novo Conceito",
+    "Adega",
+    "Fazendas de Almeirim",
+    "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
+  ],
 ];
 
 export default function HomePage() {
@@ -70,11 +100,16 @@ export default function HomePage() {
       </section>
       <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-16">
         <div className="grid gap-4 md:grid-cols-3">
-          {categories.map(([number, label, detail]) => (
+          {categories.map(([number, label, detail, image]) => (
             <button
               key={label}
               className="group bg-cream-100 hover:border-gold-500 rounded-3xl border border-olive-900/10 p-7 text-left transition hover:-translate-y-1 hover:shadow-lg"
             >
+              <div
+                className="mb-6 h-36 rounded-2xl bg-cover bg-center"
+                style={{ backgroundImage: `url(${image})` }}
+                aria-label={`Imagem ilustrativa de ${label}`}
+              />
               <span className="text-gold-500 text-xs font-semibold tracking-[0.2em]">
                 {number}
               </span>
@@ -146,11 +181,16 @@ export default function HomePage() {
             Lugares para começar
           </h2>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {highlights.map(([name, type, place]) => (
+            {highlights.map(([name, type, place, image]) => (
               <article
                 key={name}
                 className="border-cream-50/15 bg-cream-50/5 rounded-2xl border p-6"
               >
+                <div
+                  className="mb-6 h-40 rounded-2xl bg-cover bg-center"
+                  style={{ backgroundImage: `url(${image})` }}
+                  aria-label={`Imagem ilustrativa de ${name}`}
+                />
                 <p className="text-gold-500 text-xs font-semibold tracking-widest uppercase">
                   {type}
                 </p>
