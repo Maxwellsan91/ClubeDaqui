@@ -261,6 +261,15 @@ serena memories check
 - `npm run check` passou; commit publicado: `3e958e2`.
 - Próximo passo: disponibilizar o catálogo validado através da API.
 
+### 2026-09-11 — Endpoint inicial de estabelecimentos
+
+- Criado `GET /api/businesses` com o recorte piloto de Almeirim (5 entradas).
+- Adicionado `BusinessesModule` na API NestJS.
+- `npm run check` e build da API passaram.
+- Commit publicado: `fd40145`.
+- Próximo passo: fazer `/explorar` consumir a resposta da API e depois trocar
+  o recorte estático pelo inventário validado.
+
 ### Modelo para entradas futuras
 
 ```text
