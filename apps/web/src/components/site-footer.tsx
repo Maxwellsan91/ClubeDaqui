@@ -1,0 +1,40 @@
+import Link from "next/link";
+
+export function SiteFooter() {
+  return (
+    <footer className="text-cream-50 bg-olive-900 px-6 py-12 sm:px-10 lg:px-16">
+      <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+        <div>
+          <p className="font-display text-2xl">Clube Ribatejo</p>
+          <p className="text-cream-100/70 mt-4 max-w-xs text-sm leading-6">
+            Descubra lugares, experiências e benefícios que aproximam o
+            Ribatejo.
+          </p>
+        </div>
+        <div>
+          <p className="text-gold-500 text-xs font-semibold tracking-[0.2em] uppercase">
+            Explorar
+          </p>
+          <nav className="text-cream-100/80 mt-4 flex flex-col gap-3 text-sm">
+            <Link href="/explorar">Lugares</Link>
+            <Link href="/ofertas">Ofertas</Link>
+            <Link href="/conta">Área de membros</Link>
+          </nav>
+        </div>
+        <div>
+          <p className="text-gold-500 text-xs font-semibold tracking-[0.2em] uppercase">
+            Fazer parte
+          </p>
+          <nav className="text-cream-100/80 mt-4 flex flex-col gap-3 text-sm">
+            <Link href="/parceiros">Ser parceiro</Link>
+            <Link href="/entrar">Entrar</Link>
+          </nav>
+        </div>
+      </div>
+      <div className="border-cream-50/15 text-cream-100/50 mx-auto mt-10 flex max-w-7xl flex-col gap-3 border-t pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} Clube Ribatejo</p>
+        <p>Conteúdo local. Experiências reais.</p>
+      </div>
+    </footer>
+  );
+}
