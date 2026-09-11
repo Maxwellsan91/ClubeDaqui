@@ -228,6 +228,20 @@ serena memories check
 - A gestão completa de resgates e avaliações continua no escopo, mas não
   bloqueia a primeira apresentação aos estabelecimentos.
 
+### 2026-09-11 — Diagnóstico do deployment da API
+
+- `https://clube-ribatejo-api.vercel.app/api/health` estava a devolver
+  `FUNCTION_INVOCATION_FAILED`.
+- A API foi adaptada para Vercel com `apps/api/api/[...path].ts`, mantendo o
+  arranque local NestJS separado.
+- O projeto Vercel deve usar Root Directory `apps/api`; sem isso, a Vercel não
+  descobre o diretório `/api` da função.
+- A configuração final deve incluir `SUPABASE_URL`,
+  `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY` quando aplicável e
+  `WEB_URL`.
+- Próxima verificação: redeploy do commit mais recente e teste de
+  `/api/health`.
+
 ### Modelo para entradas futuras
 
 ```text
