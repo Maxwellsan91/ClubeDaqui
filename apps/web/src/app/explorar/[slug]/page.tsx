@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ClubBenefitCard } from "@/components/club-benefit-card";
 import { RatingDisplay } from "@/components/rating-display";
 import { SectionHeader } from "@/components/section-header";
+import { RedeemBenefitButton } from "@/components/redeem-benefit-button";
 
 const details: Record<
   string,
@@ -12,6 +13,7 @@ const details: Record<
     address: string;
     description: string;
     image: string;
+    businessLocationId?: string;
     coordinates?: [number, number];
   }
 > = {
@@ -80,7 +82,8 @@ export default async function BusinessPage({
   const { slug } = await params;
   let business = details[slug];
   let benefit:
-    { title: string; description: string; terms: string } | undefined;
+    | { id?: string; title: string; description: string; terms: string }
+    | undefined;
   if (apiUrl) {
     try {
       const response = await fetch(`${apiUrl}/api/businesses/${slug}`, {
@@ -96,6 +99,7 @@ export default async function BusinessPage({
             address: string;
             description?: string;
             image?: string;
+            businessLocationId?: string;
             latitude?: number;
             longitude?: number;
           };
@@ -112,6 +116,7 @@ export default async function BusinessPage({
             image:
               payload.data.image ??
               "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=85",
+            businessLocationId: payload.data.businessLocationId,
             coordinates:
               payload.data.latitude && payload.data.longitude
                 ? [payload.data.latitude, payload.data.longitude]
@@ -220,6 +225,10 @@ export default async function BusinessPage({
               title={benefit?.title}
               description={benefit?.description}
               terms={benefit?.terms}
+            />
+            <RedeemBenefitButton
+              benefitId={benefit?.id}
+              businessLocationId={business.businessLocationId}
             />
             <section className="bg-cream-100 rounded-2xl border border-olive-900/10 p-6">
               <SectionHeader title="Informações práticas" />

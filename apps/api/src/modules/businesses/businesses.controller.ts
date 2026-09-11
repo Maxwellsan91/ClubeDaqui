@@ -66,6 +66,7 @@ type BusinessRecord = {
   slug: string;
   description: string | null;
   business_locations: Array<{
+    id?: string;
     address_line_1: string;
     locality: string;
     latitude: number | null;
@@ -125,6 +126,7 @@ export class BusinessesController {
       kind: category,
       city: location?.locality ?? "",
       address: location?.address_line_1 ?? "",
+      businessLocationId: location?.id,
       latitude: location?.latitude,
       longitude: location?.longitude,
       description: item.description,

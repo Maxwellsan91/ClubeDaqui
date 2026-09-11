@@ -19,6 +19,7 @@ import {
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
 
 type FinancialBody = { total_bill_amount?: unknown; discount_amount?: unknown };
+type AttemptBody = { benefit_id?: unknown; business_location_id?: unknown };
 
 @Controller("me")
 @UseGuards(MemberAuthGuard)
@@ -116,6 +117,27 @@ export class MembersController {
     if (error)
       throw new BadRequestException("Não foi possível guardar a economia");
     return { data };
+  }
+
+  @Post("redemptions/attempt")
+  async createAttempt(
+    @Body() body: AttemptBody,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    if (
+      typeof body.benefit_id !== "string" ||
+      typeof body.business_location_id !== "string"
+    ) {
+      throw new BadRequestException("Benefício e localização são obrigatórios");
+    }
+    const { data, error } = await this.supabase
+      .createUserClient(request.accessToken)
+      .rpc("create_redemption_attempt", {
+        p_benefit_id: body.benefit_id,
+        p_business_location_id: body.business_location_id,
+      });
+    if (error) throw new BadRequestException(error.message);
+    return { data: Array.isArray(data) ? data[0] : data };
   }
 
   private amount(value: unknown) {
