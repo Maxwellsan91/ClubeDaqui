@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 const places = [
@@ -12,20 +12,42 @@ const places = [
 ];
 
 const filters = ["Todos", "Comer", "Dormir", "Lazer"];
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ExplorePage() {
   const [filter, setFilter] = useState("Todos");
   const [query, setQuery] = useState("");
+  const [remotePlaces, setRemotePlaces] = useState(places);
+  useEffect(() => {
+    if (!apiUrl) return;
+    fetch(`${apiUrl}/api/businesses`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (payload?.data) {
+          setRemotePlaces(
+            payload.data.map(
+              (item: {
+                name: string;
+                category: string;
+                kind: string;
+                city: string;
+              }) => [item.name, item.category, item.kind, item.city],
+            ),
+          );
+        }
+      })
+      .catch(() => undefined);
+  }, []);
   const visible = useMemo(
     () =>
-      places.filter(([name, type, kind, place]) => {
+      remotePlaces.filter(([name, type, kind, place]) => {
         const matchesFilter = filter === "Todos" || type === filter;
         return (
           matchesFilter &&
           `${name} ${kind} ${place}`.toLowerCase().includes(query.toLowerCase())
         );
       }),
-    [filter, query],
+    [filter, query, remotePlaces],
   );
 
   return (
