@@ -3,6 +3,7 @@ export type SavingsCategory =
 
 export type SavingsRecord = {
   id: string;
+  redemptionId?: string;
   businessName: string;
   businessSlug: string;
   category: SavingsCategory;

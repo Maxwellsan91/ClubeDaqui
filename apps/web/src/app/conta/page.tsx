@@ -102,7 +102,7 @@ export default function AccountPage() {
           const payload = (await savingsResponse.json()) as {
             data?: { records?: SavingsRecord[] };
           };
-          if (payload.data?.records) setRecords(payload.data.records);
+          if (payload.data?.records?.length) setRecords(payload.data.records);
         }
       } catch {
         // Mantém o fallback local da demo se a API estiver indisponível.

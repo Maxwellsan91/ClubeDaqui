@@ -42,29 +42,17 @@ export class MembersController {
           .eq("membership_id", membership.id)
           .eq("status", "redeemed")
       : { count: 0 };
-    const { count: recordedBenefits } = membership
-      ? await client
-          .from("redemption_financials")
-          .select("id", { count: "exact", head: true })
-          .in(
-            "redemption_id",
-            (
-              (
-                await client
-                  .from("redemptions")
-                  .select("id")
-                  .eq("membership_id", membership.id)
-              ).data ?? []
-            ).map((item) => item.id),
-          )
-      : { count: 0 };
+    const { count: availableBenefits } = await client
+      .from("benefits")
+      .select("id", { count: "exact", head: true })
+      .eq("is_active", true);
     return {
       data: {
         subscriptionStatus: membership?.status ?? "inactive",
         validUntil: membership?.ends_at ?? null,
         usedBenefits: usedBenefits ?? 0,
-        availableBenefits: 0,
-        totalBenefits: recordedBenefits ?? 0,
+        availableBenefits: availableBenefits ?? 0,
+        totalBenefits: (usedBenefits ?? 0) + (availableBenefits ?? 0),
         potentialSavings: null,
       },
     };
