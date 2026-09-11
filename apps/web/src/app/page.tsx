@@ -20,8 +20,8 @@ export default function HomePage() {
           Clube Ribatejo
         </p>
         <div className="flex items-center gap-4">
-          <Link href="/entrar" className="text-wine-700 text-sm font-semibold">
-            Entrar
+          <Link href="/conta" className="text-wine-700 text-sm font-semibold">
+            Minha conta
           </Link>
           <Link
             href="/parceiros"
