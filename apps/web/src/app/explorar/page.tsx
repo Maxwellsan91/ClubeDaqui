@@ -4,11 +4,41 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 const places = [
-  ["A Tasca do Bronze", "Comer", "Restaurante", "Almeirim"],
-  ["A Adega", "Comer", "Restaurante", "Fazendas de Almeirim"],
-  ["Adega Novo Conceito", "Comer", "Adega", "Fazendas de Almeirim"],
-  ["Experiências do Tejo", "Lazer", "Experiência", "Almeirim"],
-  ["Casa Ribatejana", "Dormir", "Alojamento", "Almeirim"],
+  [
+    "A Tasca do Bronze",
+    "Comer",
+    "Restaurante",
+    "Almeirim",
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80",
+  ],
+  [
+    "A Adega",
+    "Comer",
+    "Restaurante",
+    "Fazendas de Almeirim",
+    "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80",
+  ],
+  [
+    "Adega Novo Conceito",
+    "Comer",
+    "Adega",
+    "Fazendas de Almeirim",
+    "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
+  ],
+  [
+    "Experiências do Tejo",
+    "Lazer",
+    "Experiência",
+    "Almeirim",
+    "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=80",
+  ],
+  [
+    "Casa Ribatejana",
+    "Dormir",
+    "Alojamento",
+    "Almeirim",
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+  ],
 ];
 
 const filters = ["Todos", "Comer", "Dormir", "Lazer"];
@@ -31,7 +61,14 @@ export default function ExplorePage() {
                 category: string;
                 kind: string;
                 city: string;
-              }) => [item.name, item.category, item.kind, item.city],
+              }) => [
+                item.name,
+                item.category,
+                item.kind,
+                item.city,
+                places.find(([name]) => name === item.name)?.[4] ??
+                  "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
+              ],
             ),
           );
         }
@@ -98,11 +135,16 @@ export default function ExplorePage() {
           {visible.length === 1 ? "lugar encontrado" : "lugares encontrados"}
         </p>
         <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {visible.map(([name, , kind, place]) => (
+          {visible.map(([name, , kind, place, image]) => (
             <article
               key={name}
               className="bg-cream-100 rounded-3xl border border-olive-900/10 p-7 transition hover:-translate-y-1 hover:shadow-lg"
             >
+              <div
+                className="mb-6 h-48 rounded-2xl bg-cover bg-center"
+                style={{ backgroundImage: `url(${image})` }}
+                aria-label={`Imagem ilustrativa de ${name}`}
+              />
               <p className="text-gold-500 text-xs font-semibold tracking-[0.2em] uppercase">
                 {kind}
               </p>
