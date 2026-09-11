@@ -2,6 +2,7 @@
   "name": "clube-ribatejo-workspace",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Guia local de benefícios exclusivos no Ribatejo.",
   "engines": {
     "node": ">=22.13.0"
