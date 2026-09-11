@@ -252,6 +252,15 @@ serena memories check
 - Commit publicado: `2eb2845`.
 - Próximo passo: criar o catálogo pesquisável e ligar os dados validados à API.
 
+### 2026-09-11 — Catálogo navegável da demo
+
+- Criada a rota `/explorar` com pesquisa por nome/local/categoria e filtros
+  Comer, Dormir e Lazer.
+- Ligado o CTA Explorar da Home ao catálogo.
+- Conteúdo ainda demonstrativo, pronto para ser substituído pela API.
+- `npm run check` passou; commit publicado: `3e958e2`.
+- Próximo passo: disponibilizar o catálogo validado através da API.
+
 ### Modelo para entradas futuras
 
 ```text
