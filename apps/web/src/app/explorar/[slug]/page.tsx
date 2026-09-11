@@ -167,9 +167,12 @@ export default async function BusinessPage({
             O Clube Ribatejo está a criar uma experiência local de benefícios,
             pensada para membros e parceiros da nossa região.
           </p>
-          <button className="bg-gold-500 mt-7 rounded-full px-5 py-3 text-sm font-semibold text-olive-900">
-            Quero saber mais
-          </button>
+          <Link
+            href="/entrar"
+            className="bg-gold-500 mt-7 inline-block rounded-full px-5 py-3 text-sm font-semibold text-olive-900"
+          >
+            Entrar para resgatar
+          </Link>
         </div>
       </section>
     </main>
