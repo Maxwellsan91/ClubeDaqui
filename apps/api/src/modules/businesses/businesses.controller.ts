@@ -90,18 +90,9 @@ export class BusinessesController {
         .eq("is_active", true)
         .order("name");
       if (error) throw error;
-      const result = (data as unknown as BusinessRecord[]).map((item) => ({
-        id: item.id,
-        name: item.name,
-        slug: item.slug,
-        category: item.business_categories?.[0]?.categories?.name ?? "",
-        kind: item.business_categories?.[0]?.categories?.name ?? "",
-        city: item.business_locations?.[0]?.locality ?? "",
-        address: item.business_locations?.[0]?.address_line_1 ?? "",
-        latitude: item.business_locations?.[0]?.latitude,
-        longitude: item.business_locations?.[0]?.longitude,
-        description: item.description,
-      }));
+      const result = (data as unknown as BusinessRecord[]).map((item) =>
+        this.present(item),
+      );
       return this.filter(result, category, query);
     } catch {
       return this.filter(businesses, category, query);
@@ -123,6 +114,23 @@ export class BusinessesController {
     return { data, total: data.length };
   }
 
+  private present(item: BusinessRecord) {
+    const location = item.business_locations?.[0];
+    const category = item.business_categories?.[0]?.categories?.name ?? "";
+    return {
+      id: item.id,
+      name: item.name,
+      slug: item.slug,
+      category,
+      kind: category,
+      city: location?.locality ?? "",
+      address: location?.address_line_1 ?? "",
+      latitude: location?.latitude,
+      longitude: location?.longitude,
+      description: item.description,
+    };
+  }
+
   @Get(":id")
   async detail(@Param("id") id: string) {
     try {
@@ -136,7 +144,8 @@ export class BusinessesController {
         .eq("slug", id)
         .maybeSingle();
       if (error) throw error;
-      if (data) return { data };
+      if (data)
+        return { data: this.present(data as unknown as BusinessRecord) };
     } catch {
       /* use demo fallback */
     }
