@@ -76,7 +76,7 @@ export class BusinessesController {
   async list() {
     try {
       const { data, error } = await this.supabase
-        .createAdminClient()
+        .createPublicClient()
         .from("businesses")
         .select(
           "id,name,slug,description,business_locations(address_line_1,postal_code,locality,latitude,longitude),business_categories(categories(name))",
@@ -106,7 +106,7 @@ export class BusinessesController {
   async detail(@Param("id") id: string) {
     try {
       const { data, error } = await this.supabase
-        .createAdminClient()
+        .createPublicClient()
         .from("businesses")
         .select(
           "id,name,slug,description,business_locations(address_line_1,postal_code,locality,latitude,longitude),business_categories(categories(name))",

@@ -27,6 +27,13 @@ export class SupabaseService {
     );
   }
 
+  createPublicClient() {
+    return createClient(
+      this.config.getOrThrow("SUPABASE_URL", { infer: true }),
+      this.config.getOrThrow("SUPABASE_PUBLISHABLE_KEY", { infer: true }),
+    );
+  }
+
   createAdminClient() {
     const serviceRoleKey = this.config.get("SUPABASE_SERVICE_ROLE_KEY", {
       infer: true,
