@@ -1,4 +1,10 @@
-import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+} from "@nestjs/common";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 
 const businesses = [
@@ -73,7 +79,7 @@ export class BusinessesController {
   constructor(private readonly supabase: SupabaseService) {}
 
   @Get()
-  async list() {
+  async list(@Query("category") category?: string, @Query("q") query?: string) {
     try {
       const { data, error } = await this.supabase
         .createPublicClient()
@@ -96,10 +102,25 @@ export class BusinessesController {
         longitude: item.business_locations?.[0]?.longitude,
         description: item.description,
       }));
-      return { data: result, total: result.length };
+      return this.filter(result, category, query);
     } catch {
-      return { data: businesses, total: businesses.length };
+      return this.filter(businesses, category, query);
     }
+  }
+
+  private filter<
+    T extends { category: string; name: string; city: string; kind: string },
+  >(items: T[], category?: string, query?: string) {
+    const normalized = query?.trim().toLowerCase();
+    const data = items.filter(
+      (item) =>
+        (!category || item.category.toLowerCase() === category.toLowerCase()) &&
+        (!normalized ||
+          `${item.name} ${item.city} ${item.kind}`
+            .toLowerCase()
+            .includes(normalized)),
+    );
+    return { data, total: data.length };
   }
 
   @Get(":id")
