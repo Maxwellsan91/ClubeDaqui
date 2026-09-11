@@ -19,12 +19,17 @@ export default function HomePage() {
         <p className="font-display text-xl font-semibold tracking-tight text-olive-900">
           Clube Ribatejo
         </p>
-        <Link
-          href="/parceiros"
-          className="hover:text-cream-50 rounded-full border border-olive-900/20 px-5 py-2 text-sm font-semibold text-olive-900 transition hover:bg-olive-900"
-        >
-          Quero ser parceiro
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/entrar" className="text-wine-700 text-sm font-semibold">
+            Entrar
+          </Link>
+          <Link
+            href="/parceiros"
+            className="hover:text-cream-50 rounded-full border border-olive-900/20 px-5 py-2 text-sm font-semibold text-olive-900 transition hover:bg-olive-900"
+          >
+            Quero ser parceiro
+          </Link>
+        </div>
       </header>
       <section className="relative mx-auto max-w-7xl px-6 pt-16 pb-20 sm:px-10 lg:px-16 lg:pt-24 lg:pb-28">
         <div
