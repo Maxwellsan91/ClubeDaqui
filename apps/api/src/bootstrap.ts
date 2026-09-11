@@ -4,8 +4,10 @@ import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
 import type { Environment } from "./config/environment";
 
-export async function createApp() {
-  const app = await NestFactory.create(AppModule);
+export type NestApplicationFactory = Pick<typeof NestFactory, "create">;
+
+export async function createApp(factory: NestApplicationFactory = NestFactory) {
+  const app = await factory.create(AppModule);
   const config = app.get(ConfigService<Environment, true>);
 
   app.setGlobalPrefix("api");

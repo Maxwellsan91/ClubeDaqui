@@ -2,6 +2,8 @@ import "reflect-metadata";
 
 import type { IncomingMessage, ServerResponse } from "node:http";
 
+import { NestFactory } from "@nestjs/core";
+
 import { createApp } from "../src/bootstrap";
 
 type ServerHandler = (
@@ -12,7 +14,7 @@ type ServerHandler = (
 let appPromise: ReturnType<typeof createApp> | undefined;
 
 function getApp() {
-  appPromise ??= createApp();
+  appPromise ??= createApp(NestFactory);
   return appPromise;
 }
 
