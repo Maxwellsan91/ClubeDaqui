@@ -318,6 +318,16 @@ serena memories check
   membros e administradores.
 - `npm run check` passou sem erros.
 
+### 2026-09-11 — API de membro e economias
+
+- Criado `MembersModule` NestJS com autenticação Bearer validada pelo Supabase.
+- Adicionados `GET /api/me/summary`, `GET /api/me/savings`,
+  `GET /api/me/redemptions` e `POST /api/me/redemptions/:id/financials`.
+- Aplicadas validações de valores e proteção contra desconto superior à fatura.
+- A área `/conta` tenta carregar resumo/histórico da API e mantém fallback local
+  apenas quando a API ainda não tem dados.
+- `npm run check` passou sem erros.
+
 ### Modelo para entradas futuras
 
 ```text

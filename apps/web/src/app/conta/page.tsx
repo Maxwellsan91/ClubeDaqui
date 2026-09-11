@@ -14,7 +14,7 @@ import { RecordSavingsForm } from "@/components/record-savings-form";
 import { SavingsByCategory } from "@/components/savings-by-category";
 import { SavingsHistory } from "@/components/savings-history";
 import { SavingsOverview } from "@/components/savings-overview";
-import type { SavingsRecord } from "@/types/member";
+import type { MemberSummaryData, SavingsRecord } from "@/types/member";
 
 const places: BusinessCardData[] = [
   {
@@ -73,11 +73,41 @@ export default function AccountPage() {
       return [];
     }
   });
+  const [serverSummary, setServerSummary] = useState<MemberSummaryData | null>(
+    null,
+  );
 
   useEffect(() => {
-    createClient()
-      .auth.getUser()
+    const client = createClient();
+    client.auth
+      .getUser()
       .then(({ data }) => setEmail(data.user?.email ?? undefined));
+    client.auth.getSession().then(async ({ data }) => {
+      const token = data.session?.access_token;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!token || !apiUrl) return;
+      try {
+        const headers = { Authorization: `Bearer ${token}` };
+        const [summaryResponse, savingsResponse] = await Promise.all([
+          fetch(`${apiUrl}/api/me/summary`, { headers }),
+          fetch(`${apiUrl}/api/me/savings`, { headers }),
+        ]);
+        if (summaryResponse.ok) {
+          const payload = (await summaryResponse.json()) as {
+            data?: MemberSummaryData;
+          };
+          if (payload.data) setServerSummary(payload.data);
+        }
+        if (savingsResponse.ok) {
+          const payload = (await savingsResponse.json()) as {
+            data?: { records?: SavingsRecord[] };
+          };
+          if (payload.data?.records) setRecords(payload.data.records);
+        }
+      } catch {
+        // Mantém o fallback local da demo se a API estiver indisponível.
+      }
+    });
   }, []);
 
   const filtered = useMemo(
@@ -98,7 +128,7 @@ export default function AccountPage() {
     await createClient().auth.signOut();
     router.replace("/");
   }
-  const summary = {
+  const summary = serverSummary ?? {
     subscriptionStatus: "active" as const,
     validUntil: null,
     usedBenefits: records.length,
