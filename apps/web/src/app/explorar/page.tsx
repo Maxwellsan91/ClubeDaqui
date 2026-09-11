@@ -47,6 +47,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export default function ExplorePage() {
   const [filter, setFilter] = useState("Todos");
   const [query, setQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(9);
   const [remotePlaces, setRemotePlaces] = useState(places);
   useEffect(() => {
     if (!apiUrl) return;
@@ -86,6 +87,7 @@ export default function ExplorePage() {
       }),
     [filter, query, remotePlaces],
   );
+  const displayed = visible.slice(0, visibleCount);
 
   return (
     <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
@@ -135,7 +137,7 @@ export default function ExplorePage() {
           {visible.length === 1 ? "lugar encontrado" : "lugares encontrados"}
         </p>
         <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {visible.map(([name, , kind, place, image]) => (
+          {displayed.map(([name, , kind, place, image]) => (
             <article
               key={name}
               className="bg-cream-100 rounded-3xl border border-olive-900/10 p-7 transition hover:-translate-y-1 hover:shadow-lg"
@@ -163,6 +165,14 @@ export default function ExplorePage() {
             </article>
           ))}
         </div>
+        {displayed.length < visible.length && (
+          <button
+            onClick={() => setVisibleCount((count) => count + 9)}
+            className="mt-10 rounded-full border border-olive-900/20 px-6 py-3 text-sm font-semibold text-olive-900 transition hover:bg-olive-900 hover:text-white"
+          >
+            Carregar mais lugares
+          </button>
+        )}
       </section>
     </main>
   );
