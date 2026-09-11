@@ -1,4 +1,5 @@
 import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
+import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 
 const businesses = [
   {
@@ -53,16 +54,71 @@ const businesses = [
     source: "Clube Ribatejo (demo)",
   },
 ];
+type BusinessRecord = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  business_locations: Array<{
+    address_line_1: string;
+    locality: string;
+    latitude: number | null;
+    longitude: number | null;
+  }>;
+  business_categories: Array<{ categories: { name: string } | null }>;
+};
 
 @Controller("businesses")
 export class BusinessesController {
+  constructor(private readonly supabase: SupabaseService) {}
+
   @Get()
-  list() {
-    return { data: businesses, total: businesses.length };
+  async list() {
+    try {
+      const { data, error } = await this.supabase
+        .createAdminClient()
+        .from("businesses")
+        .select(
+          "id,name,slug,description,business_locations(address_line_1,postal_code,locality,latitude,longitude),business_categories(categories(name))",
+        )
+        .eq("is_active", true)
+        .order("name");
+      if (error) throw error;
+      const result = (data as unknown as BusinessRecord[]).map((item) => ({
+        id: item.id,
+        name: item.name,
+        slug: item.slug,
+        category: item.business_categories?.[0]?.categories?.name ?? "",
+        kind: item.business_categories?.[0]?.categories?.name ?? "",
+        city: item.business_locations?.[0]?.locality ?? "",
+        address: item.business_locations?.[0]?.address_line_1 ?? "",
+        latitude: item.business_locations?.[0]?.latitude,
+        longitude: item.business_locations?.[0]?.longitude,
+        description: item.description,
+      }));
+      return { data: result, total: result.length };
+    } catch {
+      return { data: businesses, total: businesses.length };
+    }
   }
 
   @Get(":id")
-  detail(@Param("id") id: string) {
+  async detail(@Param("id") id: string) {
+    try {
+      const { data, error } = await this.supabase
+        .createAdminClient()
+        .from("businesses")
+        .select(
+          "id,name,slug,description,business_locations(address_line_1,postal_code,locality,latitude,longitude),business_categories(categories(name))",
+        )
+        .eq("is_active", true)
+        .eq("slug", id)
+        .maybeSingle();
+      if (error) throw error;
+      if (data) return { data };
+    } catch {
+      /* use demo fallback */
+    }
     const business = businesses.find((item) => item.id === id);
     if (!business)
       throw new NotFoundException("Estabelecimento não encontrado");
