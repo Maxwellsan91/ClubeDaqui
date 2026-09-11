@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
+import { LanguageToggle } from "./language-toggle";
 
 export function SiteFooter() {
   return (
@@ -36,6 +37,7 @@ export function SiteFooter() {
         <p>© {new Date().getFullYear()} Clube Ribatejo</p>
         <div className="flex items-center gap-4">
           <p>Conteúdo local. Experiências reais.</p>
+          <LanguageToggle />
           <ThemeToggle />
         </div>
       </div>
