@@ -270,6 +270,14 @@ serena memories check
 - Próximo passo: fazer `/explorar` consumir a resposta da API e depois trocar
   o recorte estático pelo inventário validado.
 
+### 2026-09-11 — Catálogo ligado à API
+
+- `/explorar` passou a consumir `NEXT_PUBLIC_API_URL/api/businesses`.
+- Mantido fallback demonstrativo local se a API estiver indisponível.
+- `npm run check` passou; commit publicado: `6e9b46a`.
+- Próximo passo: criar fichas públicas individuais e adicionar morada/contacto
+  com proveniência.
+
 ### Modelo para entradas futuras
 
 ```text
