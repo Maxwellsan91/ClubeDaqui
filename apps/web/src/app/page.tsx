@@ -100,6 +100,22 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <section className="mx-auto max-w-7xl px-6 py-20 sm:px-10 lg:px-16">
+        <div className="border-gold-500/40 bg-gold-500/10 max-w-3xl rounded-3xl border p-8 sm:p-12">
+          <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
+            A nossa visão
+          </p>
+          <h2 className="font-display mt-5 text-4xl tracking-tight text-olive-900 sm:text-5xl">
+            Um clube de benefícios feito para o Ribatejo.
+          </h2>
+          <p className="mt-6 text-lg leading-8 text-olive-700">
+            Inspiramo-nos em modelos de clubes gastronómicos internacionais,
+            como o Prime Gourmet Club, e estamos a criar uma experiência própria
+            para Portugal: mais próxima, local e ligada aos estabelecimentos da
+            nossa região.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
