@@ -112,8 +112,8 @@ export default async function BusinessPage({
             Estamos a falar com os primeiros parceiros de Almeirim.
           </p>
           <p className="text-cream-100/70 mt-3 text-sm">
-            O Clube Ribatejo está a criar para Portugal uma experiência local de
-            benefícios, inspirada em clubes gastronómicos internacionais.
+            O Clube Ribatejo está a criar uma experiência local de benefícios,
+            pensada para membros e parceiros da nossa região.
           </p>
           <button className="bg-gold-500 mt-7 rounded-full px-5 py-3 text-sm font-semibold text-olive-900">
             Quero saber mais

@@ -109,10 +109,8 @@ export default function HomePage() {
             Um clube de benefícios feito para o Ribatejo.
           </h2>
           <p className="mt-6 text-lg leading-8 text-olive-700">
-            Inspiramo-nos em modelos de clubes gastronómicos internacionais,
-            como o Prime Gourmet Club, e estamos a criar uma experiência própria
-            para Portugal: mais próxima, local e ligada aos estabelecimentos da
-            nossa região.
+            Estamos a criar uma experiência própria para Portugal: mais próxima,
+            local e ligada aos estabelecimentos da nossa região.
           </p>
         </div>
       </section>
