@@ -139,9 +139,11 @@ Crie dois projetos Vercel ligados ao mesmo repositório:
 
 Configure as variáveis de ambiente de cada aplicação no respetivo projeto. A região da API deve ficar próxima da região do projeto Supabase.
 
-Na API, configure pelo menos `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`,
+Na API, configure `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`,
 `SUPABASE_SERVICE_ROLE_KEY` (quando forem usadas operações administrativas) e
-`WEB_URL` com o domínio publicado do frontend.
+`WEB_URL` com o domínio publicado do frontend. O endpoint de health pode
+arrancar sem as variáveis Supabase, mas qualquer funcionalidade que consulte a
+base de dados exige as credenciais correspondentes.
 
 ## Supabase MCP no Codex
 
