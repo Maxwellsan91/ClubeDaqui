@@ -16,11 +16,14 @@ export default function SignInPage() {
         email,
         options: { emailRedirectTo: window.location.origin },
       });
-      if (authError) throw authError;
+      if (authError) {
+        setError(authError.message);
+        return;
+      }
       setSent(true);
     } catch {
       setError(
-        "Não foi possível enviar o acesso. Verifique a configuração e tente novamente.",
+        "Não foi possível contactar o serviço de autenticação. Tente novamente.",
       );
     }
   }
