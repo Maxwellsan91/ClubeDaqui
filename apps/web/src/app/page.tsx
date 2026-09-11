@@ -43,9 +43,12 @@ export default function HomePage() {
               className="min-w-0 flex-1 bg-transparent py-3 text-sm outline-none"
               placeholder="O que procura em Almeirim?"
             />
-            <button className="bg-wine-700 rounded-full px-5 py-3 text-sm font-semibold text-white transition hover:bg-olive-900">
+            <a
+              href="/explorar"
+              className="bg-wine-700 rounded-full px-5 py-3 text-sm font-semibold text-white transition hover:bg-olive-900"
+            >
               Explorar
-            </button>
+            </a>
           </div>
         </div>
       </section>
