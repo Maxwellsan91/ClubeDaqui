@@ -43,12 +43,12 @@ export default function HomePage() {
               className="min-w-0 flex-1 bg-transparent py-3 text-sm outline-none"
               placeholder="O que procura em Almeirim?"
             />
-            <a
+            <Link
               href="/explorar"
               className="bg-wine-700 rounded-full px-5 py-3 text-sm font-semibold text-white transition hover:bg-olive-900"
             >
               Explorar
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -103,3 +103,4 @@ export default function HomePage() {
     </main>
   );
 }
+import Link from "next/link";

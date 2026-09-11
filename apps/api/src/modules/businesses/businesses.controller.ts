@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
 
 const businesses = [
   {
@@ -43,5 +43,13 @@ export class BusinessesController {
   @Get()
   list() {
     return { data: businesses, total: businesses.length };
+  }
+
+  @Get(":id")
+  detail(@Param("id") id: string) {
+    const business = businesses.find((item) => item.id === id);
+    if (!business)
+      throw new NotFoundException("Estabelecimento não encontrado");
+    return { data: business };
   }
 }

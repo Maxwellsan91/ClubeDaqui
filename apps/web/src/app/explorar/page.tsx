@@ -109,9 +109,12 @@ export default function ExplorePage() {
               <p className="text-wine-700 mt-2 text-sm font-semibold">
                 {place}
               </p>
-              <button className="text-wine-700 decoration-gold-500 mt-7 text-sm font-semibold underline underline-offset-4">
+              <Link
+                href={`/explorar/${name.toLowerCase().replaceAll(" ", "-")}`}
+                className="text-wine-700 decoration-gold-500 mt-7 text-sm font-semibold underline underline-offset-4"
+              >
                 Ver ficha
-              </button>
+              </Link>
             </article>
           ))}
         </div>

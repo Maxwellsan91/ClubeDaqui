@@ -1,0 +1,90 @@
+import Link from "next/link";
+
+const details: Record<
+  string,
+  { name: string; kind: string; city: string; description: string }
+> = {
+  "a-tasca-do-bronze": {
+    name: "A Tasca do Bronze",
+    kind: "Restaurante",
+    city: "Almeirim",
+    description:
+      "Uma descoberta do nosso roteiro local, selecionada para conhecer melhor os sabores do Ribatejo.",
+  },
+  "a-adega": {
+    name: "A Adega",
+    kind: "Restaurante",
+    city: "Fazendas de Almeirim",
+    description:
+      "Uma morada para descobrir a cozinha portuguesa e a hospitalidade ribatejana.",
+  },
+  "adega-novo-conceito": {
+    name: "Adega Novo Conceito",
+    kind: "Adega",
+    city: "Fazendas de Almeirim",
+    description:
+      "Produtos e ambiente com identidade local, no coração do nosso território piloto.",
+  },
+  "experiências-do-tejo": {
+    name: "Experiências do Tejo",
+    kind: "Experiência",
+    city: "Almeirim",
+    description:
+      "Descubra a paisagem, a cultura e o ritmo do Tejo através de experiências locais.",
+  },
+  "casa-ribatejana": {
+    name: "Casa Ribatejana",
+    kind: "Alojamento",
+    city: "Almeirim",
+    description:
+      "Uma estadia tranquila para explorar Almeirim e tudo o que o Ribatejo tem para oferecer.",
+  },
+};
+
+export default async function BusinessPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const business = details[slug];
+  if (!business)
+    return <main className="p-10">Estabelecimento não encontrado.</main>;
+  return (
+    <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
+      <header className="mx-auto flex max-w-7xl justify-between">
+        <Link
+          href="/"
+          className="font-display text-xl font-semibold text-olive-900"
+        >
+          Clube Ribatejo
+        </Link>
+        <Link href="/explorar" className="text-wine-700 text-sm font-semibold">
+          ← Explorar
+        </Link>
+      </header>
+      <section className="mx-auto max-w-4xl py-24">
+        <p className="text-gold-500 text-xs font-semibold tracking-[0.28em] uppercase">
+          {business.kind} · {business.city}
+        </p>
+        <h1 className="font-display mt-6 text-6xl tracking-tight text-olive-900">
+          {business.name}
+        </h1>
+        <p className="mt-8 max-w-2xl text-lg leading-8 text-olive-700">
+          {business.description}
+        </p>
+        <div className="text-cream-50 mt-12 rounded-3xl bg-olive-900 p-8">
+          <p className="font-display text-2xl">
+            Em breve, um benefício exclusivo neste local.
+          </p>
+          <p className="text-cream-100/70 mt-3 text-sm">
+            Estamos a falar com os primeiros parceiros de Almeirim.
+          </p>
+          <button className="bg-gold-500 mt-7 rounded-full px-5 py-3 text-sm font-semibold text-olive-900">
+            Quero saber mais
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
