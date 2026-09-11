@@ -4,6 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { validateEnvironment } from "./config/environment.js";
 import { HealthModule } from "./modules/health/health.module.js";
 import { SupabaseModule } from "./infrastructure/supabase/supabase.module.js";
+import { BusinessesModule } from "./modules/businesses/businesses.module.js";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SupabaseModule } from "./infrastructure/supabase/supabase.module.js";
     }),
     HealthModule,
     SupabaseModule,
+    BusinessesModule,
   ],
 })
 export class AppModule {}
