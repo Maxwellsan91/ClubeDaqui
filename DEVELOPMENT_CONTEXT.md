@@ -278,6 +278,12 @@ serena memories check
 - Próximo passo: criar fichas públicas individuais e adicionar morada/contacto
   com proveniência.
 
+### 2026-09-11 — Fichas públicas individuais
+
+- Criado `GET /api/businesses/:id` com resposta 404 para IDs inexistentes.
+- Adicionadas fichas navegáveis em `/explorar/[slug]` com chamada para parceria.
+- Validações passaram; commit publicado: `48127ea`.
+
 ### Modelo para entradas futuras
 
 ```text
