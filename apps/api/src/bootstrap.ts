@@ -12,7 +12,11 @@ export async function createApp(factory: NestApplicationFactory = NestFactory) {
 
   app.setGlobalPrefix("api");
   app.enableCors({
-    origin: config.getOrThrow("WEB_URL", { infer: true }),
+    origin: [
+      config.getOrThrow("WEB_URL", { infer: true }),
+      "https://clube-ribatejo-web.vercel.app",
+      "http://localhost:3000",
+    ],
     credentials: true,
   });
   app.enableShutdownHooks();
