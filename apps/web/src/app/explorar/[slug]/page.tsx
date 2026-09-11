@@ -229,6 +229,8 @@ export default async function BusinessPage({
             <RedeemBenefitButton
               benefitId={benefit?.id}
               businessLocationId={business.businessLocationId}
+              businessName={business.name}
+              businessSlug={slug}
             />
             <section className="bg-cream-100 rounded-2xl border border-olive-900/10 p-6">
               <SectionHeader title="Informações práticas" />

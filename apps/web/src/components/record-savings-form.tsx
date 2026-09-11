@@ -5,12 +5,23 @@ import type { SavingsCategory, SavingsRecord } from "@/types/member";
 
 export function RecordSavingsForm({
   onSaved,
+  redemptionId,
+  businessName = "Benefício utilizado",
+  businessSlug = "explorar",
+  defaultCategory = "Gastronomia",
 }: {
   onSaved: (record: SavingsRecord) => void;
+  redemptionId?: string;
+  businessName?: string;
+  businessSlug?: string;
+  defaultCategory?: SavingsCategory;
 }) {
   const [error, setError] = useState("");
-  function submit(event: FormEvent<HTMLFormElement>) {
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setSaved(false);
     const form = new FormData(event.currentTarget);
     const total = Number(form.get("total_bill_amount"));
     const discount = Number(form.get("discount_amount"));
@@ -26,10 +37,43 @@ export function RecordSavingsForm({
       );
       return;
     }
+    setSaving(true);
+    if (redemptionId) {
+      try {
+        const { data } = await (
+          await import("@/lib/supabase/client")
+        )
+          .createClient()
+          .auth.getSession();
+        const token = data.session?.access_token;
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        if (!token || !apiUrl) throw new Error();
+        const response = await fetch(
+          `${apiUrl}/api/me/redemptions/${redemptionId}/financials`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              total_bill_amount: total,
+              discount_amount: discount,
+            }),
+          },
+        );
+        if (!response.ok) throw new Error();
+      } catch {
+        setError("Não foi possível guardar a economia. Tente novamente.");
+        setSaving(false);
+        return;
+      }
+    }
     onSaved({
-      id: crypto.randomUUID(),
-      businessName: "Benefício utilizado",
-      businessSlug: "explorar",
+      id: redemptionId ?? crypto.randomUUID(),
+      redemptionId,
+      businessName,
+      businessSlug,
       category: form.get("category") as SavingsCategory,
       redeemedAt: new Date().toISOString(),
       totalBillAmount: total,
@@ -37,6 +81,8 @@ export function RecordSavingsForm({
     });
     event.currentTarget.reset();
     setError("");
+    setSaving(false);
+    setSaved(true);
   }
   return (
     <form
@@ -80,7 +126,7 @@ export function RecordSavingsForm({
           Categoria
           <select
             name="category"
-            defaultValue="Gastronomia"
+            defaultValue={defaultCategory}
             className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
           >
             <option>Gastronomia</option>
@@ -95,11 +141,17 @@ export function RecordSavingsForm({
           {error}
         </p>
       ) : null}
+      {saved ? (
+        <p className="mt-4 text-sm font-semibold text-olive-700">
+          Economia registada com sucesso.
+        </p>
+      ) : null}
       <button
         type="submit"
+        disabled={saving}
         className="bg-wine-700 mt-5 min-h-11 rounded-full px-6 py-3 text-sm font-semibold text-white"
       >
-        Guardar economia
+        {saving ? "A guardar…" : "Guardar economia"}
       </button>
     </form>
   );

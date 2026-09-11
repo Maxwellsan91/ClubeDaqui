@@ -2,18 +2,27 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { RecordSavingsForm } from "./record-savings-form";
+import type { SavingsRecord } from "@/types/member";
 
 export function RedeemBenefitButton({
   benefitId,
   businessLocationId,
+  businessName,
+  businessSlug,
+  onSaved,
 }: {
   benefitId?: string;
   businessLocationId?: string;
+  businessName: string;
+  businessSlug: string;
+  onSaved?: (record: SavingsRecord) => void;
 }) {
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [code, setCode] = useState<string>();
+  const [redemptionId, setRedemptionId] = useState<string>();
   async function redeem() {
     if (!benefitId || !businessLocationId) return;
     setStatus("loading");
@@ -34,11 +43,12 @@ export function RedeemBenefitButton({
         }),
       });
       const payload = (await response.json()) as {
-        data?: { manual_code?: string };
+        data?: { redemption_id?: string; manual_code?: string };
         message?: string;
       };
       if (!response.ok || !payload.data) throw new Error(payload.message);
       setCode(payload.data.manual_code);
+      setRedemptionId(payload.data.redemption_id);
       setStatus("success");
     } catch {
       setStatus("error");
@@ -56,10 +66,19 @@ export function RedeemBenefitButton({
         {status === "loading" ? "A preparar…" : "Usar benefício"}
       </button>
       {status === "success" ? (
-        <p className="mt-3 text-sm text-olive-700">
-          Apresente o código <strong className="text-olive-900">{code}</strong>{" "}
-          no estabelecimento. Válido durante 5 minutos.
-        </p>
+        <div className="mt-3 space-y-4">
+          <p className="text-sm text-olive-700">
+            Apresente o código{" "}
+            <strong className="text-olive-900">{code}</strong> no
+            estabelecimento. Válido durante 5 minutos.
+          </p>
+          <RecordSavingsForm
+            redemptionId={redemptionId}
+            businessName={businessName}
+            businessSlug={businessSlug}
+            onSaved={(record) => onSaved?.(record)}
+          />
+        </div>
       ) : null}
       {status === "error" ? (
         <p role="alert" className="text-wine-700 mt-3 text-sm">
