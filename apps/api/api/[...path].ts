@@ -4,7 +4,7 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 
 import { NestFactory } from "@nestjs/core";
 
-import { createApp } from "../src/bootstrap";
+import { createApp } from "../src/bootstrap.js";
 
 type ServerHandler = (
   request: IncomingMessage,

@@ -1,8 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 
-import { AppModule } from "./app.module";
-import type { Environment } from "./config/environment";
+import { AppModule } from "./app.module.js";
+import type { Environment } from "./config/environment.js";
 
 export type NestApplicationFactory = Pick<typeof NestFactory, "create">;
 

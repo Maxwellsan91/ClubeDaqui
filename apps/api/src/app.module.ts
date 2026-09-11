@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
-import { validateEnvironment } from "./config/environment";
-import { HealthModule } from "./modules/health/health.module";
-import { SupabaseModule } from "./infrastructure/supabase/supabase.module";
+import { validateEnvironment } from "./config/environment.js";
+import { HealthModule } from "./modules/health/health.module.js";
+import { SupabaseModule } from "./infrastructure/supabase/supabase.module.js";
 
 @Module({
   imports: [
