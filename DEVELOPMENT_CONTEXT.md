@@ -328,6 +328,22 @@ serena memories check
   apenas quando a API ainda não tem dados.
 - `npm run check` passou sem erros.
 
+### 2026-09-11 — Fluxo de utilização e registo financeiro
+
+- Adicionado `POST /api/me/redemptions/attempt`, autenticado com Bearer token,
+  usando a função Supabase `create_redemption_attempt`.
+- A ficha de estabelecimento passou a iniciar utilizações reais quando existe
+  benefício e localização válidos.
+- Criado `RedeemBenefitButton` com código manual temporário e mensagens de
+  estado.
+- O formulário pós-utilização grava fatura e desconto em
+  `POST /api/me/redemptions/:id/financials` quando existe `redemption_id`.
+- Mantido fallback local apenas para cenários de demonstração sem utilização
+  real criada.
+- `npm run check` passou; commit publicado: `7b422d0`.
+- Próximo passo: ligar o histórico financeiro da área `/conta` a dados reais de
+  utilizações e validar o fluxo completo com uma adesão ativa de teste.
+
 ### Modelo para entradas futuras
 
 ```text
