@@ -5,6 +5,7 @@ import {
   HttpCode,
   Post,
 } from "@nestjs/common";
+import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 type Inquiry = {
   businessName: string;
   contactName: string;
@@ -14,9 +15,10 @@ type Inquiry = {
 const inquiries: Inquiry[] = [];
 @Controller("partner-inquiries")
 export class PartnerInquiriesController {
+  constructor(private readonly supabase: SupabaseService) {}
   @Post()
   @HttpCode(201)
-  create(@Body() body: Record<string, unknown>) {
+  async create(@Body() body: Record<string, unknown>) {
     const businessName =
       typeof body.businessName === "string" ? body.businessName.trim() : "";
     const contactName =
@@ -24,12 +26,24 @@ export class PartnerInquiriesController {
     const contact = typeof body.contact === "string" ? body.contact.trim() : "";
     if (!businessName || !contactName || !contact)
       throw new BadRequestException("Campos obrigatórios em falta");
-    inquiries.push({
-      businessName,
-      contactName,
-      contact,
-      createdAt: new Date().toISOString(),
-    });
+    try {
+      const { error } = await this.supabase
+        .createAdminClient()
+        .from("partner_inquiries")
+        .insert({
+          business_name: businessName,
+          contact_name: contactName,
+          contact,
+        });
+      if (error) throw error;
+    } catch {
+      inquiries.push({
+        businessName,
+        contactName,
+        contact,
+        createdAt: new Date().toISOString(),
+      });
+    }
     return { message: "Pedido recebido", data: { businessName, contactName } };
   }
 }
