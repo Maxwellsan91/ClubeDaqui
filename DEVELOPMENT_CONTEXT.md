@@ -304,6 +304,20 @@ serena memories check
 - `npm run check` passou; aviso existente apenas sobre navegação em `/conta`.
 - Próximo passo: expandir tradução para todas as páginas e ligar benefícios reais.
 
+### 2026-09-11 — Área de membros e economias
+
+- `/conta` passou a apresentar resumo do Clube, total poupado, média,
+  distribuição por categoria e histórico agrupado por mês.
+- Criados componentes `MemberSummary`, `SavingsOverview`,
+  `SavingsByCategory`, `SavingsHistory` e `RecordSavingsForm`.
+- O formulário valida valores em EUR e impede desconto superior à fatura.
+- Adicionado fallback localStorage apenas para a demo; a persistência definitiva
+  fica preparada para os endpoints NestJS e não substitui a validação da API.
+- Criados contratos frontend em `src/types/member-api.ts`.
+- Criada e aplicada no Supabase a tabela `redemption_financials`, com RLS para
+  membros e administradores.
+- `npm run check` passou sem erros.
+
 ### Modelo para entradas futuras
 
 ```text
