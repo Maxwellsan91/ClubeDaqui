@@ -20,6 +20,12 @@ export default function HomePage() {
           Clube Ribatejo
         </p>
         <div className="flex items-center gap-4">
+          <Link
+            href="/ofertas"
+            className="text-wine-700 hidden text-sm font-semibold sm:block"
+          >
+            Ofertas
+          </Link>
           <Link href="/conta" className="text-wine-700 text-sm font-semibold">
             Minha conta
           </Link>
@@ -82,6 +88,54 @@ export default function HomePage() {
             </button>
           ))}
         </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-6 py-20 sm:px-10 lg:px-16">
+        <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
+          Como funciona
+        </p>
+        <h2 className="font-display mt-5 max-w-2xl text-4xl tracking-tight text-olive-900 sm:text-5xl">
+          Descobrir, escolher e aproveitar.
+        </h2>
+        <div className="mt-10 grid gap-4 md:grid-cols-4">
+          {[
+            [
+              "01",
+              "Escolha a região",
+              "Começamos por Almeirim e pelos lugares que fazem a nossa terra especial.",
+            ],
+            [
+              "02",
+              "Encontre uma oferta",
+              "Explore parceiros e veja as condições de cada benefício.",
+            ],
+            [
+              "03",
+              "Viva a experiência",
+              "Visite o estabelecimento e apresente a sua membresia.",
+            ],
+            [
+              "04",
+              "Partilhe a descoberta",
+              "Avalie a experiência e ajude a comunidade a escolher melhor.",
+            ],
+          ].map(([number, title, detail]) => (
+            <article key={number} className="border-t border-olive-900/15 pt-5">
+              <span className="text-gold-500 text-xs font-semibold tracking-[0.2em]">
+                {number}
+              </span>
+              <h3 className="font-display mt-8 text-2xl text-olive-900">
+                {title}
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-olive-700">{detail}</p>
+            </article>
+          ))}
+        </div>
+        <Link
+          href="/ofertas"
+          className="bg-wine-700 mt-10 inline-block rounded-full px-6 py-3 text-sm font-semibold text-white"
+        >
+          Ver ofertas disponíveis →
+        </Link>
       </section>
       <section className="text-cream-50 bg-olive-900 px-6 py-20 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-7xl">
