@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "./theme-toggle";
 
 export function SiteFooter() {
   return (
@@ -33,7 +34,10 @@ export function SiteFooter() {
       </div>
       <div className="border-cream-50/15 text-cream-100/50 mx-auto mt-10 flex max-w-7xl flex-col gap-3 border-t pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
         <p>© {new Date().getFullYear()} Clube Ribatejo</p>
-        <p>Conteúdo local. Experiências reais.</p>
+        <div className="flex items-center gap-4">
+          <p>Conteúdo local. Experiências reais.</p>
+          <ThemeToggle />
+        </div>
       </div>
     </footer>
   );

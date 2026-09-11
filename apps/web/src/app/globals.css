@@ -19,6 +19,15 @@ html {
   background: var(--color-cream-50);
 }
 
+html.dark {
+  --color-cream-50: #18201b;
+  --color-cream-100: #243029;
+  --color-olive-700: #c3d0c1;
+  --color-olive-900: #f2f0e8;
+  --color-wine-700: #e6a6a1;
+  --color-gold-500: #d6b36b;
+}
+
 body {
   margin: 0;
   color: var(--color-olive-900);
