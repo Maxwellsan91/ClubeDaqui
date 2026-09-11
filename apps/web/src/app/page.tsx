@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const categories = [
   ["01", "Comer", "Restaurantes, cafés e sabores locais"],
   ["02", "Dormir", "Alojamentos para ficar e descansar"],
@@ -17,9 +19,12 @@ export default function HomePage() {
         <p className="font-display text-xl font-semibold tracking-tight text-olive-900">
           Clube Ribatejo
         </p>
-        <button className="hover:text-cream-50 rounded-full border border-olive-900/20 px-5 py-2 text-sm font-semibold text-olive-900 transition hover:bg-olive-900">
+        <Link
+          href="/parceiros"
+          className="hover:text-cream-50 rounded-full border border-olive-900/20 px-5 py-2 text-sm font-semibold text-olive-900 transition hover:bg-olive-900"
+        >
           Quero ser parceiro
-        </button>
+        </Link>
       </header>
       <section className="relative mx-auto max-w-7xl px-6 pt-16 pb-20 sm:px-10 lg:px-16 lg:pt-24 lg:pb-28">
         <div
@@ -117,4 +122,3 @@ export default function HomePage() {
     </main>
   );
 }
-import Link from "next/link";
