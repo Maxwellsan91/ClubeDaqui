@@ -56,13 +56,52 @@ const details: Record<
   },
 };
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 export default async function BusinessPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const business = details[slug];
+  let business = details[slug];
+  if (apiUrl) {
+    try {
+      const response = await fetch(`${apiUrl}/api/businesses/${slug}`, {
+        cache: "no-store",
+      });
+      if (response.ok) {
+        const payload = (await response.json()) as {
+          data?: {
+            name: string;
+            kind?: string;
+            category?: string;
+            city: string;
+            address: string;
+            description?: string;
+            latitude?: number;
+            longitude?: number;
+          };
+        };
+        if (payload.data)
+          business = {
+            name: payload.data.name,
+            kind: payload.data.kind ?? payload.data.category ?? "Local",
+            city: payload.data.city,
+            address: payload.data.address,
+            description:
+              payload.data.description ??
+              "Uma descoberta do nosso roteiro local.",
+            coordinates:
+              payload.data.latitude && payload.data.longitude
+                ? [payload.data.latitude, payload.data.longitude]
+                : undefined,
+          };
+      }
+    } catch {
+      /* keep demo fallback */
+    }
+  }
   if (!business)
     return <main className="p-10">Estabelecimento não encontrado.</main>;
   return (
