@@ -9,6 +9,8 @@ const businesses = [
     city: "Almeirim",
     address: "Rua de Coruche, 141, 2080-094 Almeirim",
     source: "almeirim.city + OpenStreetMap",
+    latitude: 39.2028305,
+    longitude: -8.6281241,
   },
   {
     id: "fazendas-a-adega",
@@ -18,6 +20,8 @@ const businesses = [
     city: "Fazendas de Almeirim",
     address: "2080-562 Fazendas de Almeirim",
     source: "almeirim.city",
+    latitude: 39.1767872,
+    longitude: -8.5833777,
   },
   {
     id: "fazendas-novo-conceito",
@@ -27,6 +31,8 @@ const businesses = [
     city: "Fazendas de Almeirim",
     address: "Rua João de Deus, 80, 2080-576 Fazendas de Almeirim",
     source: "almeirim.city + OpenStreetMap",
+    latitude: 39.1791369,
+    longitude: -8.5922863,
   },
   {
     id: "almeirim-tejo",
