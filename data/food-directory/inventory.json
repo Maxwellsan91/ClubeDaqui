@@ -1,0 +1,4337 @@
+[
+  {
+    "id": "apify-ChIJEdOiMPjxGA0RrxWZwXMy2Gw",
+    "name": "A Adega",
+    "slug": "a-adega",
+    "category": "Restaurante",
+    "address": "R. Dr. Guilherme Nunes Godinho, 2080-562 Fazendas de Almeirim, Portugal",
+    "phone": "+351966679820",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1834052,
+    "longitude": -8.5912663,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJEdOiMPjxGA0RrxWZwXMy2Gw",
+      "googlePlaceId": "ChIJEdOiMPjxGA0RrxWZwXMy2Gw",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJN9OMwTPxGA0RIzH-fk0bb7o",
+    "name": "A Tasca do Bronze",
+    "slug": "a-tasca-do-bronze",
+    "category": "Restaurante",
+    "address": "Rua de Coruche 141, 2080-094 Almeirim, Portugal",
+    "phone": "+351243107950",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2036441,
+    "longitude": -8.6284277,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJN9OMwTPxGA0RIzH-fk0bb7o",
+      "googlePlaceId": "ChIJN9OMwTPxGA0RIzH-fk0bb7o",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJt22kyxLlGA0R5nUOay1Un9k",
+    "name": "A Vieirinha de Benfica",
+    "slug": "a-vieirinha-de-benfica",
+    "category": "Restaurante",
+    "address": "R. Direita 272, 2080-998, Portugal",
+    "phone": "+351243581333",
+    "website": "https://pt-pt.facebook.com/pages/category/Portuguese-Restaurant/Vieirinha-de-Benfica-1150716428319847/",
+    "openingHours": null,
+    "latitude": 39.1413555,
+    "longitude": -8.6909124,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJt22kyxLlGA0R5nUOay1Un9k",
+      "googlePlaceId": "ChIJt22kyxLlGA0R5nUOay1Un9k",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJfzzdx6LwGA0RSEM8WsIMwRg",
+    "name": "Adega Novo Conceito",
+    "slug": "adega-novo-conceito",
+    "category": "Adega",
+    "address": "R. João de Deus 80, 2080-576 Fazendas de Almeirim, Portugal",
+    "phone": "+351243103772",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1790926,
+    "longitude": -8.5927375,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJfzzdx6LwGA0RSEM8WsIMwRg",
+      "googlePlaceId": "ChIJfzzdx6LwGA0RSEM8WsIMwRg",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "9762a71a4e49",
+    "name": "Amigos do Tacho",
+    "slug": "amigos-do-tacho",
+    "category": "Restaurante",
+    "address": "Rua de Alpiarça, 2080-091, Almeirim",
+    "phone": "+351933161529",
+    "website": "https://www.facebook.com/amigosdotacho",
+    "openingHours": null,
+    "latitude": 39.2158629,
+    "longitude": -8.6216289,
+    "externalIds": {
+      "almeirimCity": "9762a71a4e49",
+      "googlePlaceId": "ChIJA5lPKqnxGA0RXeYalZiFy54",
+      "openStreetMap": "node-12697287553"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.714Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJZbxVHVDwGA0RVrjKQWW3Zkg",
+    "name": "António G Oliveira Caeiro (almeirim)",
+    "slug": "antonio-g-oliveira-caeiro-almeirim",
+    "category": "Restaurante",
+    "address": "Rua de Coruche 141, 2080-174 Almeirim, Portugal",
+    "phone": "+351243597505",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2077444,
+    "longitude": -8.6317879,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJZbxVHVDwGA0RVrjKQWW3Zkg",
+      "googlePlaceId": "ChIJZbxVHVDwGA0RVrjKQWW3Zkg",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJvZfmslHwGA0RfA_pIeFz60U",
+    "name": "Artur Correia Da Silva & Filhos, Lda.",
+    "slug": "artur-correia-da-silva-filhos-lda",
+    "category": "Restaurante",
+    "address": "R. Ilha da Madeira 16, 2080-030 Almeirim, Portugal",
+    "phone": "+351243579797",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2011533,
+    "longitude": -8.6259546,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJvZfmslHwGA0RfA_pIeFz60U",
+      "googlePlaceId": "ChIJvZfmslHwGA0RfA_pIeFz60U",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJubjwglnwGA0RlPfNuXR34Q8",
+    "name": "Bagga",
+    "slug": "bagga",
+    "category": "Restaurante",
+    "address": "Rua do Matadouro Municipal 119, 2080-000 Almeirim, Portugal",
+    "phone": "+351243594410",
+    "website": "http://www.bagga.pt/",
+    "openingHours": null,
+    "latitude": 39.1957908,
+    "longitude": -8.6210242,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJubjwglnwGA0RlPfNuXR34Q8",
+      "googlePlaceId": "ChIJubjwglnwGA0RlPfNuXR34Q8",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "c08e70a0d832",
+    "name": "Bar Ponto G.",
+    "slug": "bar-ponto-g",
+    "category": "cafe",
+    "address": "Almeirim",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2134539,
+    "longitude": -8.6194875,
+    "externalIds": {
+      "almeirimCity": "c08e70a0d832",
+      "googlePlaceId": null,
+      "openStreetMap": "way-506045240"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.762Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJh9YeCd_xGA0RbfqZPt0SyS8",
+    "name": "Boavida Bar",
+    "slug": "boavida-bar",
+    "category": "Café",
+    "address": "R. Dom João IV 52, Fazendas de Almeirim, Portugal",
+    "phone": "+351243596372",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1791683,
+    "longitude": -8.5818636,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJh9YeCd_xGA0RbfqZPt0SyS8",
+      "googlePlaceId": "ChIJh9YeCd_xGA0RbfqZPt0SyS8",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "39190f0ca94c",
+    "name": "Bodega El Touciño",
+    "slug": "bodega-el-toucino",
+    "category": "cafe",
+    "address": "Almeirim",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2032113,
+    "longitude": -8.6271401,
+    "externalIds": {
+      "almeirimCity": "39190f0ca94c",
+      "googlePlaceId": null,
+      "openStreetMap": "node-4396463675"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.683Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJizaPv2PxGA0Rj4WCyAoRIbA",
+    "name": "Bom café \"café motard\"",
+    "slug": "bom-cafe-cafe-motard",
+    "category": "Lanchonete",
+    "address": "R. de Alpiarça, 2080-091 Almeirim, Portugal",
+    "phone": null,
+    "website": "https://www.facebook.com/share/1F689JiKbh/",
+    "openingHours": null,
+    "latitude": 39.2115114,
+    "longitude": -8.6259431,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJizaPv2PxGA0Rj4WCyAoRIbA",
+      "googlePlaceId": "ChIJizaPv2PxGA0Rj4WCyAoRIbA",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "e166273c4fbc",
+    "name": "Café a Flor",
+    "slug": "cafe-a-flor",
+    "category": "cafe",
+    "address": "Almeirim",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.209079,
+    "longitude": -8.6295294,
+    "externalIds": {
+      "almeirimCity": "e166273c4fbc",
+      "googlePlaceId": null,
+      "openStreetMap": "way-506127312"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.791Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJz-glwb3wGA0RUP3TH0J6ChY",
+    "name": "Café Até K Enfim",
+    "slug": "cafe-ate-k-enfim",
+    "category": "Lanchonete",
+    "address": "R. Mal. Craveiro Lopes 10, Fazendas de Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.18378,
+    "longitude": -8.592495,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJz-glwb3wGA0RUP3TH0J6ChY",
+      "googlePlaceId": "ChIJz-glwb3wGA0RUP3TH0J6ChY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJaVCz66rxGA0RknnzI4GYwz8",
+    "name": "Cafe Cantinho Da Amizade",
+    "slug": "cafe-cantinho-da-amizade",
+    "category": "Café",
+    "address": "Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2103022,
+    "longitude": -8.6176461,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJaVCz66rxGA0RknnzI4GYwz8",
+      "googlePlaceId": "ChIJaVCz66rxGA0RknnzI4GYwz8",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJU5_zILPxGA0Rk0eHY5yB78U",
+    "name": "Café Central",
+    "slug": "cafe-central",
+    "category": "Café",
+    "address": "R. Manuel Andrade 11, 2080-125 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2090056,
+    "longitude": -8.6299173,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJU5_zILPxGA0Rk0eHY5yB78U",
+      "googlePlaceId": "ChIJU5_zILPxGA0Rk0eHY5yB78U",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJb82tjhtYGA0Rs5ZC0pClAjs",
+    "name": "Café Cervejaria",
+    "slug": "cafe-cervejaria",
+    "category": "Café",
+    "address": "Fazendas de Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1839332,
+    "longitude": -8.4695323,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJb82tjhtYGA0Rs5ZC0pClAjs",
+      "googlePlaceId": "ChIJb82tjhtYGA0Rs5ZC0pClAjs",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJNW83VTX4GA0R31kjGXX5kgY",
+    "name": "Café Cigano",
+    "slug": "cafe-cigano",
+    "category": "Lanchonete",
+    "address": "R. Moinho de Vento 207, Paço dos Negros, 2080-640 Fazendas de Almeirim, Portugal",
+    "phone": "+351243595482",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1538624,
+    "longitude": -8.5275063,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJNW83VTX4GA0R31kjGXX5kgY",
+      "googlePlaceId": "ChIJNW83VTX4GA0R31kjGXX5kgY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ33gOAh3xGA0RQuRD7jOPAyY",
+    "name": "Café da Padilha",
+    "slug": "cafe-da-padilha",
+    "category": "Confeitaria",
+    "address": "R. Adelino Novais Branco 12 2080, Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.215089,
+    "longitude": -8.6227047,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ33gOAh3xGA0RQuRD7jOPAyY",
+      "googlePlaceId": "ChIJ33gOAh3xGA0RQuRD7jOPAyY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ58bCP_fxGA0R-X64-xxWPBI",
+    "name": "Café da tininha",
+    "slug": "cafe-da-tininha",
+    "category": "Cafeteria",
+    "address": "R. Bernardo Gonçalves 84 Fração/E j, 2080-000 Almeirim, Portugal",
+    "phone": "+351938075181",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.208921,
+    "longitude": -8.6254504,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ58bCP_fxGA0R-X64-xxWPBI",
+      "googlePlaceId": "ChIJ58bCP_fxGA0R-X64-xxWPBI",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJw7XWW6z7GA0RMshGR9iCSjc",
+    "name": "Café da Zezita",
+    "slug": "cafe-da-zezita",
+    "category": "Cafeteria",
+    "address": "R. Cel. António Manuel Batista 190, Fazendas de Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1700733,
+    "longitude": -8.5724576,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJw7XWW6z7GA0RMshGR9iCSjc",
+      "googlePlaceId": "ChIJw7XWW6z7GA0RMshGR9iCSjc",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJv8Nhy6_wGA0Rdb2LLDvfE-s",
+    "name": "Café Doce Lima",
+    "slug": "cafe-doce-lima",
+    "category": "Café",
+    "address": "R. João da Silva Pombas 103, Fazendas de Almeirim, Portugal",
+    "phone": "+351243599330",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1796142,
+    "longitude": -8.5804829,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJv8Nhy6_wGA0Rdb2LLDvfE-s",
+      "googlePlaceId": "ChIJv8Nhy6_wGA0Rdb2LLDvfE-s",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJrbzUH9HxGA0R4wEdNP8khcY",
+    "name": "Café e Petiscos O Pétó",
+    "slug": "cafe-e-petiscos-o-peto",
+    "category": "Petiscaria",
+    "address": "R. Augusto do Carmo Ribeiro 5, 2080-063 Almeirim, Portugal",
+    "phone": "+351930502991",
+    "website": "https://www.facebook.com/profile.php?id=61557662187699",
+    "openingHours": null,
+    "latitude": 39.2050999,
+    "longitude": -8.623237,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJrbzUH9HxGA0R4wEdNP8khcY",
+      "googlePlaceId": "ChIJrbzUH9HxGA0R4wEdNP8khcY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJbYnEEbPxGA0R_fKjXLRBCu4",
+    "name": "Café Império",
+    "slug": "cafe-imperio",
+    "category": "Café",
+    "address": "R. Mal. Gomes da Costa 1, 2080-155 Almeirim, Portugal",
+    "phone": "+351243592196",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2097484,
+    "longitude": -8.6307668,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJbYnEEbPxGA0R_fKjXLRBCu4",
+      "googlePlaceId": "ChIJbYnEEbPxGA0R_fKjXLRBCu4",
+      "openStreetMap": "way-506274137"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": {
+        "confidence": 0.6,
+        "distanceMeters": 10,
+        "reason": "name_distance_address"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJiUrcmq7xGA0RHgg3EToRxVc",
+    "name": "Café Motard",
+    "slug": "cafe-motard",
+    "category": "Restaurante",
+    "address": "Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2140786,
+    "longitude": -8.6235707,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJiUrcmq7xGA0RHgg3EToRxVc",
+      "googlePlaceId": "ChIJiUrcmq7xGA0RHgg3EToRxVc",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJd-zpeZfwGA0R4id_4eXMhME",
+    "name": "Café Ponto de Encontro",
+    "slug": "cafe-ponto-de-encontro",
+    "category": "Café",
+    "address": "R. Mal. Craveiro Lopes 2080, Fazendas de Almeirim, Portugal",
+    "phone": "+351936797061",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1799548,
+    "longitude": -8.5971101,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJd-zpeZfwGA0R4id_4eXMhME",
+      "googlePlaceId": "ChIJd-zpeZfwGA0R4id_4eXMhME",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJGaVCm937GA0Rb9O5T0sFUhw",
+    "name": "Cafe Restaurante Toca Da Raposa",
+    "slug": "cafe-restaurante-toca-da-raposa",
+    "category": "Restaurante",
+    "address": "2080-701, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1090573,
+    "longitude": -8.5799537,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJGaVCm937GA0Rb9O5T0sFUhw",
+      "googlePlaceId": "ChIJGaVCm937GA0Rb9O5T0sFUhw",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJZTu7QmvlGA0RfDpqNwUxsuQ",
+    "name": "Café Snack-Bar O Guerra",
+    "slug": "cafe-snack-bar-o-guerra",
+    "category": "Café",
+    "address": "2080-329, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1429581,
+    "longitude": -8.6867928,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJZTu7QmvlGA0RfDpqNwUxsuQ",
+      "googlePlaceId": "ChIJZTu7QmvlGA0RfDpqNwUxsuQ",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJJe0Md7T5GA0RqIcDQyZ2jjs",
+    "name": "Café taskilouko",
+    "slug": "cafe-taskilouko",
+    "category": "Café",
+    "address": "Fazendas de Almeirim, Portugal",
+    "phone": "+351933622710",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1482439,
+    "longitude": -8.5316866,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJJe0Md7T5GA0RqIcDQyZ2jjs",
+      "googlePlaceId": "ChIJJe0Md7T5GA0RqIcDQyZ2jjs",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJH8L2eHfxGA0Re4gqUbWSebE",
+    "name": "Cantinho da Praça",
+    "slug": "cantinho-da-praca",
+    "category": "Restaurante de gastronomia latino-americana moderna",
+    "address": "Lg. da Pç. de Touros, 2080-030 Almeirim, Portugal",
+    "phone": "+351963556806",
+    "website": "http://www.zaccafe.com/",
+    "openingHours": null,
+    "latitude": 39.201459,
+    "longitude": -8.6273586,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJH8L2eHfxGA0Re4gqUbWSebE",
+      "googlePlaceId": "ChIJH8L2eHfxGA0Re4gqUbWSebE",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ3SANF7HwGA0Rw5QoGUZta0I",
+    "name": "Canto Negro Cafe-Snack Bar",
+    "slug": "canto-negro-cafe-snack-bar",
+    "category": "Café",
+    "address": "R. 24 de Julho 164, Fazendas de Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1843214,
+    "longitude": -8.5794806,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ3SANF7HwGA0Rw5QoGUZta0I",
+      "googlePlaceId": "ChIJ3SANF7HwGA0Rw5QoGUZta0I",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJAQAAADTlGA0Rq8uxdfeY9-Y",
+    "name": "Carmo & Apolinario, Lda.",
+    "slug": "carmo-apolinario-lda",
+    "category": "Restaurante",
+    "address": "Rua D. Eugenia Manuel, 53, Benfica Do Ribatejo, Santarém, Portugal",
+    "phone": "+351243589667",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1381464,
+    "longitude": -8.6655592,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJAQAAADTlGA0Rq8uxdfeY9-Y",
+      "googlePlaceId": "ChIJAQAAADTlGA0Rq8uxdfeY9-Y",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJjW4APU7wGA0RcW4yfJl7vfc",
+    "name": "Casa das Caralhotas",
+    "slug": "casa-das-caralhotas",
+    "category": "Lanchonete",
+    "address": "Almeirim, Portugal",
+    "phone": "+351243595772",
+    "website": "https://casadascaralhotas.shop/",
+    "openingHours": null,
+    "latitude": 39.2014534,
+    "longitude": -8.6279541,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJjW4APU7wGA0RcW4yfJl7vfc",
+      "googlePlaceId": "ChIJjW4APU7wGA0RcW4yfJl7vfc",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJezQAOprwGA0RUSYoqFks8kw",
+    "name": "Casa verde",
+    "slug": "casa-verde",
+    "category": "Café",
+    "address": "2080-588 Fazendas de Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1771961,
+    "longitude": -8.6006036,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJezQAOprwGA0RUSYoqFks8kw",
+      "googlePlaceId": "ChIJezQAOprwGA0RUSYoqFks8kw",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJGXoK8a7wGA0RkejVKS5q7p4",
+    "name": "Casinha do Páteo",
+    "slug": "casinha-do-pateo",
+    "category": "Café",
+    "address": "R. de São José, 2080-547 Fazendas de Almeirim, Portugal",
+    "phone": "+351243592344",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1775625,
+    "longitude": -8.5793798,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJGXoK8a7wGA0RkejVKS5q7p4",
+      "googlePlaceId": "ChIJGXoK8a7wGA0RkejVKS5q7p4",
+      "openStreetMap": "node-8606358778"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": {
+        "confidence": 0.9,
+        "distanceMeters": 19,
+        "reason": "name_distance_address"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJeW107LLxGA0RA0Aw7wSEHuw",
+    "name": "Churrasqueira Do Mercado (almeirim)",
+    "slug": "churrasqueira-do-mercado-almeirim",
+    "category": "Churrascaria",
+    "address": "Mercado Municipal, 2080-030 Almeirim, Portugal",
+    "phone": "+351243592159",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2076332,
+    "longitude": -8.6258357,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJeW107LLxGA0RA0Aw7wSEHuw",
+      "googlePlaceId": "ChIJeW107LLxGA0RA0Aw7wSEHuw",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJP2VLX0HxGA0RXysPbncoz2A",
+    "name": "Churrasqueira Frango da Horta \"o primo\"",
+    "slug": "churrasqueira-frango-da-horta-o-primo",
+    "category": "Restaurante",
+    "address": "R. Dr. Guilherme Nunes Godinho 109, 2080-562 Fazendas de Almeirim, Portugal",
+    "phone": "+351916671907",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1850359,
+    "longitude": -8.5934588,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJP2VLX0HxGA0RXysPbncoz2A",
+      "googlePlaceId": "ChIJP2VLX0HxGA0RXysPbncoz2A",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJPQg-9bzwGA0RxViTvvaZ6Zg",
+    "name": "Churrasqueira O Ilha",
+    "slug": "churrasqueira-o-ilha",
+    "category": "Churrascaria",
+    "address": "R. Dr. Guilherme Nunes Godinho, Fazendas de Almeirim, Portugal",
+    "phone": "+351243599154",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.184566,
+    "longitude": -8.5931738,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJPQg-9bzwGA0RxViTvvaZ6Zg",
+      "googlePlaceId": "ChIJPQg-9bzwGA0RxViTvvaZ6Zg",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ9UEhuk3wGA0RRpo3HrATtYQ",
+    "name": "Cisco - Cozinha Tradicional",
+    "slug": "cisco-cozinha-tradicional",
+    "category": "Restaurante",
+    "address": "Rua do Matadouro Municipal 67, 2080-107 Almeirim, Portugal",
+    "phone": "+351930569289",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2001501,
+    "longitude": -8.6254652,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ9UEhuk3wGA0RRpo3HrATtYQ",
+      "googlePlaceId": "ChIJ9UEhuk3wGA0RRpo3HrATtYQ",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ0foKLm3lGA0RHRmHp8Sebg4",
+    "name": "Constantino das Enguias",
+    "slug": "constantino-das-enguias",
+    "category": "Restaurante",
+    "address": "R. do Campo da Bola 25, 2080-400, Portugal",
+    "phone": "+351243589156",
+    "website": "https://www.facebook.com/Restaurante-Constantino-das-Enguias-404108593036757/",
+    "openingHours": null,
+    "latitude": 39.1237886,
+    "longitude": -8.6529507,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ0foKLm3lGA0RHRmHp8Sebg4",
+      "googlePlaceId": "ChIJ0foKLm3lGA0RHRmHp8Sebg4",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJpaivsrLxGA0RcFBxLsoI9vc",
+    "name": "Convivio Grupo Quatro - Pastelaria, Lda.",
+    "slug": "convivio-grupo-quatro-pastelaria-lda",
+    "category": "Confeitaria",
+    "address": "R. Dionísio Saraiva 51, 2080-104 Santarém, Portugal",
+    "phone": "+351243592806",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2081591,
+    "longitude": -8.6277063,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJpaivsrLxGA0RcFBxLsoI9vc",
+      "googlePlaceId": "ChIJpaivsrLxGA0RcFBxLsoI9vc",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJm1QnGjzlGA0RpiotinJVtns",
+    "name": "Cortiçóis",
+    "slug": "corticois",
+    "category": "restauração",
+    "address": "2080-392 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1367036,
+    "longitude": -8.6775921,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJm1QnGjzlGA0RpiotinJVtns",
+      "googlePlaceId": "ChIJm1QnGjzlGA0RpiotinJVtns",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJXc4-_k3wGA0RcJcrvK3A3os",
+    "name": "David Parque",
+    "slug": "david-parque",
+    "category": "Restaurante",
+    "address": "Largo da Praça de Toiros, 15 030, Almeirim, Portugal",
+    "phone": "+351243591475",
+    "website": "https://www.tripadvisor.pt/ShowUserReviews-g2589401-d5959244-r409892104-Restaurante_David_Parque-Almeirim_Santarem_District_Central_Portugal.html",
+    "openingHours": null,
+    "latitude": 39.2022977,
+    "longitude": -8.6274939,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJXc4-_k3wGA0RcJcrvK3A3os",
+      "googlePlaceId": "ChIJXc4-_k3wGA0RcJcrvK3A3os",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJdUhf9MfxGA0RNyWAJmXfeXo",
+    "name": "Doce Limão",
+    "slug": "doce-limao",
+    "category": "Espresso bar",
+    "address": "R. Gen. Humberto Delgado 2, 2080-171 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2095348,
+    "longitude": -8.6226881,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJdUhf9MfxGA0RNyWAJmXfeXo",
+      "googlePlaceId": "ChIJdUhf9MfxGA0RNyWAJmXfeXo",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJF3u8iLLxGA0R0LCN5K9YGzc",
+    "name": "Doce Pecado",
+    "slug": "doce-pecado",
+    "category": "Café",
+    "address": "R. 5 de Outubro 110 120, 2080-109 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2100934,
+    "longitude": -8.6276634,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJF3u8iLLxGA0R0LCN5K9YGzc",
+      "googlePlaceId": "ChIJF3u8iLLxGA0R0LCN5K9YGzc",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJEW0h_7LxGA0Rj6s7hlKGrPg",
+    "name": "Dona Amália",
+    "slug": "dona-amalia",
+    "category": "Café",
+    "address": "2080-052 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2103602,
+    "longitude": -8.629523,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJEW0h_7LxGA0Rj6s7hlKGrPg",
+      "googlePlaceId": "ChIJEW0h_7LxGA0Rj6s7hlKGrPg",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJB2nWuhTlGA0RI7TUfKiIY3g",
+    "name": "Edmundo e Almeida Domingos",
+    "slug": "edmundo-e-almeida-domingos",
+    "category": "Café",
+    "address": "R. 1º de Maio 37, 2080-400, Portugal",
+    "phone": "+351243589357",
+    "website": "http://www.edmundodomingos.pt/",
+    "openingHours": null,
+    "latitude": 39.1241083,
+    "longitude": -8.6587049,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJB2nWuhTlGA0RI7TUfKiIY3g",
+      "googlePlaceId": "ChIJB2nWuhTlGA0RI7TUfKiIY3g",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJZ5BbPgDlGA0RNu_tvVM8vcA",
+    "name": "Elétrico da Azeitada",
+    "slug": "eletrico-da-azeitada",
+    "category": "Restaurante",
+    "address": "R. Nova da Azeitada, 2080-303 Azeitada, Portugal",
+    "phone": "+351936236004",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1570252,
+    "longitude": -8.6679528,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJZ5BbPgDlGA0RNu_tvVM8vcA",
+      "googlePlaceId": "ChIJZ5BbPgDlGA0RNu_tvVM8vcA",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJTxuk9yf7GA0ROJuBqT3HdlM",
+    "name": "Escondidinho café restaurante",
+    "slug": "escondidinho-cafe-restaurante",
+    "category": "Café",
+    "address": "R Edmundo Manuel Loureiro Da Gaga, 2080-400 Almeirim, Portugal",
+    "phone": "+351916579891",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1238054,
+    "longitude": -8.6482504,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJTxuk9yf7GA0ROJuBqT3HdlM",
+      "googlePlaceId": "ChIJTxuk9yf7GA0ROJuBqT3HdlM",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJaYxSx4DxGA0RPQMmgT-Ug_4",
+    "name": "Falaq kebab e pizzaria",
+    "slug": "falaq-kebab-e-pizzaria",
+    "category": "Pizzaria",
+    "address": "R. Manuel Andrade 13, 2080-162 Almeirim, Portugal",
+    "phone": "+351911043407",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2088982,
+    "longitude": -8.6298031,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJaYxSx4DxGA0RPQMmgT-Ug_4",
+      "googlePlaceId": "ChIJaYxSx4DxGA0RPQMmgT-Ug_4",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJIzQgWbPxGA0RKfqoGgXFkJk",
+    "name": "FIDELIDADE",
+    "slug": "fidelidade",
+    "category": "Restaurante",
+    "address": "2080-159 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.208623,
+    "longitude": -8.6323798,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJIzQgWbPxGA0RKfqoGgXFkJk",
+      "googlePlaceId": "ChIJIzQgWbPxGA0RKfqoGgXFkJk",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJQW2TZbPxGA0R6i2CxXhGPT4",
+    "name": "Fiuza & Bright",
+    "slug": "fiuza-bright",
+    "category": "Vinícola",
+    "address": "Largo Gen. Guerra nº2, 2080-184 Almeirim, Portugal",
+    "phone": "+351243597491",
+    "website": "http://www.fiuzawines.pt/",
+    "openingHours": null,
+    "latitude": 39.2100054,
+    "longitude": -8.6324089,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJQW2TZbPxGA0R6i2CxXhGPT4",
+      "googlePlaceId": "ChIJQW2TZbPxGA0R6i2CxXhGPT4",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJMxBgJQDxGA0Rmp3gFCDRTjs",
+    "name": "Fonte Nova caffé bar",
+    "slug": "fonte-nova-caffe-bar",
+    "category": "Lanchonete",
+    "address": "R. do Campo da Bola, 2080-008 Almeirim, Portugal",
+    "phone": "+351919881477",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2113943,
+    "longitude": -8.6159655,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJMxBgJQDxGA0Rmp3gFCDRTjs",
+      "googlePlaceId": "ChIJMxBgJQDxGA0Rmp3gFCDRTjs",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJX-vuoALxGA0RRvpZEFH6JCM",
+    "name": "Genki Sushi Almeirim",
+    "slug": "genki-sushi-almeirim",
+    "category": "restauração",
+    "address": "Portugal, PT Almeirim Rua de Timor n*19邮政编码: 2080-103",
+    "phone": "+351243599083",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2033776,
+    "longitude": -8.6273154,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJX-vuoALxGA0RRvpZEFH6JCM",
+      "googlePlaceId": "ChIJX-vuoALxGA0RRvpZEFH6JCM",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJT_UAvKzxGA0RgoodA5yXuGo",
+    "name": "Grão De Café",
+    "slug": "grao-de-cafe",
+    "category": "Café",
+    "address": "R. Gen. Humberto Delgado, 2080-062 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2094151,
+    "longitude": -8.6225477,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJT_UAvKzxGA0RgoodA5yXuGo",
+      "googlePlaceId": "ChIJT_UAvKzxGA0RgoodA5yXuGo",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJaVWi3rPxGA0RL5m0tmb5m6g",
+    "name": "Hambúrgueria Churrasqueira Fogo Santo",
+    "slug": "hamburgueria-churrasqueira-fogo-santo",
+    "category": "Restaurante",
+    "address": "Praça da República 8, 2080-044 Almeirim, Portugal",
+    "phone": "+351936466344",
+    "website": "https://instagram.com/fogosantoalmeirim?igshid=YmMyMTA2M2Y=",
+    "openingHours": null,
+    "latitude": 39.2100132,
+    "longitude": -8.6303807,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJaVWi3rPxGA0RL5m0tmb5m6g",
+      "googlePlaceId": "ChIJaVWi3rPxGA0RL5m0tmb5m6g",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "fc39d06d9cfd",
+    "name": "Império",
+    "slug": "imperio",
+    "category": "cafe",
+    "address": "Almeirim",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2097484,
+    "longitude": -8.6307668,
+    "externalIds": {
+      "almeirimCity": "fc39d06d9cfd",
+      "googlePlaceId": null,
+      "openStreetMap": "way-506274137"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.795Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJUYIzPlzxGA0Rbkvx66W9UAk",
+    "name": "Janeiro das Marmitas",
+    "slug": "janeiro-das-marmitas",
+    "category": "Restaurante de comida natural",
+    "address": "Praceta Ten-Cel. Salgueiro Maia Loja 1A, 2080-000 Almeirim, Portugal",
+    "phone": "+351913648659",
+    "website": "https://restaurantesojaneiro.pt/",
+    "openingHours": null,
+    "latitude": 39.2053973,
+    "longitude": -8.623413,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJUYIzPlzxGA0Rbkvx66W9UAk",
+      "googlePlaceId": "ChIJUYIzPlzxGA0Rbkvx66W9UAk",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJc55XoK3xGA0ReNfO47vPFmI",
+    "name": "Janeiro Original",
+    "slug": "janeiro-original",
+    "category": "Restaurante",
+    "address": "R. dos Aliados n13 C, 2080-116 Almeirim, Portugal",
+    "phone": "+351968833340",
+    "website": "https://restaurantesojaneiro.pt/",
+    "openingHours": null,
+    "latitude": 39.2109449,
+    "longitude": -8.6255287,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJc55XoK3xGA0ReNfO47vPFmI",
+      "googlePlaceId": "ChIJc55XoK3xGA0ReNfO47vPFmI",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJOYfnEUvwGA0RQmTyoOzOGio",
+    "name": "Jaquim d'Adelina",
+    "slug": "jaquim-d-adelina",
+    "category": "Restaurante de frutos do mar",
+    "address": "Tv. de São Roque, 2080-098 Almeirim, Portugal",
+    "phone": "+351243593412",
+    "website": "https://www.facebook.com/profile.php?id=100014313514161&fref=ts",
+    "openingHours": null,
+    "latitude": 39.2056724,
+    "longitude": -8.6343664,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJOYfnEUvwGA0RQmTyoOzOGio",
+      "googlePlaceId": "ChIJOYfnEUvwGA0RQmTyoOzOGio",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJDfDluK3xGA0RY5dNlhy3X0w",
+    "name": "Juhuilou",
+    "slug": "juhuilou",
+    "category": "Restaurante chinês",
+    "address": "Rua do Matadouro Municipal 45A, 2080-107 Almeirim, Portugal",
+    "phone": "+351243593837",
+    "website": "https://www.facebook.com/juhuilou/",
+    "openingHours": null,
+    "latitude": 39.2009787,
+    "longitude": -8.6263279,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJDfDluK3xGA0RY5dNlhy3X0w",
+      "googlePlaceId": "ChIJDfDluK3xGA0RY5dNlhy3X0w",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJK17KqGzxGA0RbEYEb_NQbIw",
+    "name": "Kebab Istanbul Almeirim",
+    "slug": "kebab-istanbul-almeirim",
+    "category": "Restaurante",
+    "address": "R. Manuel Andrade 13, 2080-162 Almeirim, Portugal",
+    "phone": "+351210805058",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2088982,
+    "longitude": -8.6298031,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJK17KqGzxGA0RbEYEb_NQbIw",
+      "googlePlaceId": "ChIJK17KqGzxGA0RbEYEb_NQbIw",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJN4eHn97xGA0RVI1xhVNkUzw",
+    "name": "Liz Burguer Premium",
+    "slug": "liz-burguer-premium",
+    "category": "Hamburgueria",
+    "address": "Zona Industrial Almeirim lote 65, 2080-222 Almeirim, Portugal",
+    "phone": "+351926708322",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1929543,
+    "longitude": -8.6180815,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJN4eHn97xGA0RVI1xhVNkUzw",
+      "googlePlaceId": "ChIJN4eHn97xGA0RVI1xhVNkUzw",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ1VrSBj7xGA0Rawz3IlULpXE",
+    "name": "Maçã de Adão",
+    "slug": "maca-de-adao",
+    "category": "Café",
+    "address": "Tv. da Olaria, 2080-065 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.20952,
+    "longitude": -8.6292445,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ1VrSBj7xGA0Rawz3IlULpXE",
+      "googlePlaceId": "ChIJ1VrSBj7xGA0Rawz3IlULpXE",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJl58W5YbxGA0RKPXHReal7vM",
+    "name": "Mercearia de Almeirim",
+    "slug": "mercearia-de-almeirim",
+    "category": "Restaurante",
+    "address": "R. Conde da Taipa n° 8, 2080-067 Almeirim, Portugal",
+    "phone": "+351911723850",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2117739,
+    "longitude": -8.626545,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJl58W5YbxGA0RKPXHReal7vM",
+      "googlePlaceId": "ChIJl58W5YbxGA0RKPXHReal7vM",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJJYnMPbPxGA0RyHe4SByqoZU",
+    "name": "Mestre Salsa",
+    "slug": "mestre-salsa",
+    "category": "Confeitaria",
+    "address": "R. Dr. Óscar da Costa Neves 16, 2080-130 Almeirim, Portugal",
+    "phone": "+351963539967",
+    "website": "http://www.mestresalsa.com/",
+    "openingHours": null,
+    "latitude": 39.21044,
+    "longitude": -8.6287788,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJJYnMPbPxGA0RyHe4SByqoZU",
+      "googlePlaceId": "ChIJJYnMPbPxGA0RyHe4SByqoZU",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJq6ppo1PwGA0RGtTFcVgn85Q",
+    "name": "Mr King Kebab & Pizza House",
+    "slug": "mr-king-kebab-pizza-house",
+    "category": "Restaurante",
+    "address": "Praça Tn Coronel Salgueiro Maia, n°5, 2080-049 Almeirim, Portugal",
+    "phone": "+351920202741",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2052943,
+    "longitude": -8.6232865,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJq6ppo1PwGA0RGtTFcVgn85Q",
+      "googlePlaceId": "ChIJq6ppo1PwGA0RGtTFcVgn85Q",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJC4LoThfxGA0RLiru60XDk2A",
+    "name": "News",
+    "slug": "news",
+    "category": "Restaurante",
+    "address": "Praça Lourenço de Carvalho 7, 2080-043 Almeirim, Portugal",
+    "phone": "+351918470238",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2081635,
+    "longitude": -8.6283939,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJC4LoThfxGA0RLiru60XDk2A",
+      "googlePlaceId": "ChIJC4LoThfxGA0RLiru60XDk2A",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJcxlF-pnwGA0R3muJOfznsuI",
+    "name": "Nicola Cafetaria",
+    "slug": "nicola-cafetaria",
+    "category": "Café",
+    "address": "Fazendas de Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1787006,
+    "longitude": -8.5991114,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJcxlF-pnwGA0R3muJOfznsuI",
+      "googlePlaceId": "ChIJcxlF-pnwGA0R3muJOfznsuI",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJNa3b_avxGA0R0kS4C9V3EHM",
+    "name": "O Alaska",
+    "slug": "o-alaska",
+    "category": "Restaurante",
+    "address": "Avenida Dom João I 22, 2080-014 Almeirim, Portugal",
+    "phone": "+351243055355",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2136234,
+    "longitude": -8.6212853,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJNa3b_avxGA0R0kS4C9V3EHM",
+      "googlePlaceId": "ChIJNa3b_avxGA0R0kS4C9V3EHM",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJL_AqTbPxGA0RtDqUrqhQneA",
+    "name": "O Bago",
+    "slug": "o-bago",
+    "category": "Confeitaria",
+    "address": "Rua de Coruche 11, 2080-038 Almeirim, Portugal",
+    "phone": "+351243596347",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2073583,
+    "longitude": -8.6311183,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJL_AqTbPxGA0RtDqUrqhQneA",
+      "googlePlaceId": "ChIJL_AqTbPxGA0RtDqUrqhQneA",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJz2zZmq7xGA0ReWEs6ff_b7E",
+    "name": "O Bom Café",
+    "slug": "o-bom-cafe",
+    "category": "Café",
+    "address": "Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2140455,
+    "longitude": -8.6235693,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJz2zZmq7xGA0ReWEs6ff_b7E",
+      "googlePlaceId": "ChIJz2zZmq7xGA0ReWEs6ff_b7E",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ7Y3zfADxGA0RgHHWbVDYXA0",
+    "name": "O Cantinho Da Carla",
+    "slug": "o-cantinho-da-carla",
+    "category": "Confeitaria",
+    "address": "R. dos Aliados 123, 2080-116 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2090075,
+    "longitude": -8.6210358,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ7Y3zfADxGA0RgHHWbVDYXA0",
+      "googlePlaceId": "ChIJ7Y3zfADxGA0RgHHWbVDYXA0",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJKRVQTwDxGA0Rh9ff9xPeGVs",
+    "name": "O Cantinho do Miguel",
+    "slug": "o-cantinho-do-miguel",
+    "category": "Café",
+    "address": "R. Francisco de Hollanda 20, 2080-192 Almeirim, Portugal",
+    "phone": "+351912421120",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2146455,
+    "longitude": -8.6262028,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJKRVQTwDxGA0Rh9ff9xPeGVs",
+      "googlePlaceId": "ChIJKRVQTwDxGA0Rh9ff9xPeGVs",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJGeKUWnHxGA0RqtCnbPbvIco",
+    "name": "O Canto do Patrão",
+    "slug": "o-canto-do-patrao",
+    "category": "Pizzaria",
+    "address": "Rua Padre Eduardo da Silva n 208, 2080-517 Fazendas de Almeirim, Portugal",
+    "phone": "+351912031678",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1780441,
+    "longitude": -8.5878009,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJGeKUWnHxGA0RqtCnbPbvIco",
+      "googlePlaceId": "ChIJGeKUWnHxGA0RqtCnbPbvIco",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "d77efde1c0c1",
+    "name": "o Capeto",
+    "slug": "o-capeto",
+    "category": "Restaurante",
+    "address": "Almeirim",
+    "phone": "+351 932 125 511",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2084311,
+    "longitude": -8.619568,
+    "externalIds": {
+      "almeirimCity": "d77efde1c0c1",
+      "googlePlaceId": "ChIJ79SeylTwGA0RNmUSxesXpx8",
+      "openStreetMap": "node-7661614585"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "openstreetmap",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.697Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJIyt6o2zlGA0RtT8r8ecdDR8",
+    "name": "O Fatita",
+    "slug": "o-fatita",
+    "category": "Churrascaria",
+    "address": "R. Direita 210, 2080-329 EN118, Portugal",
+    "phone": "+351243581339",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1426799,
+    "longitude": -8.6881668,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJIyt6o2zlGA0RtT8r8ecdDR8",
+      "googlePlaceId": "ChIJIyt6o2zlGA0RtT8r8ecdDR8",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "3176c0f3a579",
+    "name": "O Forno",
+    "slug": "o-forno",
+    "category": "Restaurante",
+    "address": "Largo da Praça de Touros 23, 2080-030, Almeirim",
+    "phone": "+351 243 241 163",
+    "website": "http://www.restauranteoforno.pt/",
+    "openingHours": null,
+    "latitude": 39.2022,
+    "longitude": -8.6273832,
+    "externalIds": {
+      "almeirimCity": "3176c0f3a579",
+      "googlePlaceId": "ChIJkeDYuVLwGA0RGFIDDMEpmHM",
+      "openStreetMap": "node-12907400733"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "openstreetmap",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.724Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJqQd6UVDwGA0RoAbNkHGLUyQ",
+    "name": "O Galinha",
+    "slug": "o-galinha",
+    "category": "Restaurante",
+    "address": "R. Ilha da Madeira 16 j, 2080-078 Almeirim, Portugal",
+    "phone": "+351243595446",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2004271,
+    "longitude": -8.6249573,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJqQd6UVDwGA0RoAbNkHGLUyQ",
+      "googlePlaceId": "ChIJqQd6UVDwGA0RoAbNkHGLUyQ",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJdVVYzlHwGA0RFoaIeGI6jdI",
+    "name": "O Janeiro da Praça",
+    "slug": "o-janeiro-da-praca",
+    "category": "Restaurante",
+    "address": "Rua do Matadouro Municipal 57, 2080-107 Almeirim, Portugal",
+    "phone": "+351962714974",
+    "website": "https://restaurantesojaneiro.pt/",
+    "openingHours": null,
+    "latitude": 39.2005342,
+    "longitude": -8.6257393,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJdVVYzlHwGA0RFoaIeGI6jdI",
+      "googlePlaceId": "ChIJdVVYzlHwGA0RFoaIeGI6jdI",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "b89760476266",
+    "name": "O Minhoto",
+    "slug": "o-minhoto",
+    "category": "restaurant",
+    "address": "Rua de Timor 4, 2080-103, Almeirim",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2031156,
+    "longitude": -8.6271495,
+    "externalIds": {
+      "almeirimCity": "b89760476266",
+      "googlePlaceId": null,
+      "openStreetMap": "node-12897345667"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.721Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJM0-o_03wGA0RO7OITXshbok",
+    "name": "O Minhoto (Sopa da Pedra)",
+    "slug": "o-minhoto-sopa-da-pedra",
+    "category": "Restaurante",
+    "address": "Rua de Timor 4, 2080-103, Almeirim",
+    "phone": "+351243592057",
+    "website": "https://www.facebook.com/pages/O-Minhoto/1880945548883678",
+    "openingHours": null,
+    "latitude": 39.2031156,
+    "longitude": -8.6271495,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJM0-o_03wGA0RO7OITXshbok",
+      "googlePlaceId": "ChIJM0-o_03wGA0RO7OITXshbok",
+      "openStreetMap": "node-12897345667"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": {
+        "confidence": 0.58,
+        "distanceMeters": 5,
+        "reason": "name_distance_address"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "3a0942d891c9",
+    "name": "O Pinheiro",
+    "slug": "o-pinheiro",
+    "category": "Restaurante português",
+    "address": "Largo da Praça de Touros 41, 2080-030, Almeirim",
+    "phone": "+351243592052",
+    "website": "https://www.facebook.com/Restaurante-O-Pinheiro-125080587561562",
+    "openingHours": null,
+    "latitude": 39.2014826,
+    "longitude": -8.6267976,
+    "externalIds": {
+      "almeirimCity": "3a0942d891c9",
+      "googlePlaceId": "ChIJz7_B3lHwGA0R0rhoQ-RMoSg",
+      "openStreetMap": "node-12907516221"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.725Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "5875f345408c",
+    "name": "O Poço Velho",
+    "slug": "o-poco-velho",
+    "category": "bar",
+    "address": "Almeirim",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2068834,
+    "longitude": -8.629605,
+    "externalIds": {
+      "almeirimCity": "5875f345408c",
+      "googlePlaceId": null,
+      "openStreetMap": "way-506131961"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.793Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "83fdb1a1ff38",
+    "name": "O Toucinho",
+    "slug": "o-toucinho",
+    "category": "Restaurante",
+    "address": "Rua de Macau 12, 2080-095, Almeirim",
+    "phone": "+351 243 592 237",
+    "website": "http://www.toucinho.com/",
+    "openingHours": null,
+    "latitude": 39.2031544,
+    "longitude": -8.6273113,
+    "externalIds": {
+      "almeirimCity": "83fdb1a1ff38",
+      "googlePlaceId": "ChIJEeKYWQ7xGA0RQlHkz5I6Iyo",
+      "openStreetMap": "node-12892154947"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "openstreetmap",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.720Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJTQR10TflGA0RzSn6J1gQemM",
+    "name": "O Vital - Café Marisqueira",
+    "slug": "o-vital-cafe-marisqueira",
+    "category": "Espresso bar",
+    "address": "Rua Doutor António Moita, Cortiçóis, 2080-328, Portugal",
+    "phone": "+351243589410",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1379414,
+    "longitude": -8.6776057,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJTQR10TflGA0RzSn6J1gQemM",
+      "googlePlaceId": "ChIJTQR10TflGA0RzSn6J1gQemM",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJXdHABU7wGA0R28xAS06_jfY",
+    "name": "O Zézano",
+    "slug": "o-zezano",
+    "category": "Restaurante",
+    "address": "2080-030 Almeirim, Portugal",
+    "phone": "+351243509281",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2025293,
+    "longitude": -8.6276441,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJXdHABU7wGA0R28xAS06_jfY",
+      "googlePlaceId": "ChIJXdHABU7wGA0R28xAS06_jfY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJydC3QLzwGA0RtoQ0Gc8bQQ4",
+    "name": "Olympus Bar",
+    "slug": "olympus-bar",
+    "category": "Bar",
+    "address": "R. Dr. José Mauricio de Carvalho 15, 2080-563 Fazendas de Almeirim, Portugal",
+    "phone": "+351962356639",
+    "website": "https://wwwbar.de/olympus-bar/",
+    "openingHours": null,
+    "latitude": 39.1837388,
+    "longitude": -8.5903988,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJydC3QLzwGA0RtoQ0Gc8bQQ4",
+      "googlePlaceId": "ChIJydC3QLzwGA0RtoQ0Gc8bQQ4",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ6UHYLADxGA0R6gU1VrMpkQs",
+    "name": "Os Bifanástikos",
+    "slug": "os-bifanastikos",
+    "category": "Restaurante",
+    "address": "R. Mal. Craveiro Lopes 152, 2080-588 Fazendas de Almeirim, Portugal",
+    "phone": "+351933674116",
+    "website": "https://www.facebook.com/share/1BDbxA3bDT/",
+    "openingHours": null,
+    "latitude": 39.1792069,
+    "longitude": -8.5982999,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ6UHYLADxGA0R6gU1VrMpkQs",
+      "googlePlaceId": "ChIJ6UHYLADxGA0R6gU1VrMpkQs",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJU0IEcAD7GA0RlZcYV8O8MnY",
+    "name": "Padaria Pastelaria Pinto",
+    "slug": "padaria-pastelaria-pinto",
+    "category": "Confeitaria",
+    "address": "R. Direita 31, 2080, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1265486,
+    "longitude": -8.6504044,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJU0IEcAD7GA0RlZcYV8O8MnY",
+      "googlePlaceId": "ChIJU0IEcAD7GA0RlZcYV8O8MnY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ2__Y9r7xGA0RYJAaiD_GCH0",
+    "name": "Padeirinha dos Leitões",
+    "slug": "padeirinha-dos-leitoes",
+    "category": "Restaurante familiar",
+    "address": "Rua do Matadouro Municipal 53, 2080-107 Almeirim, Portugal",
+    "phone": null,
+    "website": "https://www.padeirinhadosleitoes.pt/",
+    "openingHours": null,
+    "latitude": 39.2006396,
+    "longitude": -8.6259426,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ2__Y9r7xGA0RYJAaiD_GCH0",
+      "googlePlaceId": "ChIJ2__Y9r7xGA0RYJAaiD_GCH0",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJO0tW4aTwGA0RFfr1nZr1ENY",
+    "name": "Pastelaria Chamel",
+    "slug": "pastelaria-chamel",
+    "category": "Confeitaria",
+    "address": "R. Dr. Guilherme Nunes Godinho 404, Fazendas de Almeirim, Portugal",
+    "phone": "+351243599142",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1785982,
+    "longitude": -8.5861309,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJO0tW4aTwGA0RFfr1nZr1ENY",
+      "googlePlaceId": "ChIJO0tW4aTwGA0RFfr1nZr1ENY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJW3gWyR_xGA0RoNj9v6ZfpVY",
+    "name": "Pastelaria Snack Bar O Titanic",
+    "slug": "pastelaria-snack-bar-o-titanic",
+    "category": "Confeitaria",
+    "address": "R. Dionísio Saraiva 19, 2080-104 Almeirim, Portugal",
+    "phone": "+351243593696",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.208585,
+    "longitude": -8.6282368,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJW3gWyR_xGA0RoNj9v6ZfpVY",
+      "googlePlaceId": "ChIJW3gWyR_xGA0RoNj9v6ZfpVY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJJXPlnFTwGA0RH4waKR4vBSk",
+    "name": "Pastelaria Titanic",
+    "slug": "pastelaria-titanic",
+    "category": "Restaurante",
+    "address": "R. Moinho de Vento, Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2067369,
+    "longitude": -8.6213718,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJJXPlnFTwGA0RH4waKR4vBSk",
+      "googlePlaceId": "ChIJJXPlnFTwGA0RH4waKR4vBSk",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJEQZVFWfxGA0RtPtl-wjoyHA",
+    "name": "Pátio dos Sabores",
+    "slug": "patio-dos-sabores",
+    "category": "Restaurante",
+    "address": "Praça da República 8, 2080-044 Almeirim, Portugal",
+    "phone": "+351919413163",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2100132,
+    "longitude": -8.6303807,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJEQZVFWfxGA0RtPtl-wjoyHA",
+      "googlePlaceId": "ChIJEQZVFWfxGA0RtPtl-wjoyHA",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJeW107LLxGA0RGOVd2CgUM6Y",
+    "name": "Paulo's - Restaurante Marisqueira em Almeirim (Tradicional Sopa De Pedra)",
+    "slug": "paulo-s-restaurante-marisqueira-em-almeirim-tradicional-sopa",
+    "category": "Restaurante de frutos do mar",
+    "address": "Largo Praça Touros 11, 2080-030 Almeirim, Portugal",
+    "phone": "+351243592200",
+    "website": "https://www.facebook.com/paulos.marisqueira",
+    "openingHours": null,
+    "latitude": 39.2024655,
+    "longitude": -8.6276116,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJeW107LLxGA0RGOVd2CgUM6Y",
+      "googlePlaceId": "ChIJeW107LLxGA0RGOVd2CgUM6Y",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJb0_n_qrxGA0Rg1WUKHt-U38",
+    "name": "Petiscaria A Pipa",
+    "slug": "petiscaria-a-pipa",
+    "category": "Restaurante",
+    "address": "R. de São José, Fazendas de Almeirim, Portugal",
+    "phone": "+351243597589",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1769796,
+    "longitude": -8.5808203,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJb0_n_qrxGA0Rg1WUKHt-U38",
+      "googlePlaceId": "ChIJb0_n_qrxGA0Rg1WUKHt-U38",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJub2Ls6vxGA0Ra9bnOBhJtHo",
+    "name": "Pizza Burguer",
+    "slug": "pizza-burguer",
+    "category": "Restaurante",
+    "address": "Avenida Dom João I LT 48, 2080-014 Almeirim, Portugal",
+    "phone": "+351914962991",
+    "website": "https://pizzaburguer.pt/",
+    "openingHours": null,
+    "latitude": 39.2122647,
+    "longitude": -8.6190635,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJub2Ls6vxGA0Ra9bnOBhJtHo",
+      "googlePlaceId": "ChIJub2Ls6vxGA0Ra9bnOBhJtHo",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ89wcJ03wGA0RfpxRdMZQR5Y",
+    "name": "Poço Velho",
+    "slug": "poco-velho",
+    "category": "Bar",
+    "address": "R. do Pinhal 44, 2080-110 Almeirim, Portugal",
+    "phone": "+351919881477",
+    "website": "https://poco-velho.localo.site/?utm_source=google_profile&utm_campaign=localo&utm_medium=mainlink",
+    "openingHours": null,
+    "latitude": 39.2068834,
+    "longitude": -8.629605,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ89wcJ03wGA0RfpxRdMZQR5Y",
+      "googlePlaceId": "ChIJ89wcJ03wGA0RfpxRdMZQR5Y",
+      "openStreetMap": "way-506131961"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": {
+        "confidence": 0.7,
+        "distanceMeters": 7,
+        "reason": "name_distance_address"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJUapuDGrlGA0RzgeIhdd2kmE",
+    "name": "Primavera",
+    "slug": "primavera",
+    "category": "Café",
+    "address": "R. Direita 36, 2080-329, Portugal",
+    "phone": "+351243589186",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1459277,
+    "longitude": -8.6829008,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJUapuDGrlGA0RzgeIhdd2kmE",
+      "googlePlaceId": "ChIJUapuDGrlGA0RzgeIhdd2kmE",
+      "openStreetMap": "node-9943102429"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": {
+        "confidence": 0.9,
+        "distanceMeters": 4,
+        "reason": "name_distance_address"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJgbooBgLwGA0RBT1Rvg1Ahw4",
+    "name": "Q.ta do Casal Branco",
+    "slug": "q-ta-do-casal-branco",
+    "category": "restauração",
+    "address": "Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1701846,
+    "longitude": -8.659847,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJgbooBgLwGA0RBT1Rvg1Ahw4",
+      "googlePlaceId": "ChIJgbooBgLwGA0RBT1Rvg1Ahw4",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJEyQXfvbvGA0RQPQW5doY51o",
+    "name": "Quinta do Casal Branco",
+    "slug": "quinta-do-casal-branco",
+    "category": "Adega",
+    "address": "Estrada Nacional 118, KM 69, 2080-187 Almeirim, Portugal",
+    "phone": null,
+    "website": "http://www.casalbranco.com/",
+    "openingHours": null,
+    "latitude": 39.1694481,
+    "longitude": -8.6597986,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJEyQXfvbvGA0RQPQW5doY51o",
+      "googlePlaceId": "ChIJEyQXfvbvGA0RQPQW5doY51o",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJX0f4WXH7GA0RhQCGuHm7p9M",
+    "name": "Raposinha da Aldeia",
+    "slug": "raposinha-da-aldeia",
+    "category": "Restaurante",
+    "address": "N114 N 45, 2080-701 Almeirim, Portugal",
+    "phone": "+351243010106",
+    "website": "https://www.facebook.com/RaposinhaDaAldeia",
+    "openingHours": null,
+    "latitude": 39.1095334,
+    "longitude": -8.579698,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJX0f4WXH7GA0RhQCGuHm7p9M",
+      "googlePlaceId": "ChIJX0f4WXH7GA0RhQCGuHm7p9M",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJTTgrzNPxGA0RwxFtll6J9AQ",
+    "name": "Rei das coxinhas",
+    "slug": "rei-das-coxinhas",
+    "category": "Restaurante",
+    "address": "R. Dr. Ernestino Conceição Rodrigues 13A, 2080-124 Almeirim, Portugal",
+    "phone": "+351937049332",
+    "website": "https://www.facebook.com/reidacoxinhaalmerim",
+    "openingHours": null,
+    "latitude": 39.2086129,
+    "longitude": -8.6213716,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJTTgrzNPxGA0RwxFtll6J9AQ",
+      "googlePlaceId": "ChIJTTgrzNPxGA0RwxFtll6J9AQ",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJKezuEFDxGA0Rjhd6ZHhMSxY",
+    "name": "Resposta Aventureira Unipessoal, Lda",
+    "slug": "resposta-aventureira-unipessoal-lda",
+    "category": "Restaurante",
+    "address": "R. Dr. Guilherme Nunes Godinho, 2080-562 Fazendas de Almeirim, Portugal",
+    "phone": "+351927572349",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1761247,
+    "longitude": -8.5839168,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJKezuEFDxGA0Rjhd6ZHhMSxY",
+      "googlePlaceId": "ChIJKezuEFDxGA0Rjhd6ZHhMSxY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJH8O_hvLxGA0ReEXjyX1rhfI",
+    "name": "Restaurante Arcada Da Hortênsia",
+    "slug": "restaurante-arcada-da-hortensia",
+    "category": "Restaurante",
+    "address": "R. Prof. Egas Moniz, 2080-108 Almeirim, Portugal",
+    "phone": "+351916479730",
+    "website": "https://restaurantguru.com/Arcada-da-Hortensia-Almeirim",
+    "openingHours": null,
+    "latitude": 39.2069572,
+    "longitude": -8.6175695,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJH8O_hvLxGA0ReEXjyX1rhfI",
+      "googlePlaceId": "ChIJH8O_hvLxGA0ReEXjyX1rhfI",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ9wNC_0bxGA0RSRTZYRx6FMQ",
+    "name": "Restaurante Cacho Dourado",
+    "slug": "restaurante-cacho-dourado",
+    "category": "Restaurante",
+    "address": "R. Macau 11, 2080-095 Almeirim, Portugal",
+    "phone": "+351243053333",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2033004,
+    "longitude": -8.6270015,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ9wNC_0bxGA0RSRTZYRx6FMQ",
+      "googlePlaceId": "ChIJ9wNC_0bxGA0RSRTZYRx6FMQ",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJEw5p7qXwGA0R861vcmFlKp8",
+    "name": "RESTAURANTE CANTINHO DOS AMIGOS",
+    "slug": "restaurante-cantinho-dos-amigos",
+    "category": "Restaurante",
+    "address": "2080-562 Fazendas de Almeirim, Portugal",
+    "phone": "+351927572349",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1760962,
+    "longitude": -8.5838918,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJEw5p7qXwGA0R861vcmFlKp8",
+      "googlePlaceId": "ChIJEw5p7qXwGA0R861vcmFlKp8",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJmVMnp6rxGA0RAbDJJOUdDZc",
+    "name": "Restaurante japonês GINZA 8 Almeirim",
+    "slug": "restaurante-japones-ginza-8-almeirim",
+    "category": "restauração",
+    "address": "PT, R. Infante Dom Henrique 185 C/D2080-145 Almeirim, Portugal",
+    "phone": "+351243592327",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2105248,
+    "longitude": -8.6155307,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJmVMnp6rxGA0RAbDJJOUdDZc",
+      "googlePlaceId": "ChIJmVMnp6rxGA0RAbDJJOUdDZc",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ7RNFParxGA0RhKnu8xFlPkw",
+    "name": "Restaurante Marisqueira Gandarez",
+    "slug": "restaurante-marisqueira-gandarez",
+    "category": "Restaurante",
+    "address": "Avenida Dom João I Nº 64, 2080-014 Almeirim, Portugal",
+    "phone": "+351918139131",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.213053,
+    "longitude": -8.6175177,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ7RNFParxGA0RhKnu8xFlPkw",
+      "googlePlaceId": "ChIJ7RNFParxGA0RhKnu8xFlPkw",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJIyh8llrlGA0Run3Qp0yfUlc",
+    "name": "Restaurante O Amável",
+    "slug": "restaurante-o-amavel",
+    "category": "Restaurante",
+    "address": "Estrada Nacional 118, 2080-403, Azeitada",
+    "phone": "+351243589271",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1563841,
+    "longitude": -8.66916,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJIyh8llrlGA0Run3Qp0yfUlc",
+      "googlePlaceId": "ChIJIyh8llrlGA0Run3Qp0yfUlc",
+      "openStreetMap": "node-13012415033"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": {
+        "confidence": 0.708,
+        "distanceMeters": 4,
+        "reason": "name_distance_address"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJf8k0Z4zxGA0RULwlTmJixdk",
+    "name": "Restaurante O Garfo",
+    "slug": "restaurante-o-garfo",
+    "category": "Restaurante",
+    "address": "R. Moinho de Vento, 2080-014 Almeirim, Portugal",
+    "phone": "+351922216775",
+    "website": "https://www.facebook.com/profile.php?id=100092348445051",
+    "openingHours": null,
+    "latitude": 39.2059961,
+    "longitude": -8.6198329,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJf8k0Z4zxGA0RULwlTmJixdk",
+      "googlePlaceId": "ChIJf8k0Z4zxGA0RULwlTmJixdk",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJKxR1j5bxGA0Rx7HSFdaxsO4",
+    "name": "Restaurante Tia Kikas",
+    "slug": "restaurante-tia-kikas",
+    "category": "Restaurante",
+    "address": "Rua de Santarém 23 31, 2080-099 Almeirim, Portugal",
+    "phone": "+351917406425",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2111155,
+    "longitude": -8.6328577,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJKxR1j5bxGA0Rx7HSFdaxsO4",
+      "googlePlaceId": "ChIJKxR1j5bxGA0Rx7HSFdaxsO4",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJWwURvUj4GA0RT5zAPFa6j18",
+    "name": "Restaurante Tó-Zé",
+    "slug": "restaurante-to-ze",
+    "category": "Restaurante",
+    "address": "Fazendas de Almeirim, Portugal",
+    "phone": "+351243595471",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1502521,
+    "longitude": -8.5179986,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJWwURvUj4GA0RT5zAPFa6j18",
+      "googlePlaceId": "ChIJWwURvUj4GA0RT5zAPFa6j18",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJK3wUX937GA0R00olbDin8IE",
+    "name": "Retiro da Bêbeda",
+    "slug": "retiro-da",
+    "category": "Cafeteria",
+    "address": "592J+R9, Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.152063,
+    "longitude": -8.6190159,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJK3wUX937GA0R00olbDin8IE",
+      "googlePlaceId": "ChIJK3wUX937GA0R00olbDin8IE",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJLcqxzLLxGA0RZz6LcsTeOx8",
+    "name": "Rhefugio's Bar",
+    "slug": "rhefugio-s-bar",
+    "category": "Bar",
+    "address": "Praça Lourenço de Carvalho, 2080-043 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2081601,
+    "longitude": -8.6290798,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJLcqxzLLxGA0RZz6LcsTeOx8",
+      "googlePlaceId": "ChIJLcqxzLLxGA0RZz6LcsTeOx8",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ48ZyuQHxGA0RkEkk4_SGjSQ",
+    "name": "Sabor Indiano",
+    "slug": "sabor-indiano",
+    "category": "Restaurante indiano",
+    "address": "Praceta do Santíssimo 16E Bloco 16, 2080-045 Almeirim, Portugal",
+    "phone": "+351932745661",
+    "website": "https://wwwcafe.de/sabor-indiano/",
+    "openingHours": null,
+    "latitude": 39.2135295,
+    "longitude": -8.6216187,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ48ZyuQHxGA0RkEkk4_SGjSQ",
+      "googlePlaceId": "ChIJ48ZyuQHxGA0RkEkk4_SGjSQ",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJLzyRFUX7GA0RjN8q1XvU5LA",
+    "name": "Sabores Com Musica",
+    "slug": "sabores-com-musica",
+    "category": "Restaurante",
+    "address": "N 114 36, 2080-159 Almeirim, Portugal",
+    "phone": "+351928099450",
+    "website": "https://www.facebook.com/share/18djw7t63W/",
+    "openingHours": null,
+    "latitude": 39.1107877,
+    "longitude": -8.5786382,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJLzyRFUX7GA0RjN8q1XvU5LA",
+      "googlePlaceId": "ChIJLzyRFUX7GA0RjN8q1XvU5LA",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJMVA7_GHxGA0R1JqQjcJE-cE",
+    "name": "Salvador restaurante e Petiscos",
+    "slug": "salvador-restaurante-e-petiscos",
+    "category": "Restaurante",
+    "address": "Praça da República, 2080-044 Almeirim, Portugal",
+    "phone": "+351910505961",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2098402,
+    "longitude": -8.6295831,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJMVA7_GHxGA0R1JqQjcJE-cE",
+      "googlePlaceId": "ChIJMVA7_GHxGA0R1JqQjcJE-cE",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "c04ab9f4cdaa",
+    "name": "Silas",
+    "slug": "silas",
+    "category": "restaurant",
+    "address": "Almeirim",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2086221,
+    "longitude": -8.6303482,
+    "externalIds": {
+      "almeirimCity": "c04ab9f4cdaa",
+      "googlePlaceId": null,
+      "openStreetMap": "way-506127240"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.786Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJV63iL7PxGA0RtfyKcoju2D8",
+    "name": "Silas Chef",
+    "slug": "silas-chef",
+    "category": "Restaurante",
+    "address": "R. 5 de Outubro 27, 2080-052 Almeirim, Portugal",
+    "phone": "+351243599256",
+    "website": "http://www.silaschef.pt/",
+    "openingHours": null,
+    "latitude": 39.2086221,
+    "longitude": -8.6303482,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJV63iL7PxGA0RtfyKcoju2D8",
+      "googlePlaceId": "ChIJV63iL7PxGA0RtfyKcoju2D8",
+      "openStreetMap": "way-506127240"
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": {
+        "confidence": 0.6,
+        "distanceMeters": 8,
+        "reason": "name_distance_address"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJr7MBACvxGA0Rk4FMW-byNXc",
+    "name": "SKS INDIAN Restaurant",
+    "slug": "sks-indian-restaurant",
+    "category": "Restaurante indiano",
+    "address": "Unbanizacao, R. Vinha do Santissimo n° 11, 2080-083 Almeirim, Portugal",
+    "phone": "+351911858502",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2132404,
+    "longitude": -8.6214809,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJr7MBACvxGA0Rk4FMW-byNXc",
+      "googlePlaceId": "ChIJr7MBACvxGA0Rk4FMW-byNXc",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJx93CXWvlGA0RB0bteJfqxy4",
+    "name": "Snack Bar",
+    "slug": "snack-bar",
+    "category": "restauração",
+    "address": "2080-329, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1428826,
+    "longitude": -8.6871338,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJx93CXWvlGA0RB0bteJfqxy4",
+      "googlePlaceId": "ChIJx93CXWvlGA0RB0bteJfqxy4",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ47RoY7PxGA0RH1hxR5pQJeI",
+    "name": "Sociedade Agricola Quinta Das Chantas, Lda.",
+    "slug": "sociedade-agricola-quinta-das-chantas-lda",
+    "category": "Vinícola",
+    "address": "Tv. do Vareta 10, 2080-184 Almeirim, Portugal",
+    "phone": "+351243592048",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2096447,
+    "longitude": -8.6316957,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ47RoY7PxGA0RH1hxR5pQJeI",
+      "googlePlaceId": "ChIJ47RoY7PxGA0RH1hxR5pQJeI",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJZbxVHVDwGA0RM6Frq3a50-o",
+    "name": "Sopa da Pedra",
+    "slug": "sopa-da-pedra",
+    "category": "Restaurante",
+    "address": "Rua de Coruche 2",
+    "phone": "+351243053085",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2075404,
+    "longitude": -8.6317784,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJZbxVHVDwGA0RM6Frq3a50-o",
+      "googlePlaceId": "ChIJZbxVHVDwGA0RM6Frq3a50-o",
+      "openStreetMap": "node-4968688722"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "openstreetmap",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": {
+        "confidence": 0.99,
+        "distanceMeters": 25,
+        "reason": "phone"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "52f3b729c50f",
+    "name": "Sopa Da Pedro",
+    "slug": "sopa-da-pedro",
+    "category": "restaurant",
+    "address": "Rua de Coruche 2",
+    "phone": "+351243053085",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2075404,
+    "longitude": -8.6317784,
+    "externalIds": {
+      "almeirimCity": "52f3b729c50f",
+      "googlePlaceId": null,
+      "openStreetMap": "node-4968688722"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "openstreetmap",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.684Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJj9DDhPHxGA0RHpmZOWHO--A",
+    "name": "Suave Sabor",
+    "slug": "suave-sabor",
+    "category": "Confeitaria",
+    "address": "Rua de Coruche 163 Rc esquerdo, 2080-094 Almeirim, Portugal",
+    "phone": "+351243592193",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2031919,
+    "longitude": -8.6281386,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJj9DDhPHxGA0RHpmZOWHO--A",
+      "googlePlaceId": "ChIJj9DDhPHxGA0RHpmZOWHO--A",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJoWqTfQD7GA0RmUb3cqwLZko",
+    "name": "Tasca das Caricas",
+    "slug": "tasca-das-caricas",
+    "category": "Petiscaria",
+    "address": "Tasca das Caricas, R. Cel. António Manuel Batista 176, 2080-537 Fazendas de Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1703053,
+    "longitude": -8.5729354,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJoWqTfQD7GA0RmUb3cqwLZko",
+      "googlePlaceId": "ChIJoWqTfQD7GA0RmUb3cqwLZko",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJP0XXk6nxGA0R60WhIMaWc1U",
+    "name": "Tasca do Salsa",
+    "slug": "tasca-do-salsa",
+    "category": "Restaurante",
+    "address": "R. Nova 46 48, 2080-159 Almeirim, Portugal",
+    "phone": "+351932899104",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2094556,
+    "longitude": -8.6326798,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJP0XXk6nxGA0R60WhIMaWc1U",
+      "googlePlaceId": "ChIJP0XXk6nxGA0R60WhIMaWc1U",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJK1XTDKLxGA0RER9EohmndU8",
+    "name": "Tasko d'Adega",
+    "slug": "tasko-d-adega",
+    "category": "Restaurante",
+    "address": "R. João de Deus 78, 2080-576 Fazendas de Almeirim, Portugal",
+    "phone": "+351932035872",
+    "website": "https://www.facebook.com/Tasko-dAdega-105723328559695",
+    "openingHours": null,
+    "latitude": 39.179113,
+    "longitude": -8.5924263,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJK1XTDKLxGA0RER9EohmndU8",
+      "googlePlaceId": "ChIJK1XTDKLxGA0RER9EohmndU8",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJ38bY11HwGA0RJaeI6gQPzcY",
+    "name": "TAVERNA CAVALO PRETO",
+    "slug": "taverna-cavalo-preto",
+    "category": "Restaurante",
+    "address": "Lg. da Pç. de Touros, 2080-030 Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.200928,
+    "longitude": -8.6270567,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJ38bY11HwGA0RJaeI6gQPzcY",
+      "googlePlaceId": "ChIJ38bY11HwGA0RJaeI6gQPzcY",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJG54iqqDxGA0ROMo-_CxBK9Y",
+    "name": "Telepizza Almeirim",
+    "slug": "telepizza-almeirim",
+    "category": "Pizzaria",
+    "address": "R. de Alpiarça 23, 2080-091 Almeirim, Portugal",
+    "phone": "+351243248174",
+    "website": "https://www.telepizza.pt/pizzarias/detalles?sid=03681&store=telepizza-almeirim",
+    "openingHours": null,
+    "latitude": 39.2120349,
+    "longitude": -8.62538,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJG54iqqDxGA0ROMo-_CxBK9Y",
+      "googlePlaceId": "ChIJG54iqqDxGA0ROMo-_CxBK9Y",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "de15c1fb2d86",
+    "name": "Tertulia da Quinta",
+    "slug": "tertulia-da-quinta",
+    "category": "Restaurante",
+    "address": "Largo da Praça de Touros 37A, 2080-030, Almeirim",
+    "phone": "+351 243 593 008",
+    "website": "http://tertuliadaquinta.com",
+    "openingHours": null,
+    "latitude": 39.201704,
+    "longitude": -8.6270004,
+    "externalIds": {
+      "almeirimCity": "de15c1fb2d86",
+      "googlePlaceId": "ChIJkeDYuVLwGA0RZDRJORwEbnM",
+      "openStreetMap": "node-12907400729"
+    },
+    "fieldSources": {
+      "address": "openstreetmap",
+      "coordinates": "openstreetmap",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "openstreetmap",
+      "website": "openstreetmap"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-05-07T14:15:53.722Z",
+      "almeirimCitySource": "osm",
+      "osmMatch": {
+        "confidence": 1,
+        "distanceMeters": 0,
+        "reason": "osm_id"
+      },
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJY-7F9hTxGA0RTN303VQ1neU",
+    "name": "Titanic comida caseira & Petisco",
+    "slug": "titanic-comida-caseira-petisco",
+    "category": "Restaurante de brunch",
+    "address": "R. Dionísio Saraiva 19, 2080-104 Almeirim, Portugal",
+    "phone": "+351243596186",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.208585,
+    "longitude": -8.6282368,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJY-7F9hTxGA0RTN303VQ1neU",
+      "googlePlaceId": "ChIJY-7F9hTxGA0RTN303VQ1neU",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJXa1MBr7wGA0RHefAvovPFlc",
+    "name": "Tou Em Casa- Grelha",
+    "slug": "tou-em-casa-grelha",
+    "category": "Restaurante",
+    "address": "2080-516 Fazendas de Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.1849723,
+    "longitude": -8.5935043,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJXa1MBr7wGA0RHefAvovPFlc",
+      "googlePlaceId": "ChIJXa1MBr7wGA0RHefAvovPFlc",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJDTntb-HxGA0RbbyX1YQVYLw",
+    "name": "Trevo Pastelaria Snack-Bar",
+    "slug": "trevo-pastelaria-snack-bar",
+    "category": "Restaurante",
+    "address": "N114, Almeirim, Portugal",
+    "phone": null,
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2310391,
+    "longitude": -8.6565496,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJDTntb-HxGA0RbbyX1YQVYLw",
+      "googlePlaceId": "ChIJDTntb-HxGA0RbbyX1YQVYLw",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  },
+  {
+    "id": "apify-ChIJcz5cqUXxGA0Rq3DNWACAZks",
+    "name": "Vinha da padilha",
+    "slug": "vinha-da-padilha",
+    "category": "Vinhedo",
+    "address": "Restaurante caravela, R. de Alpiarça, 2080-091 Almeirim, Portugal",
+    "phone": "+351918658145",
+    "website": null,
+    "openingHours": null,
+    "latitude": 39.2162777,
+    "longitude": -8.6217717,
+    "externalIds": {
+      "almeirimCity": "apify-ChIJcz5cqUXxGA0Rq3DNWACAZks",
+      "googlePlaceId": "ChIJcz5cqUXxGA0Rq3DNWACAZks",
+      "openStreetMap": null
+    },
+    "fieldSources": {
+      "address": "almeirim.city",
+      "coordinates": "almeirim.city",
+      "name": "almeirim.city",
+      "openingHours": null,
+      "phone": "almeirim.city",
+      "website": "almeirim.city"
+    },
+    "sourceAudit": {
+      "almeirimCityImportedAt": "2026-06-30T23:22:15.821Z",
+      "almeirimCitySource": "apify",
+      "osmMatch": null,
+      "retrievedAt": "2026-09-11T08:58:30.505Z"
+    }
+  }
+]

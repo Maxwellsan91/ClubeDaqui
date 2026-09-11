@@ -1,0 +1,30 @@
+{
+  "name": "clube-ribatejo-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Guia local de benefícios exclusivos no Ribatejo.",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace @clube-ribatejo/web",
+    "dev:api": "npm run dev --workspace @clube-ribatejo/api",
+    "data:food-inventory": "npm run data:food-inventory --workspace @clube-ribatejo/api",
+    "build": "npm run build --workspace @clube-ribatejo/web && npm run build --workspace @clube-ribatejo/api",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "check": "npm run lint && npm run typecheck && npm run format:check"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "prettier-plugin-tailwindcss": "^0.8.1"
+  },
+  "overrides": {
+    "multer": "2.3.0"
+  }
+}

@@ -1,0 +1,7 @@
+- Prettier: semicolons, double quotes, 2 spaces, trailing commas.
+- Strict TypeScript; avoid untyped integration boundaries. Validate runtime configuration with Zod.
+- Web alias `@/*` maps to `apps/web/src/*`.
+- NestJS modules live under `apps/api/src/modules`; infrastructure adapters under `apps/api/src/infrastructure`.
+- Browser and Server Component Supabase clients remain separate.
+- User-scoped API data uses `createUserClient(accessToken)` so RLS applies; admin client is explicit and limited to authorized backend operations.
+- SQL identifiers/slugs use lowercase kebab-case constraints where applicable; migrations are additive and tested outside production first.

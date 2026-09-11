@@ -1,0 +1,6 @@
+- Node.js >=22.13.0, pinned via root `.nvmrc`; npm workspaces.
+- TypeScript strict throughout; web module resolution `bundler`, API CommonJS decorators/metadata.
+- Web: Next.js 16, React 19, Tailwind CSS 4, Supabase SSR.
+- API: NestJS 12, Zod environment validation, Supabase JS.
+- Data: Supabase PostgreSQL/Auth/Storage/RLS; SQL migrations are authoritative.
+- Formatting: Prettier 3 with Tailwind plugin; ESLint 9 flat configs.

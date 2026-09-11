@@ -1,0 +1,8 @@
+- Install: `nvm use && npm install`.
+- Web dev: `npm run dev:web` (default http://localhost:3000).
+- API dev: `npm run dev:api` (default http://localhost:3001/api).
+- All checks: `npm run check`; build both: `npm run build`.
+- Individual: `npm run lint`, `npm run typecheck`, `npm run format:check`.
+- Workspace build: `npm run build --workspace @clube-ribatejo/web` or `@clube-ribatejo/api`.
+- Health: `curl http://localhost:3000/api/health`, `curl http://localhost:3001/api/health`.
+- Serena validation: `serena project health-check .`; memory refs: `serena memories check`.

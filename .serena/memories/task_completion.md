@@ -1,0 +1,5 @@
+- Run `npm run check` (workspace lint, strict typecheck, Prettier check).
+- Run `npm run build` for changes affecting runtime/build configuration or shared behavior.
+- Exercise relevant health endpoints or feature-specific command.
+- Run `git diff --check`; inspect `git status --short` without altering unrelated user changes.
+- Database migrations must be validated in development/branch Supabase before production.

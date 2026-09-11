@@ -1,0 +1,6 @@
+- npm-workspaces monorepo: `apps/web` (Next.js UI/session), `apps/api` (NestJS business API), `supabase/migrations` (PostgreSQL schema/RLS/transactional functions).
+- Business rules and third-party integrations belong in the API; web Supabase clients are for Auth/session.
+- Critical redemption behavior remains atomic in PostgreSQL.
+- Never expose `SUPABASE_SERVICE_ROLE_KEY` to the web app.
+- Module details: web structure in `mem:web/core`; API structure in `mem:api/core`.
+- Stack/version pins: `mem:tech_stack`; repo conventions: `mem:conventions`; completion checks: `mem:task_completion`.

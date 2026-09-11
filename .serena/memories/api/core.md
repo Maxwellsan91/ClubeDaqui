@@ -1,0 +1,6 @@
+- NestJS bootstrap at `apps/api/src/main.ts`; root module `app.module.ts`.
+- Feature modules under `src/modules`; infrastructure under `src/infrastructure`.
+- Zod environment validation in `src/config/environment.ts`; API defaults to port 3001 and prefix `/api`.
+- Supabase adapter exposes explicit user-token and service-role clients; preserve RLS by default.
+- Business rules and external data ingestion/integrations belong here.
+- Quality/config details: `mem:tech_stack`, `mem:conventions`, `mem:task_completion`.

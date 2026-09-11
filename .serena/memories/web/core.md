@@ -1,0 +1,5 @@
+- Next.js App Router under `apps/web/src/app`; global CSS and root layout live there.
+- Supabase browser/server clients: `apps/web/src/lib/supabase`.
+- Environment parsing/public exposure: `apps/web/src/lib/env`.
+- Web owns responsive interface, SEO, and SSR session; business rules/integrations belong in API.
+- Quality/config details: `mem:tech_stack`, `mem:conventions`, `mem:task_completion`.

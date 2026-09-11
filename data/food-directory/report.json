@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-09-11T08:58:30.505Z",
+  "policy": {
+    "excluded": [
+      "external descriptions",
+      "external photos",
+      "external ratings",
+      "external review counts",
+      "external review text"
+    ],
+    "reviewsSource": "Clube Ribatejo customers only"
+  },
+  "source": {
+    "extracted": 137,
+    "googlePlaceIds": 129,
+    "url": "https://almeirim.city/onde-comer"
+  },
+  "openStreetMap": {
+    "bounds": [39.0940573, -8.7059124, 39.2460391, -8.454532299999999],
+    "candidates": 88,
+    "endpoint": "https://overpass-api.de/api/interpreter",
+    "matched": 22,
+    "unmatched": 115
+  },
+  "duplicateCandidates": [
+    {
+      "distanceMeters": 1271,
+      "left": {
+        "id": "apify-ChIJMxBgJQDxGA0Rmp3gFCDRTjs",
+        "name": "Fonte Nova caffé bar"
+      },
+      "reason": "phone",
+      "right": {
+        "id": "apify-ChIJ89wcJ03wGA0RfpxRdMZQR5Y",
+        "name": "Poço Velho"
+      }
+    },
+    {
+      "distanceMeters": 4,
+      "left": {
+        "id": "apify-ChIJEw5p7qXwGA0R861vcmFlKp8",
+        "name": "RESTAURANTE CANTINHO DOS AMIGOS"
+      },
+      "reason": "phone",
+      "right": {
+        "id": "apify-ChIJKezuEFDxGA0Rjhd6ZHhMSxY",
+        "name": "Resposta Aventureira Unipessoal, Lda"
+      }
+    },
+    {
+      "distanceMeters": 25,
+      "left": {
+        "id": "apify-ChIJZbxVHVDwGA0RM6Frq3a50-o",
+        "name": "Sopa da Pedra"
+      },
+      "reason": "phone",
+      "right": {
+        "id": "52f3b729c50f",
+        "name": "Sopa Da Pedro"
+      }
+    }
+  ],
+  "discardedThirdPartyFields": {
+    "descriptions": 0,
+    "images": 127,
+    "ratings": 114,
+    "reviewCounts": 114
+  }
+}
