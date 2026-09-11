@@ -242,6 +242,16 @@ serena memories check
 - Próxima verificação: redeploy do commit mais recente e teste de
   `/api/health`.
 
+### 2026-09-11 — Primeira homepage da demo comercial
+
+- Criada uma homepage navegável com pesquisa visual, grupos Comer/Dormir/Lazer
+  e primeiras descobertas do piloto de Almeirim.
+- Conteúdo inicial demonstrativo usa estabelecimentos do inventário local; não
+  foram importadas fotografias, avaliações ou descrições de terceiros.
+- Validações `npm run check` passaram.
+- Commit publicado: `2eb2845`.
+- Próximo passo: criar o catálogo pesquisável e ligar os dados validados à API.
+
 ### Modelo para entradas futuras
 
 ```text
