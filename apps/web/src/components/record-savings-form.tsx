@@ -1,157 +1,190 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import type { SavingsCategory, SavingsRecord } from "@/types/member";
 
 export function RecordSavingsForm({
   onSaved,
   redemptionId,
-  businessName = "Benefício utilizado",
+  businessName = "Estabelecimento",
   businessSlug = "explorar",
-  defaultCategory = "Gastronomia",
 }: {
   onSaved: (record: SavingsRecord) => void;
-  redemptionId?: string;
+  redemptionId: string;
   businessName?: string;
   businessSlug?: string;
-  defaultCategory?: SavingsCategory;
 }) {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSaved(false);
     const form = new FormData(event.currentTarget);
     const total = Number(form.get("total_bill_amount"));
     const discount = Number(form.get("discount_amount"));
+
     if (
       !Number.isFinite(total) ||
       !Number.isFinite(discount) ||
-      total < 0 ||
+      total <= 0 ||
       discount < 0 ||
       discount > total
     ) {
       setError(
-        "Introduza valores válidos. O desconto não pode ser superior à fatura.",
+        "Verifique os valores. O desconto não pode ser superior à fatura.",
       );
       return;
     }
+
+    setError("");
     setSaving(true);
-    if (redemptionId) {
-      try {
-        const { data } = await (
-          await import("@/lib/supabase/client")
-        )
-          .createClient()
-          .auth.getSession();
-        const token = data.session?.access_token;
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (!token || !apiUrl) throw new Error();
-        const response = await fetch(
-          `${apiUrl}/api/me/redemptions/${redemptionId}/financials`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              total_bill_amount: total,
-              discount_amount: discount,
-            }),
+    try {
+      const { data } = await (
+        await import("@/lib/supabase/client")
+      )
+        .createClient()
+        .auth.getSession();
+      const token = data.session?.access_token;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!token || !apiUrl) throw new Error("sem sessão");
+      const response = await fetch(
+        `${apiUrl}/api/me/redemptions/${redemptionId}/financials`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        );
-        if (!response.ok) throw new Error();
-      } catch {
-        setError("Não foi possível guardar a economia. Tente novamente.");
-        setSaving(false);
-        return;
-      }
+          body: JSON.stringify({
+            total_bill_amount: total,
+            discount_amount: discount,
+          }),
+        },
+      );
+      if (!response.ok) throw new Error("api error");
+    } catch {
+      setError("Não foi possível guardar. Tente novamente.");
+      setSaving(false);
+      return;
     }
+
     onSaved({
-      id: redemptionId ?? crypto.randomUUID(),
+      id: redemptionId,
       redemptionId,
       businessName,
       businessSlug,
-      category: form.get("category") as SavingsCategory,
+      category: "Gastronomia" as SavingsCategory,
       redeemedAt: new Date().toISOString(),
       totalBillAmount: total,
       discountAmount: discount,
     });
-    event.currentTarget.reset();
-    setError("");
     setSaving(false);
     setSaved(true);
   }
+
+  if (saved) {
+    return (
+      <div className="bg-cream-100 rounded-2xl border border-olive-900/10 p-6">
+        <div className="flex items-start gap-3">
+          <span
+            className="text-cream-50 mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-olive-900 text-sm"
+            aria-hidden="true"
+          >
+            ✓
+          </span>
+          <div>
+            <p className="font-semibold text-olive-900">Poupança registada.</p>
+            <p className="mt-1 text-sm leading-6 text-olive-700">
+              A sua economia em{" "}
+              <span className="font-semibold">{businessName}</span> ficou
+              guardada. Agora partilhe a sua experiência — a sua avaliação ajuda
+              outros membros a escolher melhor.
+            </p>
+          </div>
+        </div>
+        <div className="mt-5">
+          <Link
+            href={`/explorar/${businessSlug}#avaliar`}
+            className="bg-wine-700 hover:bg-wine-800 inline-flex min-h-[44px] items-center rounded-full px-6 py-2.5 text-sm font-semibold text-white transition"
+          >
+            Avaliar {businessName} →
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={submit}
-      className="bg-cream-100 rounded-3xl border border-olive-900/10 p-6"
+      className="bg-cream-100 rounded-2xl border border-olive-900/10 p-6"
     >
-      <h2 className="font-display text-2xl text-olive-900">
-        Registar uma economia
-      </h2>
-      <p className="mt-2 text-sm leading-6 text-olive-700">
-        Ajude-nos a registar o valor poupado nesta visita.
+      <p className="text-sm text-olive-700">
+        Quanto pagou e quanto poupou com o benefício do Clube?
       </p>
-      <div className="mt-5 grid gap-4 sm:grid-cols-3">
-        <label className="text-sm font-semibold text-olive-900">
-          Valor da fatura
-          <input
-            name="total_bill_amount"
-            type="number"
-            min="0"
-            step="0.01"
-            inputMode="decimal"
-            required
-            className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
-            placeholder="€ 0,00"
-          />
-        </label>
-        <label className="text-sm font-semibold text-olive-900">
-          Desconto obtido
-          <input
-            name="discount_amount"
-            type="number"
-            min="0"
-            step="0.01"
-            inputMode="decimal"
-            required
-            className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
-            placeholder="€ 0,00"
-          />
-        </label>
-        <label className="text-sm font-semibold text-olive-900">
-          Categoria
-          <select
-            name="category"
-            defaultValue={defaultCategory}
-            className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div>
+          <label
+            htmlFor={`total-${redemptionId}`}
+            className="block text-sm font-semibold text-olive-900"
           >
-            <option>Gastronomia</option>
-            <option>Experiências</option>
-            <option>Alojamento</option>
-            <option>Lazer</option>
-          </select>
-        </label>
+            Valor da fatura
+          </label>
+          <div className="relative mt-1.5">
+            <span className="absolute top-1/2 left-3.5 -translate-y-1/2 text-sm text-olive-600">
+              €
+            </span>
+            <input
+              id={`total-${redemptionId}`}
+              name="total_bill_amount"
+              type="number"
+              min="0.01"
+              step="0.01"
+              inputMode="decimal"
+              required
+              className="focus:border-wine-700 block w-full rounded-xl border border-olive-900/12 bg-white py-3 pr-4 pl-8 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
+              placeholder="0,00"
+            />
+          </div>
+        </div>
+        <div>
+          <label
+            htmlFor={`discount-${redemptionId}`}
+            className="block text-sm font-semibold text-olive-900"
+          >
+            Desconto obtido
+          </label>
+          <div className="relative mt-1.5">
+            <span className="absolute top-1/2 left-3.5 -translate-y-1/2 text-sm text-olive-600">
+              €
+            </span>
+            <input
+              id={`discount-${redemptionId}`}
+              name="discount_amount"
+              type="number"
+              min="0"
+              step="0.01"
+              inputMode="decimal"
+              required
+              className="focus:border-wine-700 block w-full rounded-xl border border-olive-900/12 bg-white py-3 pr-4 pl-8 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
+              placeholder="0,00"
+            />
+          </div>
+        </div>
       </div>
-      {error ? (
-        <p role="alert" className="text-wine-700 mt-4 text-sm">
+      {error && (
+        <p role="alert" className="text-wine-700 mt-3 text-sm">
           {error}
         </p>
-      ) : null}
-      {saved ? (
-        <p className="mt-4 text-sm font-semibold text-olive-700">
-          Economia registada com sucesso.
-        </p>
-      ) : null}
+      )}
       <button
         type="submit"
         disabled={saving}
-        className="bg-wine-700 mt-5 min-h-11 rounded-full px-6 py-3 text-sm font-semibold text-white"
+        className="mt-5 inline-flex min-h-[44px] items-center rounded-full bg-olive-900 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-olive-900/90 disabled:opacity-60"
       >
-        {saving ? "A guardar…" : "Guardar economia"}
+        {saving ? "A guardar…" : "Guardar poupança"}
       </button>
     </form>
   );

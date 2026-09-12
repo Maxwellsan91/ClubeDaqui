@@ -73,12 +73,14 @@ export function RedeemBenefitButton({
             estabelecimento. Válido durante 5 minutos. Registe a economia abaixo
             depois de o parceiro confirmar a utilização.
           </p>
-          <RecordSavingsForm
-            redemptionId={redemptionId}
-            businessName={businessName}
-            businessSlug={businessSlug}
-            onSaved={(record) => onSaved?.(record)}
-          />
+          {redemptionId ? (
+            <RecordSavingsForm
+              redemptionId={redemptionId}
+              businessName={businessName}
+              businessSlug={businessSlug}
+              onSaved={(record) => onSaved?.(record)}
+            />
+          ) : null}
         </div>
       ) : null}
       {status === "error" ? (

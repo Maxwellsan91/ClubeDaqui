@@ -144,13 +144,6 @@ export default function AccountPage() {
       ),
     [query],
   );
-  const saveDemoRecord = (record: SavingsRecord) => {
-    setRecords((current) => {
-      const next = [record, ...current];
-      localStorage.setItem(storageKey, JSON.stringify(next));
-      return next;
-    });
-  };
   const saveServerRecord = (record: SavingsRecord) => {
     setRecords((current) => [record, ...current]);
     setUnrecordedRedemptions((current) =>
@@ -204,6 +197,55 @@ export default function AccountPage() {
             {map ? "Ver lista" : "Ver mapa"}
           </button>
         </div>
+        {/* Ações pendentes após visita — mostradas primeiro quando existem */}
+        {apiStatus === "connected" && unrecordedRedemptions.length > 0 ? (
+          <section className="mt-10">
+            <div className="border-gold-500/30 bg-gold-500/8 rounded-2xl border p-5 sm:p-6">
+              <p className="text-wine-700 text-[11px] font-bold tracking-[0.25em] uppercase">
+                Após a visita
+              </p>
+              <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                {unrecordedRedemptions.length === 1
+                  ? "Tem 1 benefício utilizado por completar."
+                  : `Tem ${unrecordedRedemptions.length} benefícios utilizados por completar.`}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-olive-700">
+                Registe o valor poupado e deixe uma avaliação para ajudar outros
+                membros.
+              </p>
+            </div>
+            <div className="mt-5 space-y-8">
+              {unrecordedRedemptions.map((redemption) => (
+                <div key={redemption.id}>
+                  <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                    <div>
+                      <p className="font-semibold text-olive-900">
+                        {redemption.businessName}
+                      </p>
+                      <p className="text-sm text-olive-600">
+                        {redemption.benefitTitle}
+                      </p>
+                    </div>
+                    <p className="text-xs text-olive-600">
+                      {new Intl.DateTimeFormat("pt-PT", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      }).format(new Date(redemption.redeemedAt))}
+                    </p>
+                  </div>
+                  <RecordSavingsForm
+                    redemptionId={redemption.id}
+                    businessName={redemption.businessName}
+                    businessSlug={redemption.businessSlug}
+                    onSaved={saveServerRecord}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {/* Resumo e histórico */}
         <div className="mt-10">
           <MemberSummary
             summary={summary}
@@ -220,63 +262,11 @@ export default function AccountPage() {
           <SavingsByCategory records={records} />
         </div>
         {apiStatus === "loading" ? (
-          <p className="mt-12 text-sm text-olive-700">
+          <p className="mt-10 text-sm text-olive-700">
             A carregar as suas utilizações…
           </p>
         ) : null}
-        {apiStatus === "connected" ? (
-          <section className="mt-12">
-            <p className="text-wine-700 text-xs font-semibold tracking-[0.2em] uppercase">
-              Depois da visita
-            </p>
-            <h2 className="font-display mt-2 text-3xl text-olive-900">
-              Economias por registar
-            </h2>
-            {unrecordedRedemptions.length ? (
-              <div className="mt-6 space-y-6">
-                {unrecordedRedemptions.map((redemption) => (
-                  <div key={redemption.id}>
-                    <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2 px-1">
-                      <p className="font-semibold text-olive-900">
-                        {redemption.businessName} · {redemption.benefitTitle}
-                      </p>
-                      <p className="text-xs text-olive-600">
-                        Confirmado em{" "}
-                        {new Intl.DateTimeFormat("pt-PT", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        }).format(new Date(redemption.redeemedAt))}
-                      </p>
-                    </div>
-                    <RecordSavingsForm
-                      redemptionId={redemption.id}
-                      businessName={redemption.businessName}
-                      businessSlug={redemption.businessSlug}
-                      defaultCategory={redemption.category}
-                      onSaved={saveServerRecord}
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-6">
-                <EmptyState
-                  title="Tudo atualizado"
-                  description="Não existem utilizações confirmadas à espera do valor poupado."
-                />
-              </div>
-            )}
-          </section>
-        ) : null}
-        {apiStatus === "fallback" ? (
-          <div className="mt-12">
-            <p className="mb-4 text-sm text-olive-700">
-              Modo de demonstração local: a API de membro não está disponível.
-            </p>
-            <RecordSavingsForm onSaved={saveDemoRecord} />
-          </div>
-        ) : null}
-        <div className="mt-12">
+        <div className="mt-10">
           <SavingsHistory records={records} />
         </div>
         <div className="mt-14">
