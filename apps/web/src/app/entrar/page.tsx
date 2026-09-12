@@ -34,15 +34,15 @@ export default function SignInPage() {
         setError(
           "Email ou palavra-passe incorretos. Confirme também se já validou o seu email.",
         );
+        setSubmitting(false);
         return;
       }
-      router.replace(next);
       router.refresh();
+      router.replace(next);
     } catch {
       setError(
         "Não foi possível contactar o serviço de autenticação. Tente novamente.",
       );
-    } finally {
       setSubmitting(false);
     }
   }
