@@ -108,9 +108,9 @@ reivindicado antes de ser apresentado como parceiro.
 - [x] Migration inicial do Supabase criada com RLS e operações transacionais.
 - [x] Página inicial responsiva do frontend criada.
 - [x] Health checks web e API criados.
-- [ ] Fluxo de autenticação completo.
+- [x] Fluxo de autenticação completo.
 - [x] Interface de registo, confirmação SSR e login por palavra-passe
-      implementada; falta o teste real de entrega/confirmação de email.
+      implementada; entrega de email e redirect para área de membro validados em produção.
 - [ ] Catálogo navegável de estabelecimentos ligado ao Supabase.
 - [ ] Fluxo de benefícios e resgates ligado à interface.
 - [x] Validação transacional de códigos por utilizadores parceiros ligada à
@@ -196,9 +196,7 @@ serena memories check
 
 ## Próximas ações
 
-1. Confirmar no painel os URLs/definições de Auth e testar registo → email →
-   `/conta` com um endereço controlado.
-2. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
+1. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
    ativa e um utilizador parceiro de teste.
 3. Fechar o recorte piloto de Almeirim e rever as correspondências OSM e os
    possíveis duplicados do inventário de restauração.
@@ -443,6 +441,17 @@ serena memories check
   mínimo `22.13.0` indicado pelo projeto.
 - Continuam pendentes a confirmação dos Redirect URLs no painel e o teste real
   do email de registo.
+
+### 2026-09-12 — Fluxo de autenticação validado em produção
+
+- Objetivo: confirmar registo, envio de email e acesso à área de membro.
+- O `emailRedirectTo` com query string codificada (`?next=...`) era rejeitado
+  silenciosamente pelo Supabase por não corresponder à lista de Redirect URLs.
+- Corrigido para usar apenas `/auth/callback`, que já estava na lista permitida.
+- Teste confirmado: registo → email de confirmação Resend → link → `/conta`.
+- Fluxo de autenticação completo marcado como concluído.
+- Próximo passo: validar ciclo completo membro → resgate → parceiro com contas
+  de teste com adesão ativa.
 
 ### Modelo para entradas futuras
 
