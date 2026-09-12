@@ -31,6 +31,7 @@ export function SiteFooter() {
           </p>
           <nav className="text-cream-100/80 mt-4 flex flex-col gap-3 text-sm">
             <Link href="/parceiros">{t("partner")}</Link>
+            <Link href="/registar">{t("signUp")}</Link>
             <Link href="/entrar">{t("signIn")}</Link>
           </nav>
         </div>

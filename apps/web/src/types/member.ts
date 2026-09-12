@@ -12,7 +12,22 @@ export type SavingsRecord = {
   discountAmount: number;
 };
 
+export type MemberRedemption = {
+  id: string;
+  benefitTitle: string;
+  businessName: string;
+  businessSlug: string;
+  category: SavingsCategory;
+  redeemedAt: string;
+  financial: {
+    totalBillAmount: number;
+    discountAmount: number;
+    recordedAt: string;
+  } | null;
+};
+
 export type MemberSummaryData = {
+  fullName?: string | null;
   subscriptionStatus: "active" | "inactive" | "pending";
   validUntil?: string | null;
   usedBenefits: number;

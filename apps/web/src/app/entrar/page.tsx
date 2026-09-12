@@ -2,31 +2,48 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function SignInPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  async function submit(event: FormEvent) {
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setSubmitting(true);
     try {
-      const { createClient } = await import("@/lib/supabase/client");
-      const { error: authError } = await createClient().auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/conta`,
+      const requestedPath = new URLSearchParams(window.location.search).get(
+        "redirectTo",
+      );
+      const next =
+        requestedPath?.startsWith("/") && !requestedPath.startsWith("//")
+          ? requestedPath
+          : "/conta";
+      const { error: authError } = await createClient().auth.signInWithPassword(
+        {
+          email: email.trim(),
+          password,
         },
-      });
+      );
       if (authError) {
-        setError(authError.message);
+        setError(
+          "Email ou palavra-passe incorretos. Confirme também se já validou o seu email.",
+        );
         return;
       }
-      setSent(true);
+      router.replace(next);
+      router.refresh();
     } catch {
       setError(
         "Não foi possível contactar o serviço de autenticação. Tente novamente.",
       );
+    } finally {
+      setSubmitting(false);
     }
   }
   return (
@@ -50,36 +67,49 @@ export default function SignInPage() {
           Entre no Clube Ribatejo.
         </h1>
         <p className="mt-6 text-lg leading-8 text-olive-700">
-          Use o seu email para receber um link seguro de acesso.
+          Entre com o email e a palavra-passe da sua conta confirmada.
         </p>
-        {sent ? (
-          <div className="text-cream-50 mt-10 rounded-3xl bg-olive-900 p-8">
-            <h2 className="font-display text-2xl">Verifique o seu email.</h2>
-            <p className="text-cream-100/70 mt-3 text-sm">
-              Enviámos um link de acesso para {email}.
+        <p className="mt-3 text-sm text-olive-700">
+          Ainda não tem conta?{" "}
+          <Link href="/registar" className="text-wine-700 font-semibold">
+            Criar conta
+          </Link>
+        </p>
+        <form onSubmit={submit} className="bg-cream-100 mt-10 rounded-3xl p-8">
+          <label className="block text-sm font-semibold text-olive-900">
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
+              required
+            />
+          </label>
+          <label className="mt-5 block text-sm font-semibold text-olive-900">
+            Palavra-passe
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
+              required
+            />
+          </label>
+          {error ? (
+            <p role="alert" className="text-wine-700 mt-4 text-sm">
+              {error}
             </p>
-          </div>
-        ) : (
-          <form
-            onSubmit={submit}
-            className="bg-cream-100 mt-10 rounded-3xl p-8"
+          ) : null}
+          <button
+            disabled={submitting}
+            className="bg-wine-700 mt-7 min-h-11 rounded-full px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
           >
-            <label className="block text-sm font-semibold text-olive-900">
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="mt-2 w-full rounded-xl bg-white px-4 py-3 outline-none"
-                required
-              />
-            </label>
-            {error && <p className="text-wine-700 mt-4 text-sm">{error}</p>}
-            <button className="bg-wine-700 mt-7 rounded-full px-6 py-3 text-sm font-semibold text-white">
-              Enviar link de acesso
-            </button>
-          </form>
-        )}
+            {submitting ? "A entrar…" : "Entrar"}
+          </button>
+        </form>
       </section>
     </main>
   );

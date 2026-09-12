@@ -102,6 +102,34 @@ npm run build --workspace @clube-ribatejo/api
 
 O frontend possui clientes separados para browser e Server Components em `apps/web/src/lib/supabase`. Estes clientes destinam-se à sessão Supabase Auth. O acesso às regras de negócio deve passar pela API NestJS.
 
+### Registo e confirmação de email
+
+O percurso de um novo membro começa em `/registar`: nome, email e palavra-passe
+são enviados ao Supabase Auth, que cria o utilizador e envia a confirmação. O
+trigger `on_auth_user_created` cria o respetivo registo em `public.profiles`. O
+callback `/auth/callback` aceita tanto o código PKCE como `token_hash`, cria a
+sessão em cookies e redireciona para `/conta`.
+
+No painel do Supabase, confirme antes de testar:
+
+- Authentication → Providers → Email: novos registos permitidos e `Confirm
+Email` ativo.
+- Authentication → URL Configuration: `Site URL` com o domínio da web e
+  `Redirect URLs` com `http://localhost:3000/auth/callback` e o callback do
+  domínio publicado.
+- Authentication → Attack Protection: proteção contra palavras-passe expostas
+  ativa antes de produção.
+
+Se o template “Confirm signup” for personalizado para SSR, o link pode apontar
+para:
+
+```text
+{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email&next=/conta
+```
+
+O login posterior é feito em `/entrar` com email e palavra-passe. Uma conta não
+confirmada não deve obter sessão.
+
 ## Supabase na API
 
 `SupabaseService` disponibiliza duas criações explícitas de cliente:
@@ -110,6 +138,21 @@ O frontend possui clientes separados para browser e Server Components em `apps/w
 - `createAdminClient()`: utiliza `service_role` apenas para operações internas previamente autorizadas no servidor.
 
 Não utilize o cliente administrativo como cliente padrão de pedidos autenticados.
+
+## Validação de benefícios pelo parceiro
+
+Um utilizador associado a um parceiro pode abrir `/parceiros/validar`, rever um
+código manual de seis dígitos apresentado pelo membro e confirmar a utilização.
+A interface usa os endpoints autenticados
+`POST /api/partner/redemptions/preview` e
+`POST /api/partner/redemptions/confirm`. A associação ao estabelecimento e as
+regras do benefício são novamente verificadas pelas funções transacionais do
+PostgreSQL antes da confirmação.
+
+Depois da confirmação, a área `/conta` apresenta a utilização em “Economias
+por registar”. O formulário fica associado ao `redemption_id` real e desaparece
+quando a fatura e o desconto são guardados. O registo manual em `localStorage`
+só é disponibilizado quando a API de membro não está acessível.
 
 ## Base de dados
 

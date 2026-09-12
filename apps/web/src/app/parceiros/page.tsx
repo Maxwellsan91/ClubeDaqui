@@ -36,9 +36,17 @@ export default function PartnersPage() {
         >
           Clube Ribatejo
         </Link>
-        <Link href="/" className="text-wine-700 text-sm font-semibold">
-          ← Voltar à Home
-        </Link>
+        <div className="flex items-center gap-5">
+          <Link
+            href="/parceiros/validar"
+            className="text-wine-700 text-sm font-semibold"
+          >
+            Validar benefício
+          </Link>
+          <Link href="/" className="text-wine-700 text-sm font-semibold">
+            ← Voltar à Home
+          </Link>
+        </div>
       </header>
       <section className="mx-auto grid max-w-7xl gap-12 py-20 lg:grid-cols-[1fr_0.8fr] lg:py-28">
         <div>

@@ -28,7 +28,7 @@ export default function ClubPage() {
         </p>
         <div className="mt-10 flex flex-wrap gap-3">
           <Link
-            href="/entrar"
+            href="/registar"
             className="bg-wine-700 inline-flex min-h-11 items-center rounded-full px-6 py-3 text-sm font-semibold text-white"
           >
             Quero ser membro

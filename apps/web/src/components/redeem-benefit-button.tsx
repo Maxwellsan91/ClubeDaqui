@@ -70,7 +70,8 @@ export function RedeemBenefitButton({
           <p className="text-sm text-olive-700">
             Apresente o código{" "}
             <strong className="text-olive-900">{code}</strong> no
-            estabelecimento. Válido durante 5 minutos.
+            estabelecimento. Válido durante 5 minutos. Registe a economia abaixo
+            depois de o parceiro confirmar a utilização.
           </p>
           <RecordSavingsForm
             redemptionId={redemptionId}

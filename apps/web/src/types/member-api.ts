@@ -1,4 +1,8 @@
-import type { MemberSummaryData, SavingsRecord } from "./member";
+import type {
+  MemberRedemption,
+  MemberSummaryData,
+  SavingsRecord,
+} from "./member";
 
 export type MemberSummaryResponse = { data: MemberSummaryData };
 export type MemberSavingsResponse = {
@@ -8,3 +12,4 @@ export type RecordFinancialsRequest = {
   total_bill_amount: number;
   discount_amount: number;
 };
+export type MemberRedemptionsResponse = { data: MemberRedemption[] };

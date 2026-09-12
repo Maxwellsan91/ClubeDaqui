@@ -126,9 +126,17 @@ export default function ExplorePage() {
         <Link href="/" className="text-wine-700 text-sm font-semibold">
           ← Voltar à Home
         </Link>
-        <Link href="/entrar" className="text-wine-700 text-sm font-semibold">
-          Entrar
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/registar"
+            className="text-wine-700 text-sm font-semibold"
+          >
+            Criar conta
+          </Link>
+          <Link href="/entrar" className="text-wine-700 text-sm font-semibold">
+            Entrar
+          </Link>
+        </div>
       </header>
       <section className="mx-auto max-w-7xl pt-20 pb-20">
         <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">

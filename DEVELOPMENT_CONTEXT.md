@@ -109,8 +109,12 @@ reivindicado antes de ser apresentado como parceiro.
 - [x] Página inicial responsiva do frontend criada.
 - [x] Health checks web e API criados.
 - [ ] Fluxo de autenticação completo.
+- [x] Interface de registo, confirmação SSR e login por palavra-passe
+      implementada; falta o teste real de entrega/confirmação de email.
 - [ ] Catálogo navegável de estabelecimentos ligado ao Supabase.
 - [ ] Fluxo de benefícios e resgates ligado à interface.
+- [x] Validação transacional de códigos por utilizadores parceiros ligada à
+      interface.
 - [ ] Área de parceiro.
 - [ ] Sistema de avaliações dos clientes em produção.
 
@@ -192,16 +196,17 @@ serena memories check
 
 ## Próximas ações
 
-1. Fechar o recorte piloto de Almeirim e os primeiros estabelecimentos de cada
-   grupo: comer, dormir e lazer.
-2. Rever os 115 estabelecimentos sem correspondência OSM e os 3 possíveis
-   duplicados do inventário de restauração.
-3. Decidir o modelo de proveniência para `businesses` e
-   `business_locations`.
-4. Criar uma migration de importação apenas para estabelecimentos validados.
-5. Expor o catálogo através da API e ligá-lo à página web.
-6. Criar fichas públicas e uma chamada para ação de parceria/reivindicação.
-7. Implementar benefícios, resgates e avaliações próprias dos clientes.
+1. Confirmar no painel os URLs/definições de Auth e testar registo → email →
+   `/conta` com um endereço controlado.
+2. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
+   ativa e um utilizador parceiro de teste.
+3. Fechar o recorte piloto de Almeirim e rever as correspondências OSM e os
+   possíveis duplicados do inventário de restauração.
+4. Decidir o modelo de proveniência para `businesses` e
+   `business_locations` e criar a migration de importação validada.
+5. Evoluir a área de parceiro para gestão de benefícios e histórico de
+   utilizações.
+6. Implementar avaliações próprias dos clientes após uma utilização confirmada.
 
 ## Diário
 
@@ -343,6 +348,101 @@ serena memories check
 - `npm run check` passou; commit publicado: `7b422d0`.
 - Próximo passo: ligar o histórico financeiro da área `/conta` a dados reais de
   utilizações e validar o fluxo completo com uma adesão ativa de teste.
+
+### 2026-09-12 — Reautenticação do MCP Supabase
+
+- Renovada com sucesso a autenticação OAuth do servidor MCP `supabase`.
+- Usados explicitamente os scopes de gestão suportados pelo servidor.
+- `codex mcp list` confirmou o servidor ativo e associado ao `project_ref`
+  configurado; o comando de login terminou com código 0.
+- Nenhuma credencial, token ou URL temporária de autorização foi registada.
+
+### 2026-09-12 — Validação de benefícios pelo parceiro
+
+- Criados endpoints autenticados para pré-visualizar e confirmar códigos
+  manuais através das funções transacionais existentes no PostgreSQL.
+- Criada a rota protegida `/parceiros/validar`, com revisão dos dados antes da
+  confirmação e acesso a partir da página de parceiros.
+- O login por magic link preserva agora o destino protegido solicitado.
+- A autorização continua a ser imposta pela associação do utilizador ao
+  estabelecimento e pelas políticas/funções do Supabase; não é usado cliente
+  administrativo neste fluxo.
+- `npm run check`, build da API e build web com Webpack passaram.
+- O build web padrão continua bloqueado no sandbox pelo erro conhecido `EPERM`
+  do Turbopack ao tentar abrir uma porta.
+- Próximo passo: executar o ciclo completo com contas de teste de membro e
+  parceiro e depois expor utilizações sem registo financeiro em `/conta`.
+
+### 2026-09-12 — Economias reais pendentes na área de membro
+
+- `GET /api/me/redemptions` passou a devolver todas as utilizações confirmadas,
+  incluindo a existência ou ausência do respetivo registo financeiro.
+- `/conta` apresenta formulários associados ao `redemption_id` para utilizações
+  confirmadas que ainda não têm fatura e desconto registados.
+- Uma resposta válida e vazia da API substitui agora dados antigos do fallback
+  local; o formulário livre em `localStorage` só aparece quando a API está
+  indisponível.
+- Depois de guardar uma economia real, a utilização sai da lista pendente e o
+  histórico e totais são atualizados imediatamente.
+- `npm run check`, build da API e build web com Webpack passaram.
+- O teste funcional completo continua dependente de contas de teste com adesão
+  ativa e associação de parceiro válidas no Supabase.
+- Próximo passo: preparar essas contas e validar o ciclo completo no ambiente de
+  desenvolvimento antes do deployment.
+
+### 2026-09-12 — Registo e confirmação de novos membros
+
+- Criada a rota `/registar` com nome completo, email, palavra-passe, validação de
+  confirmação e estado de espera pela confirmação do email.
+- O callback de autenticação aceita código PKCE e `token_hash`, grava a sessão em
+  cookies e redireciona de forma segura para `/conta`.
+- Criada uma página própria para links de confirmação inválidos ou expirados.
+- `/entrar` passou a autenticar apenas contas existentes com email e
+  palavra-passe; deixou de poder criar utilizadores implicitamente.
+- A API devolve o nome de `public.profiles`, usado na saudação da área de membro.
+- CTAs do Clube, catálogo e rodapé encaminham novos utilizadores para o registo.
+- O MCP confirmou que a migration inicial e o trigger remoto
+  `on_auth_user_created` estão aplicados.
+- O advisor de segurança indicou que a proteção contra palavras-passe expostas
+  está desativada; deve ser ativada no painel antes de produção.
+- `npm run check`, build da API e build web com Webpack passaram.
+- Falta confirmar os Redirect URLs, manter `Confirm Email` ativo e executar o
+  teste real com um endereço de email controlado.
+
+### 2026-09-12 — Auditoria da configuração de autenticação
+
+- O endpoint público do Supabase Auth confirmou que novos registos estão
+  permitidos, o provider de email está ativo e a confirmação de email é
+  obrigatória (`mailer_autoconfirm` desativado).
+- O MCP confirmou anteriormente a migration inicial e o trigger remoto de
+  criação de perfis.
+- Os Redirect URLs e o Site URL não são expostos pelo endpoint público nem pelas
+  ferramentas MCP disponíveis e continuam a exigir confirmação no painel.
+- Não existem ficheiros locais `apps/web/.env.local`, `apps/web/.env` ou
+  `apps/api/.env`, e as variáveis necessárias também não estão presentes no
+  processo atual; o fluxo não pode ser testado localmente neste estado.
+- Detetada inconsistência em `apps/web/.env.example`: `NEXT_PUBLIC_API_URL`
+  termina em `/api`, mas os consumidores já acrescentam `/api` aos caminhos,
+  podendo gerar URLs com `/api/api`.
+- A proteção contra palavras-passe expostas continua desativada segundo o
+  advisor de segurança do Supabase.
+- Próximo passo: confirmar Site URL/Redirect URLs no painel, corrigir o exemplo
+  da URL da API e criar os ambientes locais sem guardar segredos no repositório.
+
+### 2026-09-12 — Preparação dos ambientes locais
+
+- Corrigido `NEXT_PUBLIC_API_URL` no exemplo da web para não duplicar o prefixo
+  `/api` gerado pelos consumidores.
+- Criados `apps/web/.env.local` e `apps/api/.env` com o URL e a chave pública do
+  projeto confirmados pelo MCP; ambos estão abrangidos pelo `.gitignore`.
+- `SUPABASE_SERVICE_ROLE_KEY` ficou vazia por decisão de segurança e porque não é
+  necessária no fluxo de registo/login.
+- `npm run check` passou com a configuração preparada.
+- O arranque em modo watch foi bloqueado pelo `EPERM` do sandbox ao criar o
+  socket interno do `tsx`; o ambiente atual usa ainda Node `22.12.0`, abaixo do
+  mínimo `22.13.0` indicado pelo projeto.
+- Continuam pendentes a confirmação dos Redirect URLs no painel e o teste real
+  do email de registo.
 
 ### Modelo para entradas futuras
 

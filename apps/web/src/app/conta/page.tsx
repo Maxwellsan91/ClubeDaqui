@@ -14,7 +14,11 @@ import { RecordSavingsForm } from "@/components/record-savings-form";
 import { SavingsByCategory } from "@/components/savings-by-category";
 import { SavingsHistory } from "@/components/savings-history";
 import { SavingsOverview } from "@/components/savings-overview";
-import type { MemberSummaryData, SavingsRecord } from "@/types/member";
+import type {
+  MemberRedemption,
+  MemberSummaryData,
+  SavingsRecord,
+} from "@/types/member";
 
 const places: BusinessCardData[] = [
   {
@@ -76,6 +80,12 @@ export default function AccountPage() {
   const [serverSummary, setServerSummary] = useState<MemberSummaryData | null>(
     null,
   );
+  const [unrecordedRedemptions, setUnrecordedRedemptions] = useState<
+    MemberRedemption[]
+  >([]);
+  const [apiStatus, setApiStatus] = useState<
+    "loading" | "connected" | "fallback"
+  >("loading");
 
   useEffect(() => {
     const client = createClient();
@@ -85,27 +95,43 @@ export default function AccountPage() {
     client.auth.getSession().then(async ({ data }) => {
       const token = data.session?.access_token;
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!token || !apiUrl) return;
+      if (!token || !apiUrl) {
+        setApiStatus("fallback");
+        return;
+      }
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        const [summaryResponse, savingsResponse] = await Promise.all([
-          fetch(`${apiUrl}/api/me/summary`, { headers }),
-          fetch(`${apiUrl}/api/me/savings`, { headers }),
-        ]);
-        if (summaryResponse.ok) {
-          const payload = (await summaryResponse.json()) as {
-            data?: MemberSummaryData;
-          };
-          if (payload.data) setServerSummary(payload.data);
+        const [summaryResponse, savingsResponse, redemptionsResponse] =
+          await Promise.all([
+            fetch(`${apiUrl}/api/me/summary`, { headers }),
+            fetch(`${apiUrl}/api/me/savings`, { headers }),
+            fetch(`${apiUrl}/api/me/redemptions`, { headers }),
+          ]);
+        if (
+          !summaryResponse.ok ||
+          !savingsResponse.ok ||
+          !redemptionsResponse.ok
+        ) {
+          throw new Error("Member API unavailable");
         }
-        if (savingsResponse.ok) {
-          const payload = (await savingsResponse.json()) as {
-            data?: { records?: SavingsRecord[] };
-          };
-          if (payload.data?.records?.length) setRecords(payload.data.records);
-        }
+        const summaryPayload = (await summaryResponse.json()) as {
+          data?: MemberSummaryData;
+        };
+        const savingsPayload = (await savingsResponse.json()) as {
+          data?: { records?: SavingsRecord[] };
+        };
+        const redemptionsPayload = (await redemptionsResponse.json()) as {
+          data?: MemberRedemption[];
+        };
+        if (summaryPayload.data) setServerSummary(summaryPayload.data);
+        setRecords(savingsPayload.data?.records ?? []);
+        setUnrecordedRedemptions(
+          (redemptionsPayload.data ?? []).filter((item) => !item.financial),
+        );
+        setApiStatus("connected");
       } catch {
         // Mantém o fallback local da demo se a API estiver indisponível.
+        setApiStatus("fallback");
       }
     });
   }, []);
@@ -119,10 +145,18 @@ export default function AccountPage() {
       ),
     [query],
   );
-  const saveRecord = (record: SavingsRecord) => {
-    const next = [record, ...records];
-    setRecords(next);
-    localStorage.setItem(storageKey, JSON.stringify(next));
+  const saveDemoRecord = (record: SavingsRecord) => {
+    setRecords((current) => {
+      const next = [record, ...current];
+      localStorage.setItem(storageKey, JSON.stringify(next));
+      return next;
+    });
+  };
+  const saveServerRecord = (record: SavingsRecord) => {
+    setRecords((current) => [record, ...current]);
+    setUnrecordedRedemptions((current) =>
+      current.filter((item) => item.id !== record.redemptionId),
+    );
   };
   async function signOut() {
     await createClient().auth.signOut();
@@ -160,7 +194,11 @@ export default function AccountPage() {
         <div className="mt-5 flex flex-wrap items-end justify-between gap-5">
           <div>
             <h1 className="font-display text-5xl tracking-tight text-olive-900">
-              Olá, {email?.split("@")[0] ?? "membro"}.
+              Olá,{" "}
+              {serverSummary?.fullName?.split(" ")[0] ??
+                email?.split("@")[0] ??
+                "membro"}
+              .
             </h1>
             <p className="mt-4 text-lg leading-7 text-olive-700">
               Descubra o próximo lugar e acompanhe quanto já poupou com o Clube.
@@ -188,9 +226,63 @@ export default function AccountPage() {
         <div className="mt-6">
           <SavingsByCategory records={records} />
         </div>
-        <div className="mt-12">
-          <RecordSavingsForm onSaved={saveRecord} />
-        </div>
+        {apiStatus === "loading" ? (
+          <p className="mt-12 text-sm text-olive-700">
+            A carregar as suas utilizações…
+          </p>
+        ) : null}
+        {apiStatus === "connected" ? (
+          <section className="mt-12">
+            <p className="text-wine-700 text-xs font-semibold tracking-[0.2em] uppercase">
+              Depois da visita
+            </p>
+            <h2 className="font-display mt-2 text-3xl text-olive-900">
+              Economias por registar
+            </h2>
+            {unrecordedRedemptions.length ? (
+              <div className="mt-6 space-y-6">
+                {unrecordedRedemptions.map((redemption) => (
+                  <div key={redemption.id}>
+                    <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2 px-1">
+                      <p className="font-semibold text-olive-900">
+                        {redemption.businessName} · {redemption.benefitTitle}
+                      </p>
+                      <p className="text-xs text-olive-600">
+                        Confirmado em{" "}
+                        {new Intl.DateTimeFormat("pt-PT", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        }).format(new Date(redemption.redeemedAt))}
+                      </p>
+                    </div>
+                    <RecordSavingsForm
+                      redemptionId={redemption.id}
+                      businessName={redemption.businessName}
+                      businessSlug={redemption.businessSlug}
+                      defaultCategory={redemption.category}
+                      onSaved={saveServerRecord}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-6">
+                <EmptyState
+                  title="Tudo atualizado"
+                  description="Não existem utilizações confirmadas à espera do valor poupado."
+                />
+              </div>
+            )}
+          </section>
+        ) : null}
+        {apiStatus === "fallback" ? (
+          <div className="mt-12">
+            <p className="mb-4 text-sm text-olive-700">
+              Modo de demonstração local: a API de membro não está disponível.
+            </p>
+            <RecordSavingsForm onSaved={saveDemoRecord} />
+          </div>
+        ) : null}
         <div className="mt-12">
           <SavingsHistory records={records} />
         </div>

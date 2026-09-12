@@ -13,6 +13,7 @@ export const translations = {
     membersArea: "Área de membros",
     join: "Fazer parte",
     signIn: "Entrar",
+    signUp: "Criar conta",
     footerDescription:
       "Descubra lugares, experiências e benefícios que aproximam o Ribatejo.",
     localContent: "Conteúdo local. Experiências reais.",
@@ -51,6 +52,7 @@ export const translations = {
     membersArea: "Members area",
     join: "Join us",
     signIn: "Sign in",
+    signUp: "Create account",
     footerDescription:
       "Discover places, experiences and benefits that bring Ribatejo closer.",
     localContent: "Local content. Real experiences.",

@@ -29,6 +29,11 @@ export class MembersController {
   @Get("summary")
   async summary(@Req() request: AuthenticatedRequest) {
     const client = this.supabase.createUserClient(request.accessToken);
+    const { data: profile } = await client
+      .from("profiles")
+      .select("full_name")
+      .eq("id", request.user.id)
+      .maybeSingle();
     const { data: membership } = await client
       .from("memberships")
       .select("id,status,ends_at")
@@ -49,6 +54,7 @@ export class MembersController {
       .eq("is_active", true);
     return {
       data: {
+        fullName: profile?.full_name ?? null,
         subscriptionStatus: membership?.status ?? "inactive",
         validUntil: membership?.ends_at ?? null,
         usedBenefits: usedBenefits ?? 0,
@@ -76,7 +82,7 @@ export class MembersController {
 
   @Get("redemptions")
   async redemptions(@Req() request: AuthenticatedRequest) {
-    return { data: await this.getRecords(request) };
+    return { data: await this.getRedemptions(request) };
   }
 
   @Post("redemptions/:id/financials")
@@ -153,11 +159,34 @@ export class MembersController {
   }
 
   private async getRecords(request: AuthenticatedRequest) {
+    const redemptions = await this.getRedemptions(request);
+    return redemptions.flatMap((item) =>
+      item.financial
+        ? [
+            {
+              id: item.id,
+              redemptionId: item.id,
+              businessName: item.businessName,
+              businessSlug: item.businessSlug,
+              category: item.category,
+              redeemedAt: item.financial.recordedAt ?? item.redeemedAt,
+              totalBillAmount: item.financial.totalBillAmount,
+              discountAmount: item.financial.discountAmount,
+            },
+          ]
+        : [],
+    );
+  }
+
+  private async getRedemptions(request: AuthenticatedRequest) {
     const client = this.supabase.createUserClient(request.accessToken);
-    const { data: memberships } = await client
+    const { data: memberships, error: membershipsError } = await client
       .from("memberships")
       .select("id")
       .eq("profile_id", request.user.id);
+    if (membershipsError) {
+      throw new BadRequestException("Não foi possível carregar as adesões");
+    }
     const ids = (memberships ?? []).map((item) => item.id);
     if (!ids.length) return [];
     const { data: redemptions, error } = await client
@@ -166,21 +195,25 @@ export class MembersController {
       .in("membership_id", ids)
       .eq("status", "redeemed")
       .order("redeemed_at", { ascending: false });
-    if (error) return [];
+    if (error) {
+      throw new BadRequestException("Não foi possível carregar as utilizações");
+    }
     const redemptionIds = (redemptions ?? []).map((item) => item.id);
     if (!redemptionIds.length) return [];
-    const { data: financials } = await client
+    const { data: financials, error: financialsError } = await client
       .from("redemption_financials")
       .select(
         "redemption_id,total_bill_amount,discount_amount,savings_recorded_at",
       )
       .in("redemption_id", redemptionIds);
+    if (financialsError) {
+      throw new BadRequestException("Não foi possível carregar as economias");
+    }
     const byRedemption = new Map(
       (financials ?? []).map((item) => [item.redemption_id, item]),
     );
-    return (redemptions ?? []).flatMap((item) => {
+    return (redemptions ?? []).map((item) => {
       const financial = byRedemption.get(item.id);
-      if (!financial) return [];
       const benefit = Array.isArray(item.benefits)
         ? item.benefits[0]
         : item.benefits;
@@ -189,17 +222,21 @@ export class MembersController {
         (Array.isArray(benefit.businesses)
           ? benefit.businesses[0]
           : benefit.businesses);
-      return [
-        {
-          id: item.id,
-          businessName: business?.name ?? "Estabelecimento",
-          businessSlug: business?.slug ?? "explorar",
-          category: "Gastronomia",
-          redeemedAt: financial.savings_recorded_at ?? item.redeemed_at,
-          totalBillAmount: Number(financial.total_bill_amount),
-          discountAmount: Number(financial.discount_amount),
-        },
-      ];
+      return {
+        id: item.id,
+        benefitTitle: benefit?.title ?? "Benefício do Clube",
+        businessName: business?.name ?? "Estabelecimento",
+        businessSlug: business?.slug ?? "explorar",
+        category: "Gastronomia" as const,
+        redeemedAt: item.redeemed_at,
+        financial: financial
+          ? {
+              totalBillAmount: Number(financial.total_bill_amount),
+              discountAmount: Number(financial.discount_amount),
+              recordedAt: financial.savings_recorded_at,
+            }
+          : null,
+      };
     });
   }
 }
