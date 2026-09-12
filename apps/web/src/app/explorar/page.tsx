@@ -7,6 +7,7 @@ import {
   type BusinessCardData,
 } from "@/components/business-card";
 import { EmptyState } from "@/components/empty-state";
+import { AppHeader } from "@/components/app-header";
 
 const places: BusinessCardData[] = [
   {
@@ -68,10 +69,11 @@ export default function ExplorePage() {
   const [remotePlaces, setRemotePlaces] = useState<BusinessCardData[]>(places);
   const [loading, setLoading] = useState(Boolean(apiUrl));
   const [error, setError] = useState(false);
+
   useEffect(() => {
     if (!apiUrl) return;
     fetch(`${apiUrl}/api/businesses`)
-      .then((response) => (response.ok ? response.json() : null))
+      .then((r) => (r.ok ? r.json() : null))
       .then((payload) => {
         if (payload?.data) {
           setRemotePlaces(
@@ -89,7 +91,7 @@ export default function ExplorePage() {
                 kind: item.kind,
                 city: item.city,
                 image:
-                  places.find((place) => place.name === item.name)?.image ??
+                  places.find((p) => p.name === item.name)?.image ??
                   "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
               }),
             ),
@@ -99,82 +101,114 @@ export default function ExplorePage() {
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
+
   const visible = useMemo(
     () =>
-      remotePlaces.filter((place) => {
-        const matchesFilter = filter === "Todos" || place.category === filter;
+      remotePlaces.filter((p) => {
+        const matchesFilter = filter === "Todos" || p.category === filter;
         return (
           matchesFilter &&
-          `${place.name} ${place.kind} ${place.city}`
+          `${p.name} ${p.kind} ${p.city}`
             .toLowerCase()
             .includes(query.toLowerCase())
         );
       }),
     [filter, query, remotePlaces],
   );
+
   const displayed = visible.slice(0, visibleCount);
 
   return (
-    <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
-      <header className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link
-          href="/"
-          className="font-display text-xl font-semibold tracking-tight text-olive-900"
-        >
-          Clube Ribatejo
-        </Link>
-        <Link href="/" className="text-wine-700 text-sm font-semibold">
-          ← Voltar à Home
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/registar"
-            className="text-wine-700 text-sm font-semibold"
-          >
-            Criar conta
-          </Link>
-          <Link href="/entrar" className="text-wine-700 text-sm font-semibold">
-            Entrar
-          </Link>
+    <main className="min-h-screen">
+      <AppHeader
+        rightSlot={
+          <nav className="flex items-center gap-4">
+            <Link
+              href="/registar"
+              className="text-sm font-medium text-olive-700 transition-colors hover:text-olive-900"
+            >
+              Criar conta
+            </Link>
+            <Link
+              href="/entrar"
+              className="bg-wine-700 hover:bg-wine-800 rounded-full px-5 py-2 text-sm font-semibold text-white transition-colors"
+            >
+              Entrar
+            </Link>
+          </nav>
+        }
+      />
+
+      <section className="mx-auto max-w-7xl px-5 pt-8 pb-16 sm:px-8">
+        {/* Page title */}
+        <div className="mb-7">
+          <p className="text-wine-700 text-[11px] font-semibold tracking-[0.28em] uppercase">
+            Guia piloto · Almeirim
+          </p>
+          <h1 className="font-display mt-3 text-[2.2rem] leading-tight tracking-tight text-olive-900 sm:text-5xl">
+            Encontre o seu próximo lugar.
+          </h1>
         </div>
-      </header>
-      <section className="mx-auto max-w-7xl pt-20 pb-20">
-        <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
-          Guia piloto · Almeirim
-        </p>
-        <h1 className="font-display mt-5 text-5xl tracking-tight text-olive-900 sm:text-7xl">
-          Encontre o seu próximo lugar.
-        </h1>
-        <div className="mt-10 flex max-w-2xl items-center rounded-full border border-olive-900/15 bg-white p-2 shadow-sm">
-          <span className="px-4 text-olive-700">⌕</span>
+
+        {/* Search */}
+        <div className="flex items-center rounded-2xl border border-olive-900/12 bg-white shadow-sm">
+          <span className="pl-4 text-lg text-olive-600 select-none">⌕</span>
           <input
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            className="min-w-0 flex-1 bg-transparent py-3 text-sm outline-none"
-            placeholder="Pesquisar por nome, local ou categoria"
+            onChange={(e) => setQuery(e.target.value)}
+            className="min-w-0 flex-1 bg-transparent px-3 py-3.5 text-sm outline-none placeholder:text-olive-700/50"
+            placeholder="Pesquisar por nome, local ou tipo"
+            aria-label="Pesquisar lugares"
           />
+          {query && (
+            <button
+              onClick={() => setQuery("")}
+              className="pr-4 text-sm text-olive-600 transition-colors hover:text-olive-900"
+              aria-label="Limpar pesquisa"
+            >
+              ✕
+            </button>
+          )}
         </div>
-        <div className="mt-7 flex flex-wrap gap-2">
+
+        {/* Filter chips */}
+        <div
+          className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+          role="group"
+          aria-label="Filtrar por categoria"
+        >
           {filters.map((item) => (
             <button
               key={item}
-              onClick={() => setFilter(item)}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition ${filter === item ? "text-cream-50 bg-olive-900" : "hover:border-gold-500 border border-olive-900/15 text-olive-700"}`}
+              onClick={() => {
+                setFilter(item);
+                setVisibleCount(9);
+              }}
+              aria-pressed={filter === item}
+              className={`min-h-[40px] flex-none rounded-full px-5 py-2.5 text-sm font-semibold transition ${
+                filter === item
+                  ? "text-cream-50 bg-olive-900"
+                  : "border border-olive-900/15 text-olive-700 hover:border-olive-900/30"
+              }`}
             >
               {item}
             </button>
           ))}
         </div>
-        <p className="mt-12 text-sm text-olive-700">
+
+        {/* Count */}
+        <p className="mt-6 text-sm text-olive-600">
           {visible.length}{" "}
           {visible.length === 1 ? "lugar encontrado" : "lugares encontrados"}
         </p>
+
+        {/* Grid */}
         {loading ? (
-          <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
               <div
-                key={index}
-                className="h-[430px] animate-pulse rounded-3xl bg-olive-900/10"
+                key={i}
+                className="h-[380px] animate-pulse rounded-2xl bg-olive-900/8"
               />
             ))}
           </div>
@@ -191,19 +225,22 @@ export default function ExplorePage() {
             />
           </div>
         ) : (
-          <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {displayed.map((place) => (
               <BusinessCard key={place.slug} place={place} />
             ))}
           </div>
         )}
+
         {displayed.length < visible.length && (
-          <button
-            onClick={() => setVisibleCount((count) => count + 9)}
-            className="mt-10 rounded-full border border-olive-900/20 px-6 py-3 text-sm font-semibold text-olive-900 transition hover:bg-olive-900 hover:text-white"
-          >
-            Carregar mais lugares
-          </button>
+          <div className="mt-10 text-center">
+            <button
+              onClick={() => setVisibleCount((c) => c + 9)}
+              className="min-h-[44px] rounded-full border border-olive-900/20 px-7 py-2.5 text-sm font-semibold text-olive-900 transition hover:bg-olive-900 hover:text-white"
+            >
+              Carregar mais
+            </button>
+          </div>
         )}
       </section>
     </main>

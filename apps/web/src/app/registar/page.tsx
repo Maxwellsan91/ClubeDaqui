@@ -62,128 +62,175 @@ export default function SignUpPage() {
 
       setSent(true);
     } catch {
-      setError(
-        "Não foi possível contactar o serviço de autenticação. Tente novamente.",
-      );
+      setError("Não foi possível contactar o serviço. Tente novamente.");
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
-      <header className="mx-auto flex max-w-7xl items-center justify-between">
+    <main className="bg-cream-50 flex min-h-screen flex-col">
+      {/* Header */}
+      <header className="flex items-center justify-between px-5 py-4 sm:px-8">
         <Link
           href="/"
-          className="font-display text-xl font-semibold text-olive-900"
+          className="font-display text-[1.2rem] font-semibold tracking-tight text-olive-900"
         >
           Clube Ribatejo
         </Link>
-        <Link href="/entrar" className="text-wine-700 text-sm font-semibold">
+        <Link
+          href="/entrar"
+          className="text-wine-700 hover:text-wine-800 text-sm font-semibold transition-colors"
+        >
           Já tenho conta
         </Link>
       </header>
 
-      <section className="mx-auto max-w-xl py-16 sm:py-24">
-        <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
-          Adesão ao Clube
-        </p>
-        <h1 className="font-display mt-5 text-5xl tracking-tight text-olive-900 sm:text-6xl">
-          Crie a sua conta.
-        </h1>
-        <p className="mt-6 text-lg leading-8 text-olive-700">
-          Confirme o seu email para entrar na área de membro e acompanhar os
-          seus benefícios.
-        </p>
-
-        {sent ? (
-          <div className="text-cream-50 mt-10 rounded-3xl bg-olive-900 p-8">
-            <p className="text-gold-500 text-xs font-semibold tracking-[0.2em] uppercase">
-              Falta um passo
-            </p>
-            <h2 className="font-display mt-4 text-3xl">
-              Confirme o seu email.
-            </h2>
-            <p className="text-cream-100/75 mt-4 text-sm leading-6">
-              Enviámos uma mensagem para <strong>{email}</strong>. Abra o link
-              no mesmo dispositivo para confirmar a conta e entrar na sua área
-              de membro.
-            </p>
-            <p className="text-cream-100/55 mt-4 text-xs leading-5">
-              Se não encontrar a mensagem, verifique a pasta de spam. Por
-              segurança, não indicamos se este email já estava registado.
-            </p>
-          </div>
-        ) : (
-          <form
-            onSubmit={submit}
-            className="bg-cream-100 mt-10 rounded-3xl border border-olive-900/10 p-8"
-          >
-            <label className="block text-sm font-semibold text-olive-900">
-              Nome completo
-              <input
-                name="fullName"
-                autoComplete="name"
-                minLength={2}
-                maxLength={120}
-                className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
-                required
-              />
-            </label>
-            <label className="mt-5 block text-sm font-semibold text-olive-900">
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                autoComplete="email"
-                className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
-                required
-              />
-            </label>
-            <label className="mt-5 block text-sm font-semibold text-olive-900">
-              Palavra-passe
-              <input
-                name="password"
-                type="password"
-                minLength={8}
-                autoComplete="new-password"
-                className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
-                required
-              />
-              <span className="mt-2 block text-xs font-normal text-olive-600">
-                Utilize pelo menos 8 caracteres.
-              </span>
-            </label>
-            <label className="mt-5 block text-sm font-semibold text-olive-900">
-              Confirmar palavra-passe
-              <input
-                name="passwordConfirmation"
-                type="password"
-                minLength={8}
-                autoComplete="new-password"
-                className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
-                required
-              />
-            </label>
-            {error ? (
-              <p role="alert" className="text-wine-700 mt-5 text-sm">
-                {error}
+      <div className="flex flex-1 items-start justify-center px-5 pt-8 pb-10 sm:px-8 sm:pt-14">
+        <div className="w-full max-w-md">
+          {sent ? (
+            /* Confirmation state */
+            <div className="text-cream-50 rounded-2xl bg-olive-900 p-7 sm:p-10">
+              <p className="text-gold-500 text-[11px] font-semibold tracking-[0.25em] uppercase">
+                Falta um passo
               </p>
-            ) : null}
-            <button
-              disabled={submitting}
-              className="bg-wine-700 mt-7 min-h-11 rounded-full px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
-            >
-              {submitting ? "A criar conta…" : "Criar conta"}
-            </button>
-            <p className="mt-5 text-xs leading-5 text-olive-600">
-              Ao criar a conta, aceita receber o email necessário para confirmar
-              o endereço e aceder ao Clube.
-            </p>
-          </form>
-        )}
-      </section>
+              <h2 className="font-display mt-4 text-[1.9rem] leading-tight">
+                Confirme o seu email.
+              </h2>
+              <p className="text-cream-100/75 mt-4 text-sm leading-6">
+                Enviámos uma mensagem para{" "}
+                <strong className="text-cream-50">{email}</strong>. Abra o link
+                para confirmar a conta e aceder à sua área de membro.
+              </p>
+              <p className="text-cream-100/45 mt-4 text-xs leading-5">
+                Não encontra o email? Verifique a pasta de spam. Por segurança,
+                não indicamos se este endereço já estava registado.
+              </p>
+            </div>
+          ) : (
+            <>
+              <p className="text-wine-700 text-[11px] font-semibold tracking-[0.28em] uppercase">
+                Adesão ao Clube
+              </p>
+              <h1 className="font-display mt-3 text-[2.4rem] leading-tight tracking-tight text-olive-900 sm:text-5xl">
+                Crie a sua conta.
+              </h1>
+              <p className="mt-3 text-sm leading-6 text-olive-700">
+                Já tem conta?{" "}
+                <Link
+                  href="/entrar"
+                  className="text-wine-700 hover:decoration-wine-700 font-semibold underline decoration-transparent underline-offset-4 transition-all"
+                >
+                  Entrar
+                </Link>
+              </p>
+
+              <form
+                onSubmit={submit}
+                className="bg-cream-100 mt-7 space-y-5 rounded-2xl p-6 sm:p-8"
+              >
+                <div>
+                  <label
+                    htmlFor="fullName"
+                    className="block text-sm font-semibold text-olive-900"
+                  >
+                    Nome completo
+                  </label>
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    autoComplete="name"
+                    minLength={2}
+                    maxLength={120}
+                    className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
+                    placeholder="Ana Silva"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-semibold text-olive-900"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
+                    placeholder="a.sua@email.pt"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-semibold text-olive-900"
+                  >
+                    Palavra-passe
+                  </label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    minLength={8}
+                    autoComplete="new-password"
+                    className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
+                    placeholder="Mín. 8 caracteres"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="passwordConfirmation"
+                    className="block text-sm font-semibold text-olive-900"
+                  >
+                    Confirmar palavra-passe
+                  </label>
+                  <input
+                    id="passwordConfirmation"
+                    name="passwordConfirmation"
+                    type="password"
+                    minLength={8}
+                    autoComplete="new-password"
+                    className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
+                    placeholder="Repita a palavra-passe"
+                    required
+                  />
+                </div>
+
+                {error && (
+                  <p
+                    role="alert"
+                    className="bg-wine-700/8 text-wine-700 rounded-xl px-4 py-3 text-sm"
+                  >
+                    {error}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="bg-wine-700 hover:bg-wine-800 block min-h-[48px] w-full rounded-full px-6 py-3 text-sm font-semibold text-white transition disabled:opacity-60"
+                >
+                  {submitting ? "A criar conta…" : "Criar conta"}
+                </button>
+
+                <p className="text-xs leading-5 text-olive-600">
+                  Ao criar a conta, aceita receber o email de confirmação
+                  necessário para aceder ao Clube.
+                </p>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
     </main>
   );
 }

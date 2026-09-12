@@ -25,14 +25,11 @@ export default function SignInPage() {
           ? requestedPath
           : "/conta";
       const { error: authError } = await createClient().auth.signInWithPassword(
-        {
-          email: email.trim(),
-          password,
-        },
+        { email: email.trim(), password },
       );
       if (authError) {
         setError(
-          "Email ou palavra-passe incorretos. Confirme também se já validou o seu email.",
+          "Email ou palavra-passe incorretos. Confirme se já validou o seu email.",
         );
         setSubmitting(false);
         return;
@@ -40,77 +37,111 @@ export default function SignInPage() {
       router.refresh();
       router.replace(next);
     } catch {
-      setError(
-        "Não foi possível contactar o serviço de autenticação. Tente novamente.",
-      );
+      setError("Não foi possível contactar o serviço. Tente novamente.");
       setSubmitting(false);
     }
   }
+
   return (
-    <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
-      <header className="mx-auto flex max-w-7xl justify-between">
+    <main className="bg-cream-50 flex min-h-screen flex-col">
+      {/* Header */}
+      <header className="flex items-center justify-between px-5 py-4 sm:px-8">
         <Link
           href="/"
-          className="font-display text-xl font-semibold text-olive-900"
+          className="font-display text-[1.2rem] font-semibold tracking-tight text-olive-900"
         >
           Clube Ribatejo
         </Link>
-        <Link href="/explorar" className="text-wine-700 text-sm font-semibold">
-          ← Explorar
+        <Link
+          href="/registar"
+          className="text-wine-700 hover:text-wine-800 text-sm font-semibold transition-colors"
+        >
+          Criar conta
         </Link>
       </header>
-      <section className="mx-auto max-w-lg py-24">
-        <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
-          Área de membros
-        </p>
-        <h1 className="font-display mt-5 text-5xl tracking-tight text-olive-900">
-          Entre no Clube Ribatejo.
-        </h1>
-        <p className="mt-6 text-lg leading-8 text-olive-700">
-          Entre com o email e a palavra-passe da sua conta confirmada.
-        </p>
-        <p className="mt-3 text-sm text-olive-700">
-          Ainda não tem conta?{" "}
-          <Link href="/registar" className="text-wine-700 font-semibold">
-            Criar conta
-          </Link>
-        </p>
-        <form onSubmit={submit} className="bg-cream-100 mt-10 rounded-3xl p-8">
-          <label className="block text-sm font-semibold text-olive-900">
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
-              required
-            />
-          </label>
-          <label className="mt-5 block text-sm font-semibold text-olive-900">
-            Palavra-passe
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              autoComplete="current-password"
-              className="mt-2 min-h-11 w-full rounded-xl bg-white px-4 outline-none"
-              required
-            />
-          </label>
-          {error ? (
-            <p role="alert" className="text-wine-700 mt-4 text-sm">
-              {error}
-            </p>
-          ) : null}
-          <button
-            disabled={submitting}
-            className="bg-wine-700 mt-7 min-h-11 rounded-full px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
+
+      {/* Form area */}
+      <div className="flex flex-1 items-start justify-center px-5 pt-8 pb-10 sm:px-8 sm:pt-16">
+        <div className="w-full max-w-md">
+          <p className="text-wine-700 text-[11px] font-semibold tracking-[0.28em] uppercase">
+            Área de membros
+          </p>
+          <h1 className="font-display mt-3 text-[2.4rem] leading-tight tracking-tight text-olive-900 sm:text-5xl">
+            Entre no Clube.
+          </h1>
+          <p className="mt-3 text-sm leading-6 text-olive-700">
+            Ainda não tem conta?{" "}
+            <Link
+              href="/registar"
+              className="text-wine-700 hover:decoration-wine-700 font-semibold underline decoration-transparent underline-offset-4 transition-all"
+            >
+              Crie uma gratuitamente.
+            </Link>
+          </p>
+
+          <form
+            onSubmit={submit}
+            className="bg-cream-100 mt-8 space-y-5 rounded-2xl p-6 sm:p-8"
           >
-            {submitting ? "A entrar…" : "Entrar"}
-          </button>
-        </form>
-      </section>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-olive-900"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
+                placeholder="o.seu@email.pt"
+                required
+              />
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-semibold text-olive-900"
+                >
+                  Palavra-passe
+                </label>
+              </div>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            {error && (
+              <p
+                role="alert"
+                className="bg-wine-700/8 text-wine-700 rounded-xl px-4 py-3 text-sm"
+              >
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="bg-wine-700 hover:bg-wine-800 block min-h-[48px] w-full rounded-full px-6 py-3 text-sm font-semibold text-white transition disabled:opacity-60"
+            >
+              {submitting ? "A entrar…" : "Entrar"}
+            </button>
+          </form>
+        </div>
+      </div>
     </main>
   );
 }

@@ -3,20 +3,28 @@
 @theme {
   --color-cream-50: #fdfbf6;
   --color-cream-100: #f6f0e4;
+  --color-olive-600: #5a6e5c;
   --color-olive-700: #425044;
   --color-olive-900: #243029;
   --color-wine-700: #743b40;
+  --color-wine-800: #5c2e32;
   --color-gold-500: #b58b4a;
-  --font-sans: Arial, Helvetica, sans-serif;
+  /* next/font injects --font-display and --font-sans on <html>; these are fallbacks */
+  --font-sans: system-ui, Arial, sans-serif;
   --font-display: Georgia, "Times New Roman", serif;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
   background: var(--color-cream-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
 }
 
 html.dark {
@@ -51,9 +59,34 @@ body {
   color: var(--color-olive-900);
   background: var(--color-cream-50);
   font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Reserve space for fixed mobile nav on small screens */
+@media (max-width: 639px) {
+  body {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
 }
 
 ::selection {
   color: white;
   background: var(--color-wine-700);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-wine-700);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Prevent iOS input font-size zoom (requires >= 16px) */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="search"],
+textarea,
+select {
+  font-size: 16px;
 }

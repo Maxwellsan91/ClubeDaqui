@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { AppHeader } from "@/components/app-header";
 import {
   BusinessCard,
   type BusinessCardData,
@@ -165,25 +166,21 @@ export default function AccountPage() {
     potentialSavings: null,
   };
 
+  const logoutButton = (
+    <form action="/auth/logout" method="POST">
+      <button
+        type="submit"
+        className="min-h-[44px] rounded-full border border-olive-900/15 px-4 py-2 text-sm font-semibold text-olive-700 transition hover:bg-olive-900/5"
+      >
+        Sair
+      </button>
+    </form>
+  );
+
   return (
-    <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
-      <header className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link
-          href="/"
-          className="font-display text-xl font-semibold tracking-tight text-olive-900"
-        >
-          Clube Ribatejo
-        </Link>
-        <form action="/auth/logout" method="POST">
-          <button
-            type="submit"
-            className="text-wine-700 min-h-11 px-2 text-sm font-semibold"
-          >
-            Sair
-          </button>
-        </form>
-      </header>
-      <section className="mx-auto max-w-7xl py-12 sm:py-16">
+    <main className="min-h-screen">
+      <AppHeader rightSlot={logoutButton} mobileRight={logoutButton} />
+      <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
         <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
           Área de membros
         </p>
