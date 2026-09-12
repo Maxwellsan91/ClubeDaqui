@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import {
   BusinessCard,
@@ -64,7 +63,6 @@ const places: BusinessCardData[] = [
 const storageKey = "clube-ribatejo-savings";
 
 export default function AccountPage() {
-  const router = useRouter();
   const [email, setEmail] = useState<string>();
   const [query, setQuery] = useState("");
   const [map, setMap] = useState(false);
@@ -158,10 +156,6 @@ export default function AccountPage() {
       current.filter((item) => item.id !== record.redemptionId),
     );
   };
-  async function signOut() {
-    await createClient().auth.signOut();
-    router.replace("/");
-  }
   const summary = serverSummary ?? {
     subscriptionStatus: "active" as const,
     validUntil: null,
@@ -180,12 +174,14 @@ export default function AccountPage() {
         >
           Clube Ribatejo
         </Link>
-        <button
-          onClick={signOut}
-          className="text-wine-700 min-h-11 px-2 text-sm font-semibold"
-        >
-          Sair
-        </button>
+        <form action="/auth/logout" method="POST">
+          <button
+            type="submit"
+            className="text-wine-700 min-h-11 px-2 text-sm font-semibold"
+          >
+            Sair
+          </button>
+        </form>
       </header>
       <section className="mx-auto max-w-7xl py-12 sm:py-16">
         <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">

@@ -198,13 +198,13 @@ serena memories check
 
 1. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
    ativa e um utilizador parceiro de teste.
-3. Fechar o recorte piloto de Almeirim e rever as correspondências OSM e os
+2. Fechar o recorte piloto de Almeirim e rever as correspondências OSM e os
    possíveis duplicados do inventário de restauração.
-4. Decidir o modelo de proveniência para `businesses` e
+3. Decidir o modelo de proveniência para `businesses` e
    `business_locations` e criar a migration de importação validada.
-5. Evoluir a área de parceiro para gestão de benefícios e histórico de
+4. Evoluir a área de parceiro para gestão de benefícios e histórico de
    utilizações.
-6. Implementar avaliações próprias dos clientes após uma utilização confirmada.
+5. Implementar avaliações próprias dos clientes após uma utilização confirmada.
 
 ## Diário
 
