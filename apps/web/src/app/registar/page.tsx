@@ -41,7 +41,7 @@ export default function SignUpPage() {
         password,
         options: {
           data: { full_name: fullName },
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent("/conta?welcome=1")}`,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
