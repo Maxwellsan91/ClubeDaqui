@@ -25,6 +25,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-size-adjust: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 html.dark {
@@ -61,6 +63,8 @@ body {
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.6;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* Reserve space for fixed mobile nav on small screens */

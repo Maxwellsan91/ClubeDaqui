@@ -54,14 +54,14 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="min-h-screen overflow-hidden">
+    <main className="min-h-screen">
       <AppHeader />
 
       {/* Hero */}
-      <section className="relative mx-auto max-w-7xl px-5 pt-12 pb-10 sm:px-8 sm:pt-20 sm:pb-16 lg:pt-28 lg:pb-24">
+      <section className="relative mx-auto max-w-7xl overflow-hidden px-5 pt-12 pb-10 sm:px-8 sm:pt-20 sm:pb-16 lg:pt-28 lg:pb-24">
         <div
           aria-hidden="true"
-          className="bg-gold-500/12 pointer-events-none absolute -top-16 -right-24 size-[500px] rounded-full blur-3xl"
+          className="bg-gold-500/12 pointer-events-none absolute -top-16 right-0 size-[500px] rounded-full blur-3xl"
         />
         <div className="relative max-w-3xl">
           <p className="text-wine-700 text-[11px] font-semibold tracking-[0.3em] uppercase">
@@ -131,7 +131,7 @@ export default function HomePage() {
         <div className="text-cream-50 relative overflow-hidden rounded-2xl bg-olive-900 p-7 sm:rounded-3xl sm:p-12">
           <div
             aria-hidden="true"
-            className="bg-gold-500/20 absolute -top-20 -right-20 size-60 rounded-full blur-3xl"
+            className="bg-gold-500/20 absolute -top-20 right-0 size-60 rounded-full blur-3xl"
           />
           <p className="text-gold-500 relative text-[11px] font-semibold tracking-[0.25em] uppercase">
             O Clube Ribatejo
