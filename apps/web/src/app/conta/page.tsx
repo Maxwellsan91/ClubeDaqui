@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
@@ -70,7 +70,7 @@ const storageKey = "clube-ribatejo-savings";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export default function AccountPage() {
+function AccountPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [firstName, setFirstName] = useState<string>();
@@ -594,5 +594,13 @@ export default function AccountPage() {
         )}
       </section>
     </main>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense>
+      <AccountPageInner />
+    </Suspense>
   );
 }
