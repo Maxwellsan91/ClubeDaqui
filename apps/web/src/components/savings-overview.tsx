@@ -89,7 +89,7 @@ export function SavingsOverview({
       </p>
 
       {/* Progress bar with tooltip */}
-      <div className="relative mt-6 pb-1">
+      <div className="relative mt-10 pb-1">
         <div
           className="absolute -top-8 flex -translate-x-1/2 items-center gap-1"
           style={{ left: `${tooltipLeft}%` }}
