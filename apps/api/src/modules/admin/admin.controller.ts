@@ -546,12 +546,26 @@ export class AdminController {
 
   @Get("influencers")
   async influencers() {
-    const { data, error } = await this.db
-      .from("influencers")
-      .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
-      .order("created_at", { ascending: false });
+    const [{ data, error }, { data: redemptionRows }, { data: financialRows }] =
+      await Promise.all([
+        this.db
+          .from("influencers")
+          .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+          .order("created_at", { ascending: false }),
+        this.db
+          .from("redemptions")
+          .select("id,influencer_code")
+          .eq("status", "CONFIRMED")
+          .not("influencer_code", "is", null),
+        this.db
+          .from("redemption_financials")
+          .select("redemption_id,discount_amount"),
+      ]);
+
     if (error) return { data: [], total: 0 };
 
+    type RedemptionRow = { id: string; influencer_code: string };
+    type FinancialRow = { redemption_id: string; discount_amount: number };
     type InfluencerRow = {
       id: string;
       name: string;
@@ -563,16 +577,41 @@ export class AdminController {
       created_at: string;
     };
 
-    const presented = ((data ?? []) as unknown as InfluencerRow[]).map((i) => ({
-      id: i.id,
-      name: i.name,
-      email: i.email,
-      uniqueCode: i.unique_code,
-      commissionRate: Number(i.commission_rate),
-      isActive: i.is_active,
-      notes: i.notes,
-      createdAt: i.created_at,
-    }));
+    // Map redemption_id → discount_amount
+    const finMap = new Map<string, number>();
+    for (const f of (financialRows ?? []) as FinancialRow[]) {
+      finMap.set(f.redemption_id, f.discount_amount ?? 0);
+    }
+
+    // Map influencer_code → { count, economy }
+    const statsMap = new Map<string, { count: number; economy: number }>();
+    for (const r of (redemptionRows ?? []) as RedemptionRow[]) {
+      const code = r.influencer_code;
+      const prev = statsMap.get(code) ?? { count: 0, economy: 0 };
+      statsMap.set(code, {
+        count: prev.count + 1,
+        economy: prev.economy + (finMap.get(r.id) ?? 0),
+      });
+    }
+
+    const presented = ((data ?? []) as unknown as InfluencerRow[]).map((i) => {
+      const stats = statsMap.get(i.unique_code) ?? { count: 0, economy: 0 };
+      const commissionDue =
+        Math.round(stats.economy * Number(i.commission_rate)) / 100;
+      return {
+        id: i.id,
+        name: i.name,
+        email: i.email,
+        uniqueCode: i.unique_code,
+        commissionRate: Number(i.commission_rate),
+        isActive: i.is_active,
+        notes: i.notes,
+        createdAt: i.created_at,
+        redemptionsCount: stats.count,
+        totalEconomy: Math.round(stats.economy * 100) / 100,
+        commissionDue,
+      };
+    });
 
     return { data: presented, total: presented.length };
   }

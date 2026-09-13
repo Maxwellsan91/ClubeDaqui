@@ -12,6 +12,9 @@ type Influencer = {
   isActive: boolean;
   notes: string | null;
   createdAt: string;
+  redemptionsCount: number;
+  totalEconomy: number;
+  commissionDue: number;
 };
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -162,6 +165,8 @@ export default function AdminInfluencers() {
   }
 
   const active = influencers.filter((i) => i.isActive).length;
+  const totalRedemptions = influencers.reduce((s, i) => s + i.redemptionsCount, 0);
+  const totalCommission = influencers.reduce((s, i) => s + i.commissionDue, 0);
 
   return (
     <div>
@@ -185,11 +190,12 @@ export default function AdminInfluencers() {
       </div>
 
       {/* Summary cards */}
-      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
           { label: "Total", value: influencers.length },
           { label: "Ativos", value: active },
-          { label: "Inativos", value: influencers.length - active },
+          { label: "Resgates", value: totalRedemptions },
+          { label: "Comissões devidas", value: `${totalCommission.toFixed(2)} €` },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl bg-white p-5 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">
@@ -323,6 +329,8 @@ export default function AdminInfluencers() {
                   <th className="px-4 py-3.5">Email</th>
                   <th className="px-4 py-3.5">Código</th>
                   <th className="px-4 py-3.5 text-center">Comissão</th>
+                  <th className="px-4 py-3.5 text-center">Resgates</th>
+                  <th className="px-4 py-3.5 text-right">Comissão devida</th>
                   <th className="px-4 py-3.5">Estado</th>
                   <th className="px-4 py-3.5" />
                 </tr>
@@ -344,6 +352,14 @@ export default function AdminInfluencers() {
                     </td>
                     <td className="px-4 py-4 text-center font-semibold text-olive-900">
                       {inf.commissionRate}%
+                    </td>
+                    <td className="px-4 py-4 text-center text-olive-600">
+                      {inf.redemptionsCount}
+                    </td>
+                    <td className="px-4 py-4 text-right font-semibold text-olive-900">
+                      {inf.commissionDue > 0
+                        ? `${inf.commissionDue.toFixed(2)} €`
+                        : "—"}
                     </td>
                     <td className="px-4 py-4">
                       <button
