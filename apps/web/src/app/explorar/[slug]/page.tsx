@@ -30,6 +30,20 @@ function initials(name: string): string {
 }
 
 const DAYS_PT = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+const DAYS_FULL = [
+  "Segunda",
+  "Terça",
+  "Quarta",
+  "Quinta",
+  "Sexta",
+  "Sábado",
+  "Domingo",
+];
+
+type DayHours = {
+  day: number; // 0=Seg … 6=Dom
+  time: string; // e.g. "11:30–16:00" | "Fechado"
+};
 
 type BusinessDetail = {
   name: string;
@@ -40,6 +54,10 @@ type BusinessDetail = {
   image: string;
   businessLocationId?: string;
   coordinates?: [number, number];
+  instagram?: string;
+  phone?: string;
+  whatsapp?: string;
+  website?: string;
 };
 
 type Benefit = {
@@ -49,7 +67,8 @@ type Benefit = {
   terms: string;
   rules?: string[];
   validDays?: number[];
-  hours?: { label: string; time: string }[];
+  schedule?: DayHours[]; // replaces old hours[]
+  hours?: { label: string; time: string }[]; // legacy compat
 };
 
 const details: Record<string, BusinessDetail> = {
@@ -140,22 +159,31 @@ export default async function BusinessPage({
           };
         };
         if (payload.data) {
+          const d = payload.data as typeof payload.data & {
+            instagram?: string;
+            phone?: string;
+            whatsapp?: string;
+            website?: string;
+          };
           business = {
-            name: payload.data.name,
-            kind: payload.data.kind ?? payload.data.category ?? "Local",
-            city: payload.data.city,
-            address: payload.data.address,
+            name: d.name,
+            kind: d.kind ?? d.category ?? "Local",
+            city: d.city,
+            address: d.address,
             description:
-              payload.data.description ??
-              "Uma descoberta do nosso roteiro local.",
+              d.description ?? "Uma descoberta do nosso roteiro local.",
             image:
-              payload.data.image ??
+              d.image ??
               "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=85",
-            businessLocationId: payload.data.businessLocationId,
+            businessLocationId: d.businessLocationId,
             coordinates:
-              payload.data.latitude && payload.data.longitude
-                ? [payload.data.latitude, payload.data.longitude]
+              d.latitude && d.longitude
+                ? [d.latitude, d.longitude]
                 : undefined,
+            instagram: d.instagram,
+            phone: d.phone,
+            whatsapp: d.whatsapp,
+            website: d.website,
           };
           const benefitsRes = await fetch(
             `${apiUrl}/api/businesses/${(payload.data as { id?: string }).id}/benefits`,
@@ -218,11 +246,18 @@ export default async function BusinessPage({
           .filter(Boolean)
       : []);
 
+  // Build schedule: prefer benefit.schedule, fall back to legacy benefit.hours
+  const schedule: DayHours[] =
+    benefit?.schedule ??
+    (benefit?.hours
+      ? benefit.hours.map((h, i) => ({ day: i, time: h.time }))
+      : []);
+
+  // Set of open day indices for the chip grid
+  const openDays = new Set(schedule.map((s) => s.day));
+
   // Valid days from benefit (0=Mon … 6=Sun), or empty
   const validDays: number[] = benefit?.validDays ?? [];
-
-  // Operating hours from benefit or empty
-  const hours: { label: string; time: string }[] = benefit?.hours ?? [];
 
   return (
     <main className="min-h-screen pb-24 lg:pb-0">
@@ -329,57 +364,75 @@ export default async function BusinessPage({
               </section>
             )}
 
-            {/* Valid days */}
-            {validDays.length > 0 && (
+            {/* Operating hours + valid days combined — shows when either exists */}
+            {(schedule.length > 0 || validDays.length > 0) && (
               <section>
                 <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
-                  Disponibilidade
+                  O que precisa saber
                 </p>
-                <h2 className="font-display mt-2 text-xl text-olive-900">
-                  Dias em que pode usar o benefício
+                <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                  Horários de funcionamento
                 </h2>
-                <div className="mt-4 flex gap-2">
-                  {DAYS_PT.map((day, idx) => {
-                    const active = validDays.includes(idx);
+
+                {/* Day chips grid — open=green dot, closed=gray */}
+                <div className="mt-5 flex gap-2">
+                  {DAYS_PT.map((abbr, idx) => {
+                    const isOpen = openDays.has(idx);
+                    const isBenefitDay =
+                      validDays.length === 0 || validDays.includes(idx);
                     return (
                       <div
-                        key={day}
-                        className={`flex h-10 w-10 flex-col items-center justify-center rounded-xl text-[11px] font-semibold ${
-                          active
-                            ? "bg-olive-900 text-white"
-                            : "bg-olive-900/8 text-olive-400"
+                        key={abbr}
+                        className={`flex flex-1 flex-col items-center gap-1.5 rounded-xl py-2 text-[11px] font-semibold ${
+                          isOpen
+                            ? "bg-olive-900/8 text-olive-900"
+                            : "bg-olive-900/4 text-olive-400"
                         }`}
                       >
-                        {day}
+                        <span
+                          className={`h-2 w-2 rounded-full ${
+                            isOpen && isBenefitDay
+                              ? "bg-olive-700"
+                              : isOpen
+                                ? "bg-gold-500"
+                                : "bg-olive-900/15"
+                          }`}
+                        />
+                        {abbr}
                       </div>
                     );
                   })}
                 </div>
-              </section>
-            )}
 
-            {/* Operating hours */}
-            {hours.length > 0 && (
-              <section>
-                <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
-                  Horários
-                </p>
-                <h2 className="font-display mt-2 text-xl text-olive-900">
-                  Funcionamento
-                </h2>
-                <div className="bg-cream-100 mt-4 divide-y divide-olive-900/8 overflow-hidden rounded-2xl border border-olive-900/10">
-                  {hours.map((h) => (
-                    <div
-                      key={h.label}
-                      className="flex items-center justify-between px-4 py-3"
-                    >
-                      <p className="text-sm font-medium text-olive-900">
-                        {h.label}
-                      </p>
-                      <p className="text-sm text-olive-600">{h.time}</p>
-                    </div>
-                  ))}
-                </div>
+                {/* Time table */}
+                {schedule.length > 0 && (
+                  <div className="bg-cream-100 mt-3 divide-y divide-olive-900/8 overflow-hidden rounded-2xl border border-olive-900/10">
+                    {DAYS_FULL.map((fullDay, idx) => {
+                      const entry = schedule.find((s) => s.day === idx);
+                      if (!entry) return null;
+                      return (
+                        <div
+                          key={fullDay}
+                          className="flex items-center justify-between px-4 py-3"
+                        >
+                          <p className="text-sm font-medium text-olive-900">
+                            {fullDay}
+                          </p>
+                          <p className="text-sm text-olive-600">{entry.time}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Benefit valid days note */}
+                {validDays.length > 0 && (
+                  <p className="mt-3 flex items-start gap-2 text-xs leading-5 text-olive-600">
+                    <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-olive-700" />
+                    Benefício disponível:{" "}
+                    {validDays.map((d) => DAYS_FULL[d]).join(", ")}
+                  </p>
+                )}
               </section>
             )}
 
@@ -430,6 +483,194 @@ export default async function BusinessPage({
                 ))}
               </ol>
             </section>
+
+            {/* Mais informações */}
+            {(business.instagram ||
+              business.phone ||
+              business.whatsapp ||
+              business.website) && (
+              <section>
+                <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+                  Contacto
+                </p>
+                <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                  Mais informações
+                </h2>
+                <div className="bg-cream-100 mt-4 divide-y divide-olive-900/8 overflow-hidden rounded-2xl border border-olive-900/10">
+                  {business.instagram && (
+                    <a
+                      href={`https://instagram.com/${business.instagram.replace(/^@/, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-olive-900/5"
+                    >
+                      {/* Instagram icon */}
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="shrink-0 text-olive-700"
+                        aria-hidden="true"
+                      >
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                      </svg>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] text-olive-500">Instagram</p>
+                        <p className="truncate text-sm font-medium text-olive-900">
+                          @{business.instagram.replace(/^@/, "")}
+                        </p>
+                      </div>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="shrink-0 text-olive-900/30"
+                        aria-hidden="true"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </a>
+                  )}
+                  {business.phone && (
+                    <a
+                      href={`tel:${business.phone.replace(/\s/g, "")}`}
+                      className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-olive-900/5"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="shrink-0 text-olive-700"
+                        aria-hidden="true"
+                      >
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.57a16 16 0 0 0 6.52 6.52l.93-.93a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] text-olive-500">Telefone</p>
+                        <p className="truncate text-sm font-medium text-olive-900">
+                          {business.phone}
+                        </p>
+                      </div>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="shrink-0 text-olive-900/30"
+                        aria-hidden="true"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </a>
+                  )}
+                  {business.whatsapp && (
+                    <a
+                      href={`https://wa.me/${business.whatsapp.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-olive-900/5"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="shrink-0 text-olive-700"
+                        aria-hidden="true"
+                      >
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                      </svg>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] text-olive-500">WhatsApp</p>
+                        <p className="truncate text-sm font-medium text-olive-900">
+                          {business.whatsapp}
+                        </p>
+                      </div>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="shrink-0 text-olive-900/30"
+                        aria-hidden="true"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </a>
+                  )}
+                  {business.website && (
+                    <a
+                      href={business.website}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-olive-900/5"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="shrink-0 text-olive-700"
+                        aria-hidden="true"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                      </svg>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] text-olive-500">Website</p>
+                        <p className="truncate text-sm font-medium text-olive-900">
+                          {business.website.replace(/^https?:\/\//, "")}
+                        </p>
+                      </div>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="shrink-0 text-olive-900/30"
+                        aria-hidden="true"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </section>
+            )}
 
             {/* Map */}
             {business.coordinates && (
@@ -500,21 +741,96 @@ export default async function BusinessPage({
             )}
 
             {/* Hours — desktop sidebar */}
-            {hours.length > 0 && (
+            {schedule.length > 0 && (
               <div className="bg-cream-100 rounded-2xl border border-olive-900/10 p-5">
                 <p className="text-[11px] font-bold tracking-[0.22em] text-olive-600 uppercase">
                   Horários
                 </p>
-                <div className="mt-3 divide-y divide-olive-900/8">
-                  {hours.map((h) => (
+                {/* Day chip row */}
+                <div className="mt-3 flex gap-1">
+                  {DAYS_PT.map((abbr, idx) => (
                     <div
-                      key={h.label}
-                      className="flex justify-between py-2 text-sm"
+                      key={abbr}
+                      className={`flex flex-1 flex-col items-center gap-1 rounded-lg py-1.5 text-[10px] font-semibold ${
+                        openDays.has(idx)
+                          ? "bg-olive-900/8 text-olive-900"
+                          : "bg-olive-900/4 text-olive-400"
+                      }`}
                     >
-                      <span className="text-olive-700">{h.label}</span>
-                      <span className="font-medium text-olive-900">{h.time}</span>
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${openDays.has(idx) ? "bg-olive-700" : "bg-olive-900/15"}`}
+                      />
+                      {abbr}
                     </div>
                   ))}
+                </div>
+                <div className="mt-2 divide-y divide-olive-900/8">
+                  {DAYS_FULL.map((fullDay, idx) => {
+                    const entry = schedule.find((s) => s.day === idx);
+                    if (!entry) return null;
+                    return (
+                      <div
+                        key={fullDay}
+                        className="flex justify-between py-2 text-sm"
+                      >
+                        <span className="text-olive-700">{fullDay}</span>
+                        <span className="font-medium text-olive-900">
+                          {entry.time}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Mais informações — desktop sidebar */}
+            {(business.instagram ||
+              business.phone ||
+              business.whatsapp ||
+              business.website) && (
+              <div className="bg-cream-100 overflow-hidden rounded-2xl border border-olive-900/10">
+                <p className="px-5 pt-5 pb-2 text-[11px] font-bold tracking-[0.22em] text-olive-600 uppercase">
+                  Mais informações
+                </p>
+                <div className="divide-y divide-olive-900/8">
+                  {business.instagram && (
+                    <a
+                      href={`https://instagram.com/${business.instagram.replace(/^@/, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-3 px-5 py-3 text-sm transition hover:bg-olive-900/5"
+                    >
+                      <span className="text-olive-700">Instagram</span>
+                      <span className="ml-auto truncate font-medium text-olive-900">
+                        @{business.instagram.replace(/^@/, "")}
+                      </span>
+                    </a>
+                  )}
+                  {business.phone && (
+                    <a
+                      href={`tel:${business.phone.replace(/\s/g, "")}`}
+                      className="flex items-center gap-3 px-5 py-3 text-sm transition hover:bg-olive-900/5"
+                    >
+                      <span className="text-olive-700">Telefone</span>
+                      <span className="ml-auto font-medium text-olive-900">
+                        {business.phone}
+                      </span>
+                    </a>
+                  )}
+                  {business.whatsapp && (
+                    <a
+                      href={`https://wa.me/${business.whatsapp.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-3 px-5 py-3 text-sm transition hover:bg-olive-900/5"
+                    >
+                      <span className="text-olive-700">WhatsApp</span>
+                      <span className="ml-auto font-medium text-olive-900">
+                        {business.whatsapp}
+                      </span>
+                    </a>
+                  )}
                 </div>
               </div>
             )}
