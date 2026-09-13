@@ -86,6 +86,23 @@ export default function AccountPage() {
   const [apiStatus, setApiStatus] = useState<
     "loading" | "connected" | "fallback"
   >("loading");
+  const [influencerData, setInfluencerData] = useState<{
+    uniqueCode: string;
+    commissionRate: number;
+    totalReferrals: number;
+    totalValidated: number;
+    totalPending: number;
+    totalValidatedCommission: number;
+    totalPendingCommission: number;
+    monthly: {
+      month: string;
+      pending: number;
+      validated: number;
+      cancelled: number;
+      validatedCommission: number;
+      pendingCommission: number;
+    }[];
+  } | null>(null);
 
   useEffect(() => {
     const client = createClient();
@@ -141,11 +158,12 @@ export default function AccountPage() {
             headers,
           });
         }
-        const [summaryResponse, savingsResponse, redemptionsResponse] =
+        const [summaryResponse, savingsResponse, redemptionsResponse, influencerResponse] =
           await Promise.all([
             fetch(`${apiUrl}/api/me/summary`, { headers }),
             fetch(`${apiUrl}/api/me/savings`, { headers }),
             fetch(`${apiUrl}/api/me/redemptions`, { headers }),
+            fetch(`${apiUrl}/api/me/influencer`, { headers }),
           ]);
         if (
           !summaryResponse.ok ||
@@ -153,6 +171,12 @@ export default function AccountPage() {
           !redemptionsResponse.ok
         ) {
           throw new Error("Member API unavailable");
+        }
+        if (influencerResponse.ok) {
+          const infPayload = (await influencerResponse.json()) as {
+            data?: typeof influencerData;
+          };
+          if (infPayload.data) setInfluencerData(infPayload.data);
         }
         const summaryPayload = (await summaryResponse.json()) as {
           data?: MemberSummaryData;
@@ -412,6 +436,162 @@ export default function AccountPage() {
             </div>
           )}
         </div>
+
+        {/* ── Área de influencer ─────────────────────────────────────── */}
+        {influencerData && (
+          <div className="mt-14">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="text-wine-700 text-xs font-semibold tracking-[0.2em] uppercase">
+                  Programa de referências
+                </p>
+                <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                  O seu dashboard de influencer
+                </h2>
+              </div>
+              <div className="flex items-center gap-2 rounded-xl border border-olive-900/12 bg-white px-4 py-2.5 shadow-sm">
+                <span className="text-xs text-olive-500">Código</span>
+                <span className="font-mono text-sm font-bold text-olive-900">
+                  {influencerData.uniqueCode}
+                </span>
+                <button
+                  onClick={() =>
+                    void navigator.clipboard.writeText(influencerData.uniqueCode)
+                  }
+                  title="Copiar código"
+                  className="ml-1 rounded p-0.5 text-olive-400 hover:text-olive-700 transition-colors"
+                >
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Resumo */}
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                {
+                  label: "Total de referências",
+                  value: influencerData.totalReferrals,
+                  suffix: "",
+                },
+                {
+                  label: "Em carência",
+                  value: influencerData.totalPending,
+                  suffix: "",
+                  sub: `${influencerData.totalPendingCommission.toFixed(2)} € pendente`,
+                },
+                {
+                  label: "Validadas",
+                  value: influencerData.totalValidated,
+                  suffix: "",
+                },
+                {
+                  label: "Comissão a receber",
+                  value: influencerData.totalValidatedCommission.toFixed(2),
+                  suffix: " €",
+                  highlight: true,
+                },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className={`rounded-2xl p-5 ${s.highlight ? "bg-olive-900 text-white" : "bg-white shadow-sm"}`}
+                >
+                  <p className={`text-xs font-semibold tracking-wide uppercase ${s.highlight ? "text-cream-50/60" : "text-olive-400"}`}>
+                    {s.label}
+                  </p>
+                  <p className={`mt-1 text-2xl font-bold ${s.highlight ? "text-gold-500" : "text-olive-900"}`}>
+                    {s.value}{s.suffix}
+                  </p>
+                  {s.sub && (
+                    <p className="mt-0.5 text-[11px] text-olive-400">{s.sub}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Tabela mensal */}
+            {influencerData.monthly.length > 0 && (
+              <div className="mt-6 overflow-hidden rounded-2xl bg-white shadow-sm">
+                <div className="border-b border-cream-100 px-5 py-4">
+                  <p className="text-sm font-semibold text-olive-900">
+                    Comissão mês a mês
+                  </p>
+                  <p className="mt-0.5 text-xs text-olive-500">
+                    Comissão de {influencerData.commissionRate}% por adesão validada · carência de 15 dias
+                  </p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[480px] text-sm">
+                    <thead>
+                      <tr className="border-b border-cream-100 text-left text-xs font-semibold uppercase tracking-wide text-olive-400">
+                        <th className="px-5 py-3">Mês</th>
+                        <th className="px-4 py-3 text-center">Novas</th>
+                        <th className="px-4 py-3 text-center">Validadas</th>
+                        <th className="px-4 py-3 text-center">Canceladas</th>
+                        <th className="px-4 py-3 text-right">Comissão validada</th>
+                        <th className="px-4 py-3 text-right">Em carência</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-cream-100">
+                      {influencerData.monthly.map((m) => {
+                        const [year, month] = m.month.split("-");
+                        const label = new Date(
+                          Number(year),
+                          Number(month) - 1,
+                          1,
+                        ).toLocaleDateString("pt-PT", {
+                          month: "long",
+                          year: "numeric",
+                        });
+                        const total = m.pending + m.validated + m.cancelled;
+                        return (
+                          <tr key={m.month} className="hover:bg-cream-50/50">
+                            <td className="px-5 py-3.5 font-medium capitalize text-olive-900">
+                              {label}
+                            </td>
+                            <td className="px-4 py-3.5 text-center text-olive-600">
+                              {total}
+                            </td>
+                            <td className="px-4 py-3.5 text-center font-semibold text-olive-900">
+                              {m.validated > 0 ? m.validated : "—"}
+                            </td>
+                            <td className="px-4 py-3.5 text-center text-wine-700/70">
+                              {m.cancelled > 0 ? m.cancelled : "—"}
+                            </td>
+                            <td className="px-4 py-3.5 text-right font-semibold text-olive-900">
+                              {m.validatedCommission > 0
+                                ? `${m.validatedCommission.toFixed(2)} €`
+                                : "—"}
+                            </td>
+                            <td className="px-4 py-3.5 text-right text-olive-400">
+                              {m.pendingCommission > 0
+                                ? `${m.pendingCommission.toFixed(2)} €`
+                                : "—"}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {influencerData.totalReferrals === 0 && (
+              <div className="mt-6 rounded-2xl border border-dashed border-olive-900/15 p-8 text-center">
+                <p className="font-display text-xl text-olive-900">
+                  Ainda sem referências
+                </p>
+                <p className="mt-2 text-sm leading-6 text-olive-600">
+                  Partilhe o seu código <span className="font-mono font-semibold">{influencerData.uniqueCode}</span> para começar a ganhar comissões.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </section>
     </main>
   );
