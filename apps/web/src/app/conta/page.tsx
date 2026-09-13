@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
 import type { BusinessCardData } from "@/components/business-card";
-import { MemberSummary } from "@/components/member-summary";
 import { RecordSavingsForm } from "@/components/record-savings-form";
 import { SavingsByCategory } from "@/components/savings-by-category";
 import { SavingsHistory } from "@/components/savings-history";
@@ -232,16 +231,8 @@ export default function AccountPage() {
           </section>
         ) : null}
 
-        {/* Card verde do Clube */}
-        <div className="mt-10">
-          <MemberSummary
-            summary={summary}
-            totalSavings={records.reduce((s, r) => s + r.discountAmount, 0)}
-          />
-        </div>
-
         {/* Gráfico de economias */}
-        <div className="mt-5">
+        <div className="mt-10">
           <SavingsOverview records={records} summary={summary} />
         </div>
         <div className="mt-6">

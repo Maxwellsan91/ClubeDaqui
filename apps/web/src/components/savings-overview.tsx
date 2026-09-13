@@ -35,14 +35,14 @@ export function SavingsOverview({
   const active = summary?.subscriptionStatus === "active";
 
   return (
-    <section className="bg-cream-100 rounded-3xl border border-olive-900/10 p-5 sm:p-7">
+    <section className="text-cream-50 rounded-3xl bg-olive-900 p-5 sm:p-7">
       {/* Header row */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-olive-900">
+          <p className="text-gold-500 text-xs font-semibold tracking-[0.2em] uppercase">
             Santarém e região
           </p>
-          <p className="mt-0.5 flex items-center gap-1.5 text-xs text-olive-600">
+          <p className="text-cream-100/60 mt-0.5 flex items-center gap-1.5 text-xs">
             <svg
               width="12"
               height="12"
@@ -66,14 +66,14 @@ export function SavingsOverview({
           <span
             className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
               active
-                ? "bg-olive-700/10 text-olive-700"
-                : "bg-olive-900/8 text-olive-600"
+                ? "bg-cream-50/10 text-cream-50"
+                : "bg-cream-50/10 text-cream-100/60"
             }`}
           >
             {active ? "Clube ativo" : "Clube inativo"}
           </span>
           {summary?.validUntil && (
-            <span className="text-[10px] text-olive-600">
+            <span className="text-cream-100/50 text-[10px]">
               válido até {summary.validUntil}
             </span>
           )}
@@ -81,9 +81,9 @@ export function SavingsOverview({
       </div>
 
       {/* Total poupado */}
-      <p className="font-display mt-4 text-3xl tracking-tight text-olive-900">
+      <p className="font-display mt-4 text-3xl tracking-tight text-white">
         {euro.format(total)}
-        <span className="ml-2 text-base font-normal text-olive-600">
+        <span className="text-cream-100/60 ml-2 text-base font-normal">
           poupados
         </span>
       </p>
@@ -95,19 +95,19 @@ export function SavingsOverview({
           style={{ left: `${tooltipLeft}%` }}
           aria-hidden="true"
         >
-          <span className="rounded-full bg-olive-900 px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
+          <span className="bg-cream-50 rounded-full px-2.5 py-1 text-[11px] font-bold text-olive-900 shadow-sm">
             {euro.format(total)}
           </span>
           {avgTotal > total + 1 && (
-            <span className="bg-gold-500 rounded-full px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
+            <span className="bg-gold-500 rounded-full px-2.5 py-1 text-[11px] font-bold text-olive-900 shadow-sm">
               {euro.format(avgTotal)}
             </span>
           )}
         </div>
 
-        <div className="relative h-3.5 overflow-hidden rounded-full bg-olive-900/10">
+        <div className="relative h-3.5 overflow-hidden rounded-full bg-white/15">
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-olive-700 transition-all duration-700"
+            className="bg-cream-50 absolute inset-y-0 left-0 rounded-full transition-all duration-700"
             style={{ width: `${totalPct}%` }}
           />
           {avgPct > totalPct + 1 && (
@@ -121,15 +121,15 @@ export function SavingsOverview({
           )}
         </div>
 
-        <p className="mt-1 text-right text-[11px] text-olive-600">
+        <p className="text-cream-100/50 mt-1 text-right text-[11px]">
           potencial +{euro.format(potential)}
         </p>
       </div>
 
       {/* Legend */}
-      <div className="mt-3 flex flex-wrap gap-4 text-xs text-olive-600">
+      <div className="text-cream-100/60 mt-3 flex flex-wrap gap-4 text-xs">
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2 w-2 rounded-full bg-olive-700" />
+          <span className="bg-cream-50 inline-block h-2 w-2 rounded-full" />
           Sua economia
         </span>
         <span className="flex items-center gap-1.5">
@@ -137,7 +137,7 @@ export function SavingsOverview({
           Média
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2 w-2 rounded-full bg-olive-900/20" />
+          <span className="inline-block h-2 w-2 rounded-full bg-white/20" />
           Potencial
         </span>
       </div>
