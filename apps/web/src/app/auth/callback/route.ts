@@ -13,13 +13,22 @@ export async function GET(request: Request) {
     next?.startsWith("/") && !next.startsWith("//") ? next : "/conta";
 
   const supabase = await createClient();
+
+  function destination(resolvedType: string | null) {
+    return resolvedType === "recovery"
+      ? "/conta/atualizar-senha"
+      : safeNext;
+  }
+
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(
       code,
       flowId ? { flowId } : undefined,
     );
     if (!error)
-      return NextResponse.redirect(new URL(safeNext, requestUrl.origin));
+      return NextResponse.redirect(
+        new URL(destination(type), requestUrl.origin),
+      );
   }
 
   if (tokenHash && type) {
@@ -28,7 +37,9 @@ export async function GET(request: Request) {
       type: type as EmailOtpType,
     });
     if (!error)
-      return NextResponse.redirect(new URL(safeNext, requestUrl.origin));
+      return NextResponse.redirect(
+        new URL(destination(type), requestUrl.origin),
+      );
   }
 
   return NextResponse.redirect(new URL("/auth/erro", requestUrl.origin));
