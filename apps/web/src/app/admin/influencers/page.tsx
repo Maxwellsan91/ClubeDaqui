@@ -437,12 +437,20 @@ export default function AdminInfluencers() {
                       </button>
                     </td>
                     <td className="px-4 py-4 text-right">
-                      <button
-                        onClick={() => openEdit(inf)}
-                        className="rounded-lg bg-olive-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-olive-900/90 transition-colors"
-                      >
-                        Editar
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <a
+                          href={`/admin/influencers/${inf.id}`}
+                          className="rounded-lg border border-olive-900/15 px-3 py-1.5 text-xs font-semibold text-olive-700 hover:bg-cream-50 transition-colors"
+                        >
+                          Ver detalhe
+                        </a>
+                        <button
+                          onClick={() => openEdit(inf)}
+                          className="rounded-lg bg-olive-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-olive-900/90 transition-colors"
+                        >
+                          Editar
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

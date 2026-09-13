@@ -776,6 +776,119 @@ export class AdminController {
     return { data: presented, total: presented.length };
   }
 
+  @Get("influencers/:id")
+  async influencerDetail(@Param("id") id: string) {
+    const { data: influencer } = await this.db
+      .from("influencers")
+      .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+      .eq("id", id)
+      .maybeSingle();
+    if (!influencer) return { error: "Não encontrado" };
+
+    type InfRow = {
+      id: string; name: string; email: string; unique_code: string;
+      commission_rate: number; is_active: boolean; notes: string | null; created_at: string;
+    };
+    type RefRow = {
+      id: string; member_id: string; status: string;
+      created_at: string; validates_at: string; cancelled_at: string | null;
+      profiles: { full_name: string | null } | null;
+    };
+
+    const inf = influencer as unknown as InfRow;
+    const rate = Number(inf.commission_rate);
+    const PRICE = MEMBERSHIP_PRICE_EUR;
+
+    const { data: referrals } = await this.db
+      .from("referrals")
+      .select("id,member_id,status,created_at,validates_at,cancelled_at,profiles(full_name)")
+      .eq("influencer_code", inf.unique_code)
+      .order("created_at", { ascending: false });
+
+    const now = new Date().toISOString();
+
+    const processed = ((referrals ?? []) as unknown as RefRow[]).map((r) => {
+      const effectiveStatus =
+        r.status === "CANCELLED"
+          ? "CANCELLED"
+          : r.validates_at <= now
+            ? "VALIDATED"
+            : "PENDING";
+      return {
+        id: r.id,
+        memberId: r.member_id,
+        memberName: r.profiles?.full_name ?? "—",
+        status: effectiveStatus,
+        createdAt: r.created_at,
+        validatesAt: r.validates_at,
+        cancelledAt: r.cancelled_at,
+        commission: effectiveStatus === "VALIDATED" ? Math.round(PRICE * rate) / 100 : 0,
+        pendingCommission: effectiveStatus === "PENDING" ? Math.round(PRICE * rate) / 100 : 0,
+      };
+    });
+
+    // Monthly breakdown grouped by validates_at month
+    const monthMap = new Map<string, { pending: number; validated: number; cancelled: number }>();
+    for (const r of processed) {
+      const d = new Date(r.validatesAt);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const prev = monthMap.get(key) ?? { pending: 0, validated: 0, cancelled: 0 };
+      if (r.status === "CANCELLED") monthMap.set(key, { ...prev, cancelled: prev.cancelled + 1 });
+      else if (r.status === "VALIDATED") monthMap.set(key, { ...prev, validated: prev.validated + 1 });
+      else monthMap.set(key, { ...prev, pending: prev.pending + 1 });
+    }
+
+    const monthly = Array.from(monthMap.entries())
+      .sort(([a], [b]) => b.localeCompare(a))
+      .map(([month, s]) => ({
+        month,
+        pending: s.pending,
+        validated: s.validated,
+        cancelled: s.cancelled,
+        validatedCommission: Math.round(s.validated * PRICE * rate) / 100,
+        pendingCommission: Math.round(s.pending * PRICE * rate) / 100,
+      }));
+
+    const totals = {
+      total: processed.length,
+      validated: processed.filter((r) => r.status === "VALIDATED").length,
+      pending: processed.filter((r) => r.status === "PENDING").length,
+      cancelled: processed.filter((r) => r.status === "CANCELLED").length,
+      validatedCommission: processed.reduce((s, r) => s + r.commission, 0),
+      pendingCommission: processed.reduce((s, r) => s + r.pendingCommission, 0),
+    };
+
+    return {
+      data: {
+        id: inf.id, name: inf.name, email: inf.email,
+        uniqueCode: inf.unique_code, commissionRate: rate,
+        isActive: inf.is_active, notes: inf.notes, createdAt: inf.created_at,
+        totals, monthly, referrals: processed,
+      },
+    };
+  }
+
+  @Patch("referrals/:id")
+  async updateReferral(
+    @Param("id") id: string,
+    @Body() body: { status?: string },
+  ) {
+    const allowed = ["PENDING", "VALIDATED", "CANCELLED"];
+    if (!body.status || !allowed.includes(body.status)) {
+      return { error: "Status inválido" };
+    }
+    const patch: Record<string, unknown> = { status: body.status };
+    if (body.status === "CANCELLED") patch.cancelled_at = new Date().toISOString();
+    const { data, error } = await this.db
+      .from("referrals")
+      .update(patch)
+      .eq("id", id)
+      .select("id,status")
+      .single();
+    if (error) return { error: error.message };
+    return { data };
+  }
+
   @Post("influencers")
   async createInfluencer(
     @Body()
