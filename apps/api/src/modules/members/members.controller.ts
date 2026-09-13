@@ -142,25 +142,6 @@ export class MembersController {
       .maybeSingle();
     if (!influencer) return { data: null };
 
-    // Garantir adesão gratuita ao influencer se não tiver uma activa
-    const { data: existingMembership } = await admin
-      .from("memberships")
-      .select("id")
-      .eq("profile_id", request.user.id)
-      .eq("status", "active")
-      .gte("ends_at", new Date().toISOString())
-      .limit(1)
-      .maybeSingle();
-    if (!existingMembership) {
-      const endsAt = new Date();
-      endsAt.setFullYear(endsAt.getFullYear() + 1);
-      await admin.from("memberships").insert({
-        profile_id: request.user.id,
-        status: "active",
-        ends_at: endsAt.toISOString(),
-      });
-    }
-
     type InfRow = {
       id: string;
       name: string;
