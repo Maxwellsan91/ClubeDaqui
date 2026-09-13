@@ -23,7 +23,7 @@ export default function SignInPage() {
     setResetSending(true);
     setError("");
     await createClient().auth.resetPasswordForEmail(trimmed, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/auth/atualizar-senha`,
+      redirectTo: `${window.location.origin}/auth/callback?next=/conta/atualizar-senha`,
     });
     setResetSent(true);
     setResetSending(false);
