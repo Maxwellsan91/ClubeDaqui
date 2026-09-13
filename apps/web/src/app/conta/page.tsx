@@ -83,6 +83,7 @@ export default function AccountPage() {
   const [apiStatus, setApiStatus] = useState<
     "loading" | "connected" | "fallback"
   >("loading");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const client = createClient();
@@ -92,6 +93,13 @@ export default function AccountPage() {
         meta?.full_name || meta?.name || data.user?.email;
       setFirstName(name?.split(/[\s@]/)[0]);
     });
+    client
+      .from("profiles")
+      .select("role")
+      .single()
+      .then(({ data }) => {
+        if (data?.role === "ADMIN") setIsAdmin(true);
+      });
     if (apiUrl) {
       fetch(`${apiUrl}/api/businesses`)
         .then((r) => (r.ok ? r.json() : null))
@@ -201,6 +209,28 @@ export default function AccountPage() {
   return (
     <main className="min-h-screen">
       <AppHeader rightSlot={logoutButton} mobileRight={logoutButton} />
+      {isAdmin && (
+        <a
+          href="/admin"
+          className="flex items-center justify-between gap-3 bg-olive-900 px-5 py-2.5 sm:px-8"
+        >
+          <div className="flex items-center gap-2.5 text-sm text-cream-50/80">
+            <span className="rounded bg-gold-500 px-1.5 py-0.5 text-[10px] font-bold text-olive-900 uppercase tracking-wide">
+              Admin
+            </span>
+            Está na área de membros — ir para o painel de administração
+          </div>
+          <svg
+            className="h-4 w-4 flex-none text-cream-50/60"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </a>
+      )}
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
         <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
           Área de membros

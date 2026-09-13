@@ -34,7 +34,13 @@ export default function UpdatePasswordPage() {
       return;
     }
     setDone(true);
-    setTimeout(() => router.replace("/conta"), 2000);
+    // Redirect admins to the admin area, regular users to /conta
+    const { data: profile } = await createClient()
+      .from("profiles")
+      .select("role")
+      .single();
+    const dest = profile?.role === "ADMIN" ? "/admin" : "/conta";
+    setTimeout(() => router.replace(dest), 1500);
   }
 
   return (
