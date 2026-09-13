@@ -1,6 +1,6 @@
 "use client";
 
-import type { SavingsRecord } from "@/types/member";
+import type { MemberSummaryData, SavingsRecord } from "@/types/member";
 
 const euro = new Intl.NumberFormat("pt-PT", {
   style: "currency",
@@ -13,11 +13,7 @@ export function SavingsOverview({
   summary,
 }: {
   records: SavingsRecord[];
-  summary?: {
-    usedBenefits: number;
-    totalBenefits: number;
-    potentialSavings?: number | null;
-  };
+  summary?: MemberSummaryData;
 }) {
   const total = records.reduce((sum, r) => sum + r.discountAmount, 0);
   const avgPerUse = records.length ? total / records.length : 0;
@@ -32,41 +28,68 @@ export function SavingsOverview({
 
   const totalPct = potential ? Math.min((total / potential) * 100, 100) : 0;
   const avgPct = potential ? Math.min((avgTotal / potential) * 100, 100) : 0;
-
-  // Clamp tooltip position so it doesn't clip at edges
   const tooltipLeft = Math.max(8, Math.min(totalPct, 88));
 
   const used = summary?.usedBenefits ?? records.length;
   const ofTotal = summary?.totalBenefits;
+  const active = summary?.subscriptionStatus === "active";
 
   return (
-    <section className="bg-cream-100 rounded-3xl border border-olive-900/10 p-6 sm:p-8">
-      {/* Header */}
-      <p className="text-base font-semibold text-olive-900">
-        Santarém &amp; Almeirim
-      </p>
-      <p className="mt-1 flex items-center gap-1.5 text-sm text-olive-600">
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-          <line x1="7" y1="7" x2="7.01" y2="7" />
-        </svg>
-        {used}
-        {ofTotal ? ` de ${ofTotal}` : ""} utilizados
+    <section className="bg-cream-100 rounded-3xl border border-olive-900/10 p-5 sm:p-7">
+      {/* Header row */}
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-olive-900">
+            Santarém e região
+          </p>
+          <p className="mt-0.5 flex items-center gap-1.5 text-xs text-olive-600">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+              <line x1="7" y1="7" x2="7.01" y2="7" />
+            </svg>
+            {used}
+            {ofTotal ? ` de ${ofTotal}` : ""} utilizados
+          </p>
+        </div>
+
+        <div className="flex flex-col items-end gap-1.5">
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+              active
+                ? "bg-olive-700/10 text-olive-700"
+                : "bg-olive-900/8 text-olive-600"
+            }`}
+          >
+            {active ? "Clube ativo" : "Clube inativo"}
+          </span>
+          {summary?.validUntil && (
+            <span className="text-[10px] text-olive-600">
+              válido até {summary.validUntil}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Total poupado */}
+      <p className="font-display mt-4 text-3xl tracking-tight text-olive-900">
+        {euro.format(total)}
+        <span className="ml-2 text-base font-normal text-olive-600">
+          poupados
+        </span>
       </p>
 
       {/* Progress bar with tooltip */}
-      <div className="relative mt-8 pb-1">
-        {/* Tooltip */}
+      <div className="relative mt-6 pb-1">
         <div
           className="absolute -top-8 flex -translate-x-1/2 items-center gap-1"
           style={{ left: `${tooltipLeft}%` }}
@@ -80,21 +103,13 @@ export function SavingsOverview({
               {euro.format(avgTotal)}
             </span>
           )}
-          {/* Arrow down */}
-          <span
-            className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-olive-900"
-            style={{ width: 0, height: 0 }}
-          />
         </div>
 
-        {/* Bar */}
-        <div className="relative h-4 overflow-hidden rounded-full bg-olive-900/10">
-          {/* Actual savings */}
+        <div className="relative h-3.5 overflow-hidden rounded-full bg-olive-900/10">
           <div
             className="absolute inset-y-0 left-0 rounded-full bg-olive-700 transition-all duration-700"
             style={{ width: `${totalPct}%` }}
           />
-          {/* Average band */}
           {avgPct > totalPct + 1 && (
             <div
               className="bg-gold-500/70 absolute inset-y-0"
@@ -106,9 +121,8 @@ export function SavingsOverview({
           )}
         </div>
 
-        {/* Right label */}
         <p className="mt-1 text-right text-[11px] text-olive-600">
-          +{euro.format(potential)}
+          potencial +{euro.format(potential)}
         </p>
       </div>
 
@@ -120,7 +134,7 @@ export function SavingsOverview({
         </span>
         <span className="flex items-center gap-1.5">
           <span className="bg-gold-500 inline-block h-2 w-2 rounded-full" />
-          Média de economia
+          Média
         </span>
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-full bg-olive-900/20" />

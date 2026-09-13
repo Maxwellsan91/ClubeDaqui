@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
 import type { BusinessCardData } from "@/components/business-card";
-import { MemberSummary } from "@/components/member-summary";
 import { RecordSavingsForm } from "@/components/record-savings-form";
 import { SavingsByCategory } from "@/components/savings-by-category";
 import { SavingsHistory } from "@/components/savings-history";
@@ -62,15 +61,7 @@ const storageKey = "clube-ribatejo-savings";
 export default function AccountPage() {
   const [firstName, setFirstName] = useState<string>();
   const [showMap, setShowMap] = useState(false);
-  const [records, setRecords] = useState<SavingsRecord[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const stored = localStorage.getItem(storageKey);
-      return stored ? (JSON.parse(stored) as SavingsRecord[]) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [records, setRecords] = useState<SavingsRecord[]>([]);
   const [serverSummary, setServerSummary] = useState<MemberSummaryData | null>(
     null,
   );
@@ -240,17 +231,8 @@ export default function AccountPage() {
           </section>
         ) : null}
 
-        {/* Resumo e histórico */}
+        {/* Gráfico de economias */}
         <div className="mt-10">
-          <MemberSummary
-            summary={summary}
-            totalSavings={records.reduce(
-              (sum, item) => sum + item.discountAmount,
-              0,
-            )}
-          />
-        </div>
-        <div className="mt-6">
           <SavingsOverview records={records} summary={summary} />
         </div>
         <div className="mt-6">
