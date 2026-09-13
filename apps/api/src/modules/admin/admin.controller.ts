@@ -546,26 +546,40 @@ export class AdminController {
 
   @Get("influencers")
   async influencers() {
-    const [{ data, error }, { data: redemptionRows }, { data: financialRows }] =
-      await Promise.all([
-        this.db
-          .from("influencers")
-          .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
-          .order("created_at", { ascending: false }),
-        this.db
-          .from("redemptions")
-          .select("id,influencer_code")
-          .eq("status", "CONFIRMED")
-          .not("influencer_code", "is", null),
-        this.db
-          .from("redemption_financials")
-          .select("redemption_id,discount_amount"),
-      ]);
+    const now = new Date().toISOString();
+    const [
+      { data, error },
+      { data: redemptionRows },
+      { data: financialRows },
+      { data: referralRows },
+    ] = await Promise.all([
+      this.db
+        .from("influencers")
+        .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+        .order("created_at", { ascending: false }),
+      this.db
+        .from("redemptions")
+        .select("id,influencer_code")
+        .eq("status", "CONFIRMED")
+        .not("influencer_code", "is", null),
+      this.db
+        .from("redemption_financials")
+        .select("redemption_id,discount_amount"),
+      this.db
+        .from("referrals")
+        .select("influencer_code,status,validates_at,cancelled_at"),
+    ]);
 
     if (error) return { data: [], total: 0 };
 
     type RedemptionRow = { id: string; influencer_code: string };
     type FinancialRow = { redemption_id: string; discount_amount: number };
+    type ReferralRow = {
+      influencer_code: string;
+      status: string;
+      validates_at: string;
+      cancelled_at: string | null;
+    };
     type InfluencerRow = {
       id: string;
       name: string;
@@ -577,39 +591,85 @@ export class AdminController {
       created_at: string;
     };
 
-    // Map redemption_id → discount_amount
+    // Redemption stats: code → { count, economy }
     const finMap = new Map<string, number>();
     for (const f of (financialRows ?? []) as FinancialRow[]) {
       finMap.set(f.redemption_id, f.discount_amount ?? 0);
     }
-
-    // Map influencer_code → { count, economy }
-    const statsMap = new Map<string, { count: number; economy: number }>();
+    const redemptionStats = new Map<string, { count: number; economy: number }>();
     for (const r of (redemptionRows ?? []) as RedemptionRow[]) {
       const code = r.influencer_code;
-      const prev = statsMap.get(code) ?? { count: 0, economy: 0 };
-      statsMap.set(code, {
+      const prev = redemptionStats.get(code) ?? { count: 0, economy: 0 };
+      redemptionStats.set(code, {
         count: prev.count + 1,
         economy: prev.economy + (finMap.get(r.id) ?? 0),
       });
     }
 
+    // Referral stats: code → { pending, validated, cancelled }
+    const referralStats = new Map<
+      string,
+      { pending: number; validated: number; cancelled: number }
+    >();
+    for (const r of (referralRows ?? []) as ReferralRow[]) {
+      const code = r.influencer_code;
+      const prev = referralStats.get(code) ?? {
+        pending: 0,
+        validated: 0,
+        cancelled: 0,
+      };
+      if (r.status === "CANCELLED") {
+        referralStats.set(code, { ...prev, cancelled: prev.cancelled + 1 });
+      } else if (r.validates_at <= now) {
+        referralStats.set(code, { ...prev, validated: prev.validated + 1 });
+      } else {
+        referralStats.set(code, { ...prev, pending: prev.pending + 1 });
+      }
+    }
+
     const presented = ((data ?? []) as unknown as InfluencerRow[]).map((i) => {
-      const stats = statsMap.get(i.unique_code) ?? { count: 0, economy: 0 };
-      const commissionDue =
-        Math.round(stats.economy * Number(i.commission_rate)) / 100;
+      const rate = Number(i.commission_rate);
+      const rd = redemptionStats.get(i.unique_code) ?? { count: 0, economy: 0 };
+      const rf = referralStats.get(i.unique_code) ?? {
+        pending: 0,
+        validated: 0,
+        cancelled: 0,
+      };
+      // Commission per validated referral = rate% × membership price (24€)
+      const validatedCommission =
+        Math.round(rf.validated * MEMBERSHIP_PRICE_EUR * rate) / 100;
+      const pendingCommission =
+        Math.round(rf.pending * MEMBERSHIP_PRICE_EUR * rate) / 100;
+      // Commission from benefit redemptions = rate% × economy generated
+      const redemptionCommission =
+        Math.round(rd.economy * rate) / 100;
+
       return {
         id: i.id,
         name: i.name,
         email: i.email,
         uniqueCode: i.unique_code,
-        commissionRate: Number(i.commission_rate),
+        commissionRate: rate,
         isActive: i.is_active,
         notes: i.notes,
         createdAt: i.created_at,
-        redemptionsCount: stats.count,
-        totalEconomy: Math.round(stats.economy * 100) / 100,
-        commissionDue,
+        // Referral (member acquisition) stats
+        referrals: {
+          pending: rf.pending,
+          validated: rf.validated,
+          cancelled: rf.cancelled,
+          total: rf.pending + rf.validated + rf.cancelled,
+          pendingCommission,
+          validatedCommission,
+        },
+        // Benefit redemption stats
+        redemptions: {
+          count: rd.count,
+          economy: Math.round(rd.economy * 100) / 100,
+          commission: redemptionCommission,
+        },
+        // Total commission due (only validated)
+        commissionDue: validatedCommission + redemptionCommission,
       };
     });
 

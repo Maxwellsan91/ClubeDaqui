@@ -12,8 +12,19 @@ type Influencer = {
   isActive: boolean;
   notes: string | null;
   createdAt: string;
-  redemptionsCount: number;
-  totalEconomy: number;
+  referrals: {
+    pending: number;
+    validated: number;
+    cancelled: number;
+    total: number;
+    pendingCommission: number;
+    validatedCommission: number;
+  };
+  redemptions: {
+    count: number;
+    economy: number;
+    commission: number;
+  };
   commissionDue: number;
 };
 
@@ -165,8 +176,9 @@ export default function AdminInfluencers() {
   }
 
   const active = influencers.filter((i) => i.isActive).length;
-  const totalRedemptions = influencers.reduce((s, i) => s + i.redemptionsCount, 0);
-  const totalCommission = influencers.reduce((s, i) => s + i.commissionDue, 0);
+  const totalReferrals = influencers.reduce((s, i) => s + i.referrals.total, 0);
+  const totalPendingComm = influencers.reduce((s, i) => s + i.referrals.pendingCommission, 0);
+  const totalValidatedComm = influencers.reduce((s, i) => s + i.commissionDue, 0);
 
   return (
     <div>
@@ -190,12 +202,13 @@ export default function AdminInfluencers() {
       </div>
 
       {/* Summary cards */}
-      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
         {[
-          { label: "Total", value: influencers.length },
+          { label: "Influencers", value: influencers.length },
           { label: "Ativos", value: active },
-          { label: "Resgates", value: totalRedemptions },
-          { label: "Comissões devidas", value: `${totalCommission.toFixed(2)} €` },
+          { label: "Referências totais", value: totalReferrals },
+          { label: "Comissão em carência", value: `${totalPendingComm.toFixed(2)} €` },
+          { label: "Comissão validada", value: `${totalValidatedComm.toFixed(2)} €` },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl bg-white p-5 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">
@@ -329,6 +342,7 @@ export default function AdminInfluencers() {
                   <th className="px-4 py-3.5">Email</th>
                   <th className="px-4 py-3.5">Código</th>
                   <th className="px-4 py-3.5 text-center">Comissão</th>
+                  <th className="px-4 py-3.5 text-center">Referências</th>
                   <th className="px-4 py-3.5 text-center">Resgates</th>
                   <th className="px-4 py-3.5 text-right">Comissão devida</th>
                   <th className="px-4 py-3.5">Estado</th>
@@ -353,13 +367,59 @@ export default function AdminInfluencers() {
                     <td className="px-4 py-4 text-center font-semibold text-olive-900">
                       {inf.commissionRate}%
                     </td>
-                    <td className="px-4 py-4 text-center text-olive-600">
-                      {inf.redemptionsCount}
+                    <td className="px-4 py-4 text-center">
+                      {inf.referrals.total === 0 ? (
+                        <span className="text-olive-400">—</span>
+                      ) : (
+                        <div className="flex flex-col items-center gap-0.5">
+                          <span className="font-semibold text-olive-900">
+                            {inf.referrals.total}
+                          </span>
+                          <div className="flex gap-1.5 text-[10px]">
+                            {inf.referrals.pending > 0 && (
+                              <span className="text-gold-600 font-medium">
+                                {inf.referrals.pending} carência
+                              </span>
+                            )}
+                            {inf.referrals.validated > 0 && (
+                              <span className="text-olive-600 font-medium">
+                                {inf.referrals.validated} validada{inf.referrals.validated !== 1 ? "s" : ""}
+                              </span>
+                            )}
+                            {inf.referrals.cancelled > 0 && (
+                              <span className="text-wine-700/60 font-medium">
+                                {inf.referrals.cancelled} cancelada{inf.referrals.cancelled !== 1 ? "s" : ""}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </td>
-                    <td className="px-4 py-4 text-right font-semibold text-olive-900">
-                      {inf.commissionDue > 0
-                        ? `${inf.commissionDue.toFixed(2)} €`
-                        : "—"}
+                    <td className="px-4 py-4 text-center text-olive-600">
+                      {inf.redemptions.count > 0 ? inf.redemptions.count : "—"}
+                    </td>
+                    <td className="px-4 py-4 text-right">
+                      {inf.commissionDue > 0 ? (
+                        <div className="flex flex-col items-end gap-0.5">
+                          <span className="font-semibold text-olive-900">
+                            {inf.commissionDue.toFixed(2)} €
+                          </span>
+                          {inf.referrals.pendingCommission > 0 && (
+                            <span className="text-[10px] text-olive-400">
+                              + {inf.referrals.pendingCommission.toFixed(2)} € em carência
+                            </span>
+                          )}
+                        </div>
+                      ) : inf.referrals.pendingCommission > 0 ? (
+                        <div className="flex flex-col items-end gap-0.5">
+                          <span className="font-semibold text-olive-400">0,00 €</span>
+                          <span className="text-[10px] text-olive-400">
+                            + {inf.referrals.pendingCommission.toFixed(2)} € em carência
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-olive-400">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-4">
                       <button

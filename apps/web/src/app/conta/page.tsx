@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
 import type { BusinessCardData } from "@/components/business-card";
@@ -72,6 +72,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function AccountPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [firstName, setFirstName] = useState<string>();
   const [showMap, setShowMap] = useState(false);
   const [places, setPlaces] = useState<BusinessCardData[]>(staticPlaces);
@@ -133,6 +134,13 @@ export default function AccountPage() {
       }
       try {
         const headers = { Authorization: `Bearer ${token}` };
+        // Se for o primeiro login após registo, registar referral se existir
+        if (searchParams.get("welcome") === "1") {
+          void fetch(`${apiUrl}/api/me/referral`, {
+            method: "POST",
+            headers,
+          });
+        }
         const [summaryResponse, savingsResponse, redemptionsResponse] =
           await Promise.all([
             fetch(`${apiUrl}/api/me/summary`, { headers }),

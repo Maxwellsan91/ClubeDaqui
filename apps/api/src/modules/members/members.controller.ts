@@ -126,6 +126,44 @@ export class MembersController {
     return { data };
   }
 
+  @Post("referral")
+  async registerReferral(@Req() request: AuthenticatedRequest) {
+    const admin = this.supabase.createAdminClient();
+    const userClient = this.supabase.createUserClient(request.accessToken);
+    const {
+      data: { user },
+    } = await userClient.auth.getUser();
+    const rawCode = user?.user_metadata?.referral_code as string | undefined;
+    const referralCode = rawCode?.trim().toUpperCase();
+    if (!referralCode) return { data: null };
+
+    const { data: influencer } = await admin
+      .from("influencers")
+      .select("id")
+      .eq("unique_code", referralCode)
+      .eq("is_active", true)
+      .maybeSingle();
+    if (!influencer) return { data: null };
+
+    const validatesAt = new Date(
+      Date.now() + 15 * 24 * 60 * 60 * 1000,
+    ).toISOString();
+    const { data } = await admin
+      .from("referrals")
+      .upsert(
+        {
+          influencer_code: referralCode,
+          member_id: request.user.id,
+          status: "PENDING",
+          validates_at: validatesAt,
+        },
+        { onConflict: "influencer_code,member_id", ignoreDuplicates: true },
+      )
+      .select()
+      .maybeSingle();
+    return { data };
+  }
+
   @Post("redemptions/attempt")
   async createAttempt(
     @Body() body: AttemptBody,

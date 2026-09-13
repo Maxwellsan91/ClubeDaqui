@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 export default function SignUpPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -40,7 +41,12 @@ export default function SignUpPage() {
         email: email.trim(),
         password,
         options: {
-          data: { full_name: fullName },
+          data: {
+            full_name: fullName,
+            ...(referralCode.trim() && {
+              referral_code: referralCode.trim().toUpperCase(),
+            }),
+          },
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
@@ -202,6 +208,27 @@ export default function SignUpPage() {
                     className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:outline-none"
                     placeholder="Repita a palavra-passe"
                     required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="referralCode"
+                    className="block text-sm font-semibold text-olive-900"
+                  >
+                    Código de referência{" "}
+                    <span className="font-normal text-olive-500">(opcional)</span>
+                  </label>
+                  <input
+                    id="referralCode"
+                    name="referralCode"
+                    value={referralCode}
+                    onChange={(e) =>
+                      setReferralCode(e.target.value.toUpperCase())
+                    }
+                    autoComplete="off"
+                    className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 font-mono text-olive-900 transition-colors placeholder:font-sans placeholder:text-olive-700/40 focus:outline-none"
+                    placeholder="Ex: JOAO-1234"
                   />
                 </div>
 
