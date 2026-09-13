@@ -3,21 +3,56 @@ import { AppHeader } from "@/components/app-header";
 import { ClubBenefitCard } from "@/components/club-benefit-card";
 import { RatingDisplay } from "@/components/rating-display";
 import { RedeemBenefitButton } from "@/components/redeem-benefit-button";
+import { StickyRedeemBar } from "@/components/sticky-redeem-bar";
 import ReviewForm from "@/components/review-form";
 
-const details: Record<
-  string,
-  {
-    name: string;
-    kind: string;
-    city: string;
-    address: string;
-    description: string;
-    image: string;
-    businessLocationId?: string;
-    coordinates?: [number, number];
-  }
-> = {
+const AVATAR_COLORS = [
+  "#743b40",
+  "#5a6e5c",
+  "#b58b4a",
+  "#243029",
+  "#425044",
+  "#6b4226",
+];
+function avatarColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++)
+    hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+}
+
+const DAYS_PT = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+
+type BusinessDetail = {
+  name: string;
+  kind: string;
+  city: string;
+  address: string;
+  description: string;
+  image: string;
+  businessLocationId?: string;
+  coordinates?: [number, number];
+};
+
+type Benefit = {
+  id?: string;
+  title: string;
+  description: string;
+  terms: string;
+  rules?: string[];
+  validDays?: number[];
+  hours?: { label: string; time: string }[];
+};
+
+const details: Record<string, BusinessDetail> = {
   "a-tasca-do-bronze": {
     name: "A Tasca do Bronze",
     kind: "Restaurante",
@@ -81,10 +116,8 @@ export default async function BusinessPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let business = details[slug];
-  let benefit:
-    | { id?: string; title: string; description: string; terms: string }
-    | undefined;
+  let business: BusinessDetail | undefined = details[slug];
+  let benefit: Benefit | undefined;
 
   if (apiUrl) {
     try {
@@ -172,13 +205,32 @@ export default async function BusinessPage({
     ? `https://www.openstreetmap.org/?mlat=${business.coordinates[0]}&mlon=${business.coordinates[1]}#map=17/${business.coordinates[0]}/${business.coordinates[1]}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name}, ${business.address}`)}`;
 
+  const color = avatarColor(business.name);
+  const ini = initials(business.name);
+
+  // Parse rules from terms (newline-separated or as-is)
+  const rules: string[] =
+    benefit?.rules ??
+    (benefit?.terms
+      ? benefit.terms
+          .split(/\n|•|;/)
+          .map((r) => r.trim())
+          .filter(Boolean)
+      : []);
+
+  // Valid days from benefit (0=Mon … 6=Sun), or empty
+  const validDays: number[] = benefit?.validDays ?? [];
+
+  // Operating hours from benefit or empty
+  const hours: { label: string; time: string }[] = benefit?.hours ?? [];
+
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pb-24 lg:pb-0">
       <AppHeader rightSlot={backLink} mobileRight={backLink} />
 
       {/* Hero image */}
       <div
-        className="h-56 w-full bg-cover bg-center sm:h-80 lg:h-[400px]"
+        className="h-52 w-full bg-cover bg-center sm:h-72 lg:h-[360px]"
         style={{ backgroundImage: `url(${business.image})` }}
         role="img"
         aria-label={`Imagem de ${business.name}`}
@@ -186,67 +238,63 @@ export default async function BusinessPage({
 
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         {/* Identity */}
-        <div className="pt-7 pb-5 sm:pt-10">
-          <p className="text-gold-500 text-xs font-bold tracking-[0.25em] uppercase">
-            {business.kind} · {business.city}
-          </p>
-          <h1 className="font-display mt-3 text-3xl leading-tight tracking-tight text-olive-900 sm:text-5xl">
-            {business.name}
-          </h1>
-          <p className="mt-1 text-sm text-olive-600">{business.address}</p>
-          <div className="mt-3">
-            <RatingDisplay />
+        <div className="pt-6 pb-5 sm:pt-8">
+          {/* Avatar + meta */}
+          <div className="flex items-start gap-4">
+            <div
+              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-base font-bold text-white shadow-sm"
+              style={{ backgroundColor: color }}
+              aria-hidden="true"
+            >
+              {ini}
+            </div>
+            <div className="min-w-0">
+              <p className="text-gold-500 text-[11px] font-bold tracking-[0.25em] uppercase">
+                {business.kind} · {business.city}
+              </p>
+              <h1 className="font-display mt-1 text-2xl leading-tight tracking-tight text-olive-900 sm:text-4xl">
+                {business.name}
+              </h1>
+              <p className="mt-0.5 text-xs text-olive-600">{business.address}</p>
+            </div>
           </div>
-          <div className="mt-5 flex flex-wrap gap-3">
+
+          {/* Rating row */}
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <RatingDisplay />
             <a
               href={mapsUrl}
               target="_blank"
               rel="noreferrer"
-              className="bg-wine-700 inline-flex min-h-[44px] items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white"
+              className="bg-wine-700 inline-flex min-h-[40px] items-center rounded-full px-5 py-2 text-sm font-semibold text-white"
             >
               Como chegar
             </a>
           </div>
         </div>
 
-        {/* Mobile: benefit card + redeem (appears before description on mobile) */}
-        <div className="lg:hidden">
-          <div className="border-gold-500/30 bg-gold-500/8 rounded-2xl border p-5">
+        {/* Benefit banner — mobile (above grid) */}
+        {benefit && (
+          <div className="border-gold-500/30 bg-gold-500/8 mb-6 rounded-2xl border p-5 lg:hidden">
             <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
               Benefício Clube
             </p>
-            <p className="font-display mt-2 text-xl text-olive-900">
-              {benefit?.title ?? "Benefício a anunciar"}
+            <p className="font-display mt-1.5 text-xl text-olive-900">
+              {benefit.title}
             </p>
-            {benefit?.description && (
-              <p className="mt-1.5 text-sm leading-5 text-olive-700">
+            {benefit.description && (
+              <p className="mt-1 text-sm leading-5 text-olive-700">
                 {benefit.description}
               </p>
             )}
-            {benefit?.terms && (
-              <p className="mt-1 text-xs text-olive-600">{benefit.terms}</p>
-            )}
-            {!benefit && (
-              <Link
-                href="/clube"
-                className="bg-wine-700 mt-4 inline-flex min-h-[44px] items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white"
-              >
-                Desbloquear este benefício
-              </Link>
-            )}
           </div>
-          <RedeemBenefitButton
-            benefitId={benefit?.id}
-            businessLocationId={business.businessLocationId}
-            businessName={business.name}
-            businessSlug={slug}
-          />
-        </div>
+        )}
 
         {/* Two-column on desktop */}
-        <div className="mt-8 grid gap-10 pb-16 lg:grid-cols-[1fr_380px] lg:items-start">
-          {/* Left: description + map */}
+        <div className="grid gap-10 pb-16 lg:grid-cols-[1fr_360px] lg:items-start">
+          {/* Left column */}
           <div className="space-y-10">
+            {/* Description */}
             <section>
               <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
                 Descoberta local
@@ -257,6 +305,130 @@ export default async function BusinessPage({
               <p className="mt-3 text-base leading-7 text-olive-700">
                 {business.description}
               </p>
+            </section>
+
+            {/* Usage rules */}
+            {rules.length > 0 && (
+              <section>
+                <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+                  Condições
+                </p>
+                <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                  Regras de utilização
+                </h2>
+                <ul className="mt-4 space-y-3">
+                  {rules.map((rule, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="bg-gold-500/15 text-gold-500 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold">
+                        ✓
+                      </span>
+                      <p className="text-sm leading-6 text-olive-700">{rule}</p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Valid days */}
+            {validDays.length > 0 && (
+              <section>
+                <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+                  Disponibilidade
+                </p>
+                <h2 className="font-display mt-2 text-xl text-olive-900">
+                  Dias em que pode usar o benefício
+                </h2>
+                <div className="mt-4 flex gap-2">
+                  {DAYS_PT.map((day, idx) => {
+                    const active = validDays.includes(idx);
+                    return (
+                      <div
+                        key={day}
+                        className={`flex h-10 w-10 flex-col items-center justify-center rounded-xl text-[11px] font-semibold ${
+                          active
+                            ? "bg-olive-900 text-white"
+                            : "bg-olive-900/8 text-olive-400"
+                        }`}
+                      >
+                        {day}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
+            {/* Operating hours */}
+            {hours.length > 0 && (
+              <section>
+                <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+                  Horários
+                </p>
+                <h2 className="font-display mt-2 text-xl text-olive-900">
+                  Funcionamento
+                </h2>
+                <div className="bg-cream-100 mt-4 divide-y divide-olive-900/8 overflow-hidden rounded-2xl border border-olive-900/10">
+                  {hours.map((h) => (
+                    <div
+                      key={h.label}
+                      className="flex items-center justify-between px-4 py-3"
+                    >
+                      <p className="text-sm font-medium text-olive-900">
+                        {h.label}
+                      </p>
+                      <p className="text-sm text-olive-600">{h.time}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* How to use */}
+            <section>
+              <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+                Passo a passo
+              </p>
+              <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                Como utilizar esta oferta
+              </h2>
+              <ol className="mt-4 space-y-4">
+                {[
+                  {
+                    step: "1",
+                    title: "Visite o estabelecimento",
+                    body: "Dirija-se ao local e informe que é membro do Clube Ribatejo.",
+                  },
+                  {
+                    step: "2",
+                    title: "Gere o código",
+                    body: 'Toque em "Usar benefício" e apresente o código de 6 dígitos ao parceiro.',
+                  },
+                  {
+                    step: "3",
+                    title: "O parceiro confirma",
+                    body: "O estabelecimento introduz o código no seu dispositivo para validar a utilização.",
+                  },
+                  {
+                    step: "4",
+                    title: "Registe a sua poupança",
+                    body: "Após a visita, insira o valor da fatura e o desconto obtido para acompanhar as suas economias.",
+                  },
+                ].map((item) => (
+                  <li key={item.step} className="flex gap-4">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-olive-900 text-sm font-bold text-white">
+                      {item.step}
+                    </span>
+                    <div>
+                      <p className="font-semibold text-olive-900">
+                        {item.title}
+                      </p>
+                      <p className="mt-0.5 text-sm leading-6 text-olive-700">
+                        {item.body}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </section>
 
             {/* Map */}
@@ -296,7 +468,7 @@ export default async function BusinessPage({
             </section>
           </div>
 
-          {/* Right: benefit + practical info (desktop only) */}
+          {/* Right column — desktop only */}
           <aside className="hidden space-y-5 lg:block">
             <ClubBenefitCard
               title={benefit?.title}
@@ -309,6 +481,45 @@ export default async function BusinessPage({
               businessName={business.name}
               businessSlug={slug}
             />
+
+            {/* Rules — desktop sidebar */}
+            {rules.length > 0 && (
+              <div className="bg-cream-100 rounded-2xl border border-olive-900/10 p-5">
+                <p className="text-[11px] font-bold tracking-[0.22em] text-olive-600 uppercase">
+                  Regras de utilização
+                </p>
+                <ul className="mt-3 space-y-2">
+                  {rules.map((rule, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm">
+                      <span className="text-gold-500 mt-0.5 shrink-0">✓</span>
+                      <span className="leading-5 text-olive-700">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Hours — desktop sidebar */}
+            {hours.length > 0 && (
+              <div className="bg-cream-100 rounded-2xl border border-olive-900/10 p-5">
+                <p className="text-[11px] font-bold tracking-[0.22em] text-olive-600 uppercase">
+                  Horários
+                </p>
+                <div className="mt-3 divide-y divide-olive-900/8">
+                  {hours.map((h) => (
+                    <div
+                      key={h.label}
+                      className="flex justify-between py-2 text-sm"
+                    >
+                      <span className="text-olive-700">{h.label}</span>
+                      <span className="font-medium text-olive-900">{h.time}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Practical info */}
             <div className="bg-cream-100 rounded-2xl border border-olive-900/10 p-5">
               <p className="text-[11px] font-bold tracking-[0.22em] text-olive-600 uppercase">
                 Informações práticas
@@ -331,6 +542,14 @@ export default async function BusinessPage({
           </aside>
         </div>
       </div>
+
+      {/* Sticky bottom bar — mobile only */}
+      <StickyRedeemBar
+        benefitId={benefit?.id}
+        businessLocationId={business.businessLocationId}
+        businessName={business.name}
+        businessSlug={slug}
+      />
     </main>
   );
 }
