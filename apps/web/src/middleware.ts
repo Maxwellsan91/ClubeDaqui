@@ -24,7 +24,8 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/conta") ||
     request.nextUrl.pathname.startsWith("/explorar") ||
     request.nextUrl.pathname.startsWith("/parceiros/validar") ||
-    request.nextUrl.pathname.startsWith("/parceiros/dashboard");
+    request.nextUrl.pathname.startsWith("/parceiros/dashboard") ||
+    request.nextUrl.pathname.startsWith("/admin");
   if (!user && protectedRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/entrar";
@@ -40,5 +41,6 @@ export const config = {
     "/explorar/:path*",
     "/parceiros/validar/:path*",
     "/parceiros/dashboard/:path*",
+    "/admin/:path*",
   ],
 };

@@ -9,6 +9,7 @@ import { PartnerInquiriesModule } from "./modules/partners/partner-inquiries.mod
 import { BenefitsModule } from "./modules/benefits/benefits.module.js";
 import { MembersModule } from "./modules/members/members.module.js";
 import { PartnerRedemptionsModule } from "./modules/partners/partner-redemptions.module.js";
+import { AdminModule } from "./modules/admin/admin.module.js";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PartnerRedemptionsModule } from "./modules/partners/partner-redemptions
     BenefitsModule,
     MembersModule,
     PartnerRedemptionsModule,
+    AdminModule,
   ],
 })
 export class AppModule {}
