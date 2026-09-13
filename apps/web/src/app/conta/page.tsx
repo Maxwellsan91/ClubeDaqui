@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
 import type { BusinessCardData } from "@/components/business-card";
@@ -70,6 +71,7 @@ const storageKey = "clube-ribatejo-savings";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function AccountPage() {
+  const router = useRouter();
   const [firstName, setFirstName] = useState<string>();
   const [showMap, setShowMap] = useState(false);
   const [places, setPlaces] = useState<BusinessCardData[]>(staticPlaces);
@@ -83,7 +85,6 @@ export default function AccountPage() {
   const [apiStatus, setApiStatus] = useState<
     "loading" | "connected" | "fallback"
   >("loading");
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const client = createClient();
@@ -93,13 +94,6 @@ export default function AccountPage() {
         meta?.full_name || meta?.name || data.user?.email;
       setFirstName(name?.split(/[\s@]/)[0]);
     });
-    client
-      .from("profiles")
-      .select("role")
-      .single()
-      .then(({ data }) => {
-        if (data?.role === "ADMIN") setIsAdmin(true);
-      });
     if (apiUrl) {
       fetch(`${apiUrl}/api/businesses`)
         .then((r) => (r.ok ? r.json() : null))
@@ -158,7 +152,13 @@ export default function AccountPage() {
         const redemptionsPayload = (await redemptionsResponse.json()) as {
           data?: MemberRedemption[];
         };
-        if (summaryPayload.data) setServerSummary(summaryPayload.data);
+        if (summaryPayload.data) {
+          setServerSummary(summaryPayload.data);
+          if (summaryPayload.data.role === "ADMIN") {
+            router.replace("/admin");
+            return;
+          }
+        }
         setRecords(savingsPayload.data?.records ?? []);
         setUnrecordedRedemptions(
           (redemptionsPayload.data ?? []).filter((item) => !item.financial),
@@ -209,7 +209,7 @@ export default function AccountPage() {
   return (
     <main className="min-h-screen">
       <AppHeader rightSlot={logoutButton} mobileRight={logoutButton} />
-      {isAdmin && (
+      {serverSummary?.role === "ADMIN" && (
         <a
           href="/admin"
           className="flex items-center justify-between gap-3 bg-olive-900 px-5 py-2.5 sm:px-8"

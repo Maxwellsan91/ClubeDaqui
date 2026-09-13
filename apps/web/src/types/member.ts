@@ -28,6 +28,7 @@ export type MemberRedemption = {
 
 export type MemberSummaryData = {
   fullName?: string | null;
+  role?: string;
   subscriptionStatus: "active" | "inactive" | "pending";
   validUntil?: string | null;
   usedBenefits: number;

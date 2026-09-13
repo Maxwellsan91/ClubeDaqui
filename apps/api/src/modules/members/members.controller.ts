@@ -31,7 +31,7 @@ export class MembersController {
     const client = this.supabase.createUserClient(request.accessToken);
     const { data: profile } = await client
       .from("profiles")
-      .select("full_name")
+      .select("full_name,role")
       .eq("id", request.user.id)
       .maybeSingle();
     const { data: membership } = await client
@@ -55,6 +55,7 @@ export class MembersController {
     return {
       data: {
         fullName: profile?.full_name ?? null,
+        role: (profile as { full_name: string | null; role: string } | null)?.role ?? "MEMBER",
         subscriptionStatus: membership?.status ?? "inactive",
         validUntil: membership?.ends_at ?? null,
         usedBenefits: usedBenefits ?? 0,
