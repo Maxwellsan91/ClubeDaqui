@@ -542,6 +542,112 @@ export class AdminController {
     return { success: true };
   }
 
+  // ── Influencers ────────────────────────────────────────────────────────
+
+  @Get("influencers")
+  async influencers() {
+    const { data, error } = await this.db
+      .from("influencers")
+      .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+      .order("created_at", { ascending: false });
+    if (error) return { data: [], total: 0 };
+
+    type InfluencerRow = {
+      id: string;
+      name: string;
+      email: string;
+      unique_code: string;
+      commission_rate: number;
+      is_active: boolean;
+      notes: string | null;
+      created_at: string;
+    };
+
+    const presented = ((data ?? []) as unknown as InfluencerRow[]).map((i) => ({
+      id: i.id,
+      name: i.name,
+      email: i.email,
+      uniqueCode: i.unique_code,
+      commissionRate: Number(i.commission_rate),
+      isActive: i.is_active,
+      notes: i.notes,
+      createdAt: i.created_at,
+    }));
+
+    return { data: presented, total: presented.length };
+  }
+
+  @Post("influencers")
+  async createInfluencer(
+    @Body()
+    body: {
+      name?: string;
+      email?: string;
+      commissionRate?: number;
+      uniqueCode?: string;
+      notes?: string;
+    },
+  ) {
+    const { name, email, commissionRate, notes } = body;
+    if (!name || !email) return { error: "name e email são obrigatórios" };
+
+    const code =
+      body.uniqueCode?.trim().toUpperCase() ||
+      name
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/[^a-zA-Z]/g, "")
+        .slice(0, 4)
+        .toUpperCase()
+        .padEnd(4, "X") +
+        "-" +
+        Math.floor(1000 + Math.random() * 9000).toString();
+
+    const { data, error } = await this.db
+      .from("influencers")
+      .insert({
+        name,
+        email,
+        unique_code: code,
+        commission_rate: commissionRate ?? 10,
+        notes: notes ?? null,
+        is_active: true,
+      })
+      .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+      .single();
+    if (error) return { error: error.message };
+    return { data };
+  }
+
+  @Patch("influencers/:id")
+  async updateInfluencer(
+    @Param("id") id: string,
+    @Body()
+    body: {
+      name?: string;
+      email?: string;
+      commissionRate?: number;
+      isActive?: boolean;
+      notes?: string;
+    },
+  ) {
+    const patch: Record<string, unknown> = {};
+    if (body.name !== undefined) patch.name = body.name;
+    if (body.email !== undefined) patch.email = body.email;
+    if (body.commissionRate !== undefined) patch.commission_rate = body.commissionRate;
+    if (body.isActive !== undefined) patch.is_active = body.isActive;
+    if (body.notes !== undefined) patch.notes = body.notes;
+
+    const { data, error } = await this.db
+      .from("influencers")
+      .update(patch)
+      .eq("id", id)
+      .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+      .single();
+    if (error) return { error: error.message };
+    return { data };
+  }
+
   // ── Partner role management ────────────────────────────────────────────
 
   @Patch("users/:id/role")
