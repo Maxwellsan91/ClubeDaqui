@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Param,
   Patch,
   Post,
@@ -83,54 +84,57 @@ export class AdminController {
 
   @Get("users")
   async users() {
-    const [
-      { data, error },
-      { data: counts },
-      { data: authUsers },
-      { data: influencerRows },
-    ] = await Promise.all([
-      this.db
-        .from("profiles")
-        .select("id,full_name,role,created_at")
-        .order("created_at", { ascending: false }),
-      this.db.from("redemptions").select("member_id").eq("status", "CONFIRMED"),
-      this.db.auth.admin.listUsers({ perPage: 1000 }),
-      this.db.from("influencers").select("email,unique_code").eq("is_active", true),
-    ]);
-    if (error) return { data: [], total: 0 };
+    const now = new Date().toISOString();
+    const [profiles, counts, authUsers, influencerRows, membershipRows] =
+      await Promise.all([
+        this.db.from("profiles").select("id,full_name,role,is_active,created_at").order("created_at", { ascending: false }),
+        this.db.from("redemptions").select("member_id").eq("status", "CONFIRMED"),
+        this.db.auth.admin.listUsers({ perPage: 1000 }),
+        this.db.from("influencers").select("email").eq("is_active", true),
+        this.db.from("memberships").select("profile_id,source,status,ends_at"),
+      ]);
+    if (profiles.error) return { data: [], total: 0 };
+
+    type PRow = { id: string; full_name: string | null; role: string; is_active: boolean; created_at: string };
+    type MRow = { profile_id: string; source: string; status: string; ends_at: string | null };
 
     const countMap = new Map<string, number>();
-    for (const r of (counts ?? []) as { member_id: string }[]) {
+    for (const r of (counts.data ?? []) as { member_id: string }[]) {
       countMap.set(r.member_id, (countMap.get(r.member_id) ?? 0) + 1);
     }
 
     const emailMap = new Map<string, string>(
-      (authUsers?.users ?? []).map((u) => [u.id, u.email ?? ""]),
+      (authUsers.data?.users ?? []).map((u) => [u.id, u.email ?? ""]),
     );
 
-    const influencerEmails = new Set(
-      ((influencerRows ?? []) as { email: string; unique_code: string }[]).map(
-        (i) => i.email.toLowerCase(),
-      ),
+    const influencerEmailSet = new Set(
+      ((influencerRows.data ?? []) as { email: string }[]).map((i) => i.email.toLowerCase()),
     );
 
-    const presented = (
-      (data ?? []) as {
-        id: string;
-        full_name: string | null;
-        role: string;
-        created_at: string;
-      }[]
-    ).map((p) => {
+    // Best active membership per profile
+    const activeMem = new Map<string, MRow>();
+    for (const m of (membershipRows.data ?? []) as unknown as MRow[]) {
+      if (m.status === "active" && (m.ends_at ?? "") >= now) {
+        const ex = activeMem.get(m.profile_id);
+        if (!ex || (m.ends_at ?? "") > (ex.ends_at ?? "")) activeMem.set(m.profile_id, m);
+      }
+    }
+
+    const presented = ((profiles.data ?? []) as unknown as PRow[]).map((p) => {
       const email = emailMap.get(p.id) ?? "";
+      const mem = activeMem.get(p.id);
       return {
         id: p.id,
         fullName: p.full_name ?? "—",
         email,
         role: p.role,
+        isActive: p.is_active,
         createdAt: p.created_at,
         redemptionsCount: countMap.get(p.id) ?? 0,
-        isInfluencer: influencerEmails.has(email.toLowerCase()),
+        isInfluencer: influencerEmailSet.has(email.toLowerCase()),
+        membershipStatus: mem ? "active" : "inactive",
+        membershipSource: mem?.source ?? null,
+        membershipEndsAt: mem?.ends_at ?? null,
       };
     });
 
@@ -205,6 +209,9 @@ export class AdminController {
       .limit(1)
       .maybeSingle();
 
+    // Set role to INFLUENCER
+    await this.db.from("profiles").update({ role: "INFLUENCER" }).eq("id", id);
+
     if (!existingMembership) {
       const endsAt = new Date();
       endsAt.setFullYear(endsAt.getFullYear() + 1);
@@ -212,6 +219,7 @@ export class AdminController {
         profile_id: id,
         status: "active",
         ends_at: endsAt.toISOString(),
+        source: "INFLUENCER_GRANT",
       });
     }
 
@@ -960,6 +968,132 @@ export class AdminController {
     return { data };
   }
 
+  // ── User detail + status management ───────────────────────────────────
+
+  @Get("users/:id")
+  async userDetail(@Param("id") id: string) {
+    type ProfileRow = { id: string; full_name: string | null; role: string; is_active: boolean; created_at: string };
+    type MembershipRow = { id: string; status: string; source: string; ends_at: string | null; created_at: string };
+    type LogRow = { id: string; previous_active: boolean; new_active: boolean; reason: string; changed_by_name: string; created_at: string };
+
+    // Phase 1: independent queries
+    const [profileRes, authRes, membershipsRes, statusLogsRes] = await Promise.all([
+      this.db.from("profiles").select("id,full_name,role,is_active,created_at").eq("id", id).maybeSingle(),
+      this.db.auth.admin.getUserById(id),
+      this.db.from("memberships").select("id,status,source,ends_at,created_at").eq("profile_id", id).order("created_at", { ascending: false }),
+      this.db.from("profile_status_logs").select("id,previous_active,new_active,reason,changed_by_name,created_at").eq("profile_id", id).order("created_at", { ascending: false }),
+    ]);
+
+    const p = profileRes.data as unknown as ProfileRow | null;
+    if (!p) return { error: "Utilizador não encontrado" };
+
+    const email = authRes.data?.user?.email ?? "";
+    const membershipIds = ((membershipsRes.data ?? []) as MembershipRow[]).map((m) => m.id);
+
+    // Phase 2: queries that need email or membershipIds
+    const [influencerRes, redemptionRes] = await Promise.all([
+      this.db.from("influencers").select("unique_code,commission_rate").eq("email", email).maybeSingle(),
+      membershipIds.length
+        ? this.db.from("redemptions").select("id,redeemed_at,status,benefits(title,businesses(name))").in("membership_id", membershipIds).order("redeemed_at", { ascending: false }).limit(20)
+        : Promise.resolve({ data: [] as unknown[] }),
+    ]);
+
+    const inf = influencerRes.data as unknown as { unique_code: string; commission_rate: number } | null;
+
+    return {
+      data: {
+        id: p.id,
+        fullName: p.full_name ?? "—",
+        email,
+        role: p.role,
+        isActive: p.is_active,
+        createdAt: p.created_at,
+        memberships: ((membershipsRes.data ?? []) as MembershipRow[]).map((m) => ({
+          id: m.id,
+          status: m.status,
+          source: m.source ?? "PAID",
+          endsAt: m.ends_at,
+          createdAt: m.created_at,
+        })),
+        recentRedemptions: (redemptionRes.data ?? []).slice(0, 10),
+        influencer: inf ? { uniqueCode: inf.unique_code, commissionRate: Number(inf.commission_rate) } : null,
+        statusLogs: ((statusLogsRes.data ?? []) as unknown as LogRow[]).map((l) => ({
+          id: l.id,
+          previousActive: l.previous_active,
+          newActive: l.new_active,
+          reason: l.reason,
+          changedByName: l.changed_by_name,
+          createdAt: l.created_at,
+        })),
+      },
+    };
+  }
+
+  @Patch("users/:id/status")
+  async updateUserStatus(
+    @Param("id") id: string,
+    @Body() body: { isActive?: boolean; reason?: string },
+    @Headers("authorization") auth: string,
+  ) {
+    if (body.isActive === undefined) return { error: "isActive é obrigatório" };
+    if (!body.reason?.trim()) return { error: "É obrigatório indicar o motivo da alteração" };
+
+    // Get current status
+    const { data: profile } = await this.db
+      .from("profiles")
+      .select("is_active,full_name")
+      .eq("id", id)
+      .maybeSingle();
+    if (!profile) return { error: "Utilizador não encontrado" };
+
+    const p = profile as { is_active: boolean; full_name: string | null };
+
+    // Get admin identity from token
+    const token = auth.replace("Bearer ", "");
+    const { data: { user: adminUser } } = await this.supabase.createUserClient(token).auth.getUser();
+    const { data: adminProfile } = await this.db
+      .from("profiles")
+      .select("full_name")
+      .eq("id", adminUser?.id ?? "")
+      .maybeSingle();
+    const adminName = (adminProfile as { full_name: string | null } | null)?.full_name ?? "Admin";
+
+    await this.db.from("profiles").update({ is_active: body.isActive }).eq("id", id);
+    await this.db.from("profile_status_logs").insert({
+      profile_id: id,
+      changed_by_id: adminUser?.id ?? "",
+      changed_by_name: adminName,
+      previous_active: p.is_active,
+      new_active: body.isActive,
+      reason: body.reason.trim(),
+    });
+
+    return { data: { id, isActive: body.isActive } };
+  }
+
+  @Post("users/:id/grant-membership")
+  async grantMembership(@Param("id") id: string) {
+    const { data: existing } = await this.db
+      .from("memberships")
+      .select("id")
+      .eq("profile_id", id)
+      .eq("status", "active")
+      .gte("ends_at", new Date().toISOString())
+      .limit(1)
+      .maybeSingle();
+    if (existing) return { error: "O utilizador já tem uma adesão activa" };
+
+    const endsAt = new Date();
+    endsAt.setFullYear(endsAt.getFullYear() + 1);
+    const { data, error } = await this.db
+      .from("memberships")
+      .insert({ profile_id: id, status: "active", ends_at: endsAt.toISOString(), source: "ADMIN_GRANT" })
+      .select("id,status,source,ends_at")
+      .single();
+    if (error) return { error: error.message };
+    return { data };
+  }
+
   // ── Partner role management ────────────────────────────────────────────
 
   @Patch("users/:id/role")
@@ -967,9 +1101,9 @@ export class AdminController {
     @Param("id") id: string,
     @Body() body: { role?: string },
   ) {
-    const allowed = ["MEMBER", "PARTNER", "ADMIN"];
+    const allowed = ["MEMBER", "PARTNER", "ADMIN", "INFLUENCER"];
     if (!body.role || !allowed.includes(body.role)) {
-      return { error: "Role inválido. Use: MEMBER, PARTNER ou ADMIN" };
+      return { error: "Role inválido. Use: MEMBER, PARTNER, ADMIN ou INFLUENCER" };
     }
     const { data, error } = await this.db
       .from("profiles")
