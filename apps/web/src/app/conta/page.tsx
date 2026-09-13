@@ -102,17 +102,20 @@ export default function AccountPage() {
             setPlaces(
               payload.data.map(
                 (item: {
+                  slug: string;
                   name: string;
                   category: string;
                   kind: string;
                   city: string;
+                  imageUrl?: string;
                 }) => ({
-                  slug: item.name.toLowerCase().replaceAll(" ", "-"),
+                  slug: item.slug,
                   name: item.name,
                   category: item.category,
                   kind: item.kind,
                   city: item.city,
                   image:
+                    item.imageUrl ??
                     staticPlaces.find((p) => p.name === item.name)?.image ??
                     "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
                 }),
