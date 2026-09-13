@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { AppHeader } from "@/components/app-header";
 import { ClubBenefitCard } from "@/components/club-benefit-card";
 import { RatingDisplay } from "@/components/rating-display";
-import { SectionHeader } from "@/components/section-header";
 import { RedeemBenefitButton } from "@/components/redeem-benefit-button";
+import ReviewForm from "@/components/review-form";
 
 const details: Record<
   string,
@@ -84,6 +85,7 @@ export default async function BusinessPage({
   let benefit:
     | { id?: string; title: string; description: string; terms: string }
     | undefined;
+
   if (apiUrl) {
     try {
       const response = await fetch(`${apiUrl}/api/businesses/${slug}`, {
@@ -122,105 +124,180 @@ export default async function BusinessPage({
                 ? [payload.data.latitude, payload.data.longitude]
                 : undefined,
           };
-          const benefitsResponse = await fetch(
+          const benefitsRes = await fetch(
             `${apiUrl}/api/businesses/${(payload.data as { id?: string }).id}/benefits`,
             { cache: "no-store" },
           );
-          if (benefitsResponse.ok)
-            benefit = (await benefitsResponse.json()).data?.[0];
+          if (benefitsRes.ok) benefit = (await benefitsRes.json()).data?.[0];
         }
       }
     } catch {
       /* keep demo fallback */
     }
   }
+
   if (!business)
-    return <main className="p-10">Estabelecimento não encontrado.</main>;
+    return (
+      <main className="min-h-screen">
+        <AppHeader />
+        <p className="p-10 text-center text-olive-700">
+          Estabelecimento não encontrado.
+        </p>
+      </main>
+    );
+
+  const backLink = (
+    <Link
+      href="/explorar"
+      className="flex items-center gap-1.5 text-sm font-semibold text-olive-700"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+      Explorar
+    </Link>
+  );
+
+  const mapsUrl = business.coordinates
+    ? `https://www.openstreetmap.org/?mlat=${business.coordinates[0]}&mlon=${business.coordinates[1]}#map=17/${business.coordinates[0]}/${business.coordinates[1]}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name}, ${business.address}`)}`;
+
   return (
-    <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
-      <header className="mx-auto flex max-w-7xl justify-between">
-        <Link
-          href="/"
-          className="font-display text-xl font-semibold text-olive-900"
-        >
-          Clube Ribatejo
-        </Link>
-        <Link href="/explorar" className="text-wine-700 text-sm font-semibold">
-          ← Explorar
-        </Link>
-      </header>
-      <section className="mx-auto max-w-5xl py-12 sm:py-20">
-        <div
-          className="h-64 rounded-3xl bg-cover bg-center sm:h-96"
-          style={{ backgroundImage: `url(${business.image})` }}
-          role="img"
-          aria-label={`Imagem ilustrativa de ${business.name}`}
-        />
-        <div className="mt-10">
-          <p className="text-gold-500 text-xs font-semibold tracking-[0.28em] uppercase">
+    <main className="min-h-screen">
+      <AppHeader rightSlot={backLink} mobileRight={backLink} />
+
+      {/* Hero image */}
+      <div
+        className="h-56 w-full bg-cover bg-center sm:h-80 lg:h-[400px]"
+        style={{ backgroundImage: `url(${business.image})` }}
+        role="img"
+        aria-label={`Imagem de ${business.name}`}
+      />
+
+      <div className="mx-auto max-w-5xl px-5 sm:px-8">
+        {/* Identity */}
+        <div className="pt-7 pb-5 sm:pt-10">
+          <p className="text-gold-500 text-xs font-bold tracking-[0.25em] uppercase">
             {business.kind} · {business.city}
           </p>
-          <h1 className="font-display mt-6 text-5xl tracking-tight text-olive-900 sm:text-6xl">
+          <h1 className="font-display mt-3 text-3xl leading-tight tracking-tight text-olive-900 sm:text-5xl">
             {business.name}
           </h1>
-          <p className="mt-8 max-w-2xl text-lg leading-8 text-olive-700">
-            {business.description}
-          </p>
-          <p className="text-wine-700 mt-5 text-sm font-semibold">
-            {business.address}
-          </p>
-          <div className="mt-5">
+          <p className="mt-1 text-sm text-olive-600">{business.address}</p>
+          <div className="mt-3">
             <RatingDisplay />
           </div>
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
             <a
-              href={
-                business.coordinates
-                  ? `https://www.openstreetmap.org/?mlat=${business.coordinates[0]}&mlon=${business.coordinates[1]}#map=17/${business.coordinates[0]}/${business.coordinates[1]}`
-                  : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name}, ${business.address}`)}`
-              }
+              href={mapsUrl}
               target="_blank"
               rel="noreferrer"
-              className="bg-wine-700 inline-flex min-h-11 items-center rounded-full px-5 py-3 text-sm font-semibold text-white"
+              className="bg-wine-700 inline-flex min-h-[44px] items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white"
             >
               Como chegar
             </a>
-            <button
-              type="button"
-              className="min-h-11 rounded-full border border-olive-900/20 px-5 py-3 text-sm font-semibold text-olive-900"
-            >
-              ♡ Favorito
-            </button>
           </div>
         </div>
-        <div className="mt-16 grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-12">
+
+        {/* Mobile: benefit card + redeem (appears before description on mobile) */}
+        <div className="lg:hidden">
+          <div className="border-gold-500/30 bg-gold-500/8 rounded-2xl border p-5">
+            <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+              Benefício Clube
+            </p>
+            <p className="font-display mt-2 text-xl text-olive-900">
+              {benefit?.title ?? "Benefício a anunciar"}
+            </p>
+            {benefit?.description && (
+              <p className="mt-1.5 text-sm leading-5 text-olive-700">
+                {benefit.description}
+              </p>
+            )}
+            {benefit?.terms && (
+              <p className="mt-1 text-xs text-olive-600">{benefit.terms}</p>
+            )}
+            {!benefit && (
+              <Link
+                href="/clube"
+                className="bg-wine-700 mt-4 inline-flex min-h-[44px] items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white"
+              >
+                Desbloquear este benefício
+              </Link>
+            )}
+          </div>
+          <RedeemBenefitButton
+            benefitId={benefit?.id}
+            businessLocationId={business.businessLocationId}
+            businessName={business.name}
+            businessSlug={slug}
+          />
+        </div>
+
+        {/* Two-column on desktop */}
+        <div className="mt-8 grid gap-10 pb-16 lg:grid-cols-[1fr_380px] lg:items-start">
+          {/* Left: description + map */}
+          <div className="space-y-10">
             <section>
-              <SectionHeader
-                eyebrow="Descoberta local"
-                title="Porque visitar"
-              />
-              <p className="mt-4 text-base leading-8 text-olive-700">
+              <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+                Descoberta local
+              </p>
+              <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                Porque visitar
+              </h2>
+              <p className="mt-3 text-base leading-7 text-olive-700">
                 {business.description}
               </p>
             </section>
-            <section>
-              <SectionHeader title="O que pedir" />
-              <p className="mt-4 text-sm text-olive-600">
-                Informação a ser adicionada pelo estabelecimento.
-              </p>
-            </section>
-            <section>
-              <SectionHeader title="Avaliações verificadas" />
-              <div className="mt-4 rounded-2xl border border-dashed border-olive-900/20 p-6">
-                <RatingDisplay />
-                <p className="mt-2 text-sm text-olive-700">
-                  Ainda não existem avaliações verificadas.
+
+            {/* Map */}
+            {business.coordinates && (
+              <section>
+                <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+                  Localização
                 </p>
+                <div className="mt-3 overflow-hidden rounded-2xl border border-olive-900/10">
+                  <iframe
+                    title={`Mapa de ${business.name}`}
+                    className="h-64 w-full sm:h-80"
+                    loading="lazy"
+                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${business.coordinates[1] - 0.008}%2C${business.coordinates[0] - 0.005}%2C${business.coordinates[1] + 0.008}%2C${business.coordinates[0] + 0.005}&layer=mapnik&marker=${business.coordinates[0]}%2C${business.coordinates[1]}`}
+                  />
+                  <p className="px-4 py-2 text-xs text-olive-600">
+                    © OpenStreetMap contributors. Localização aproximada.
+                  </p>
+                </div>
+              </section>
+            )}
+
+            {/* Review section */}
+            <section id="avaliar">
+              <p className="text-wine-700 text-[11px] font-bold tracking-[0.22em] uppercase">
+                Avaliações
+              </p>
+              <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                Partilhe a sua experiência
+              </h2>
+              <p className="mt-2 text-sm leading-5 text-olive-600">
+                A sua avaliação ajuda outros membros a escolher melhor.
+              </p>
+              <div className="mt-5">
+                <ReviewForm businessSlug={slug} businessName={business.name} />
               </div>
             </section>
           </div>
-          <aside className="space-y-6">
+
+          {/* Right: benefit + practical info (desktop only) */}
+          <aside className="hidden space-y-5 lg:block">
             <ClubBenefitCard
               title={benefit?.title}
               description={benefit?.description}
@@ -232,41 +309,28 @@ export default async function BusinessPage({
               businessName={business.name}
               businessSlug={slug}
             />
-            <section className="bg-cream-100 rounded-2xl border border-olive-900/10 p-6">
-              <SectionHeader title="Informações práticas" />
-              <dl className="mt-5 space-y-3 text-sm text-olive-700">
+            <div className="bg-cream-100 rounded-2xl border border-olive-900/10 p-5">
+              <p className="text-[11px] font-bold tracking-[0.22em] text-olive-600 uppercase">
+                Informações práticas
+              </p>
+              <dl className="mt-4 space-y-3 text-sm text-olive-700">
                 <div className="flex justify-between gap-4">
                   <dt>Localização</dt>
-                  <dd className="text-right font-semibold">{business.city}</dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt>Morada</dt>
-                  <dd className="text-right font-semibold">
-                    {business.address}
+                  <dd className="text-right font-semibold text-olive-900">
+                    {business.city}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4">
-                  <dt>Preço médio</dt>
-                  <dd className="text-right">Informação a adicionar</dd>
+                  <dt>Morada</dt>
+                  <dd className="text-right font-semibold text-olive-900">
+                    {business.address}
+                  </dd>
                 </div>
               </dl>
-            </section>
+            </div>
           </aside>
         </div>
-        {business.coordinates && (
-          <div className="mt-10 overflow-hidden rounded-3xl border border-olive-900/10">
-            <iframe
-              title={`Mapa de ${business.name}`}
-              className="h-80 w-full"
-              loading="lazy"
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=${business.coordinates[1] - 0.008}%2C${business.coordinates[0] - 0.005}%2C${business.coordinates[1] + 0.008}%2C${business.coordinates[0] + 0.005}&layer=mapnik&marker=${business.coordinates[0]}%2C${business.coordinates[1]}`}
-            />
-            <p className="p-4 text-xs text-olive-700">
-              Mapa: © OpenStreetMap contributors. Localização aproximada.
-            </p>
-          </div>
-        )}
-      </section>
+      </div>
     </main>
   );
 }

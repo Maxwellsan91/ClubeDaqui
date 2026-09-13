@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { AppHeader } from "@/components/app-header";
 
 type RedemptionPreview = {
   redemption_id: string;
@@ -88,129 +89,171 @@ export default function ValidateRedemptionPage() {
     setStatus("idle");
   }
 
+  const partnerNav = (
+    <Link
+      href="/parceiros"
+      className="flex items-center gap-1.5 text-sm font-semibold text-olive-700"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+      Área de parceiros
+    </Link>
+  );
+
   return (
-    <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
-      <header className="mx-auto flex max-w-3xl items-center justify-between">
-        <Link
-          href="/"
-          className="font-display text-xl font-semibold text-olive-900"
-        >
-          Clube Ribatejo
-        </Link>
-        <Link href="/parceiros" className="text-wine-700 text-sm font-semibold">
-          ← Área de parceiros
-        </Link>
-      </header>
+    <main className="min-h-screen">
+      <AppHeader rightSlot={partnerNav} mobileRight={partnerNav} />
 
-      <section className="mx-auto max-w-3xl py-16 sm:py-24">
-        <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
-          Validação de parceiro
+      <section className="mx-auto max-w-lg px-5 py-10 sm:px-8 sm:py-14">
+        {/* Heading */}
+        <p className="text-wine-700 text-[11px] font-bold tracking-[0.28em] uppercase">
+          Área de parceiros
         </p>
-        <h1 className="font-display mt-5 text-5xl tracking-tight text-olive-900 sm:text-6xl">
-          Confirmar benefício
+        <h1 className="font-display mt-3 text-3xl tracking-tight text-olive-900 sm:text-4xl">
+          Validar benefício
         </h1>
-        <p className="mt-5 max-w-xl text-lg leading-8 text-olive-700">
-          Introduza o código apresentado pelo membro. Reveja os dados antes de
-          confirmar a utilização.
+        <p className="mt-3 text-sm leading-6 text-olive-700">
+          Introduza o código de 6 dígitos apresentado pelo membro para confirmar
+          a utilização do benefício.
         </p>
 
+        {/* Code input */}
         <form
           onSubmit={previewCode}
-          className="bg-cream-100 mt-10 rounded-3xl border border-olive-900/10 p-6 sm:p-8"
+          className="bg-cream-100 mt-8 rounded-2xl border border-olive-900/10 p-5 sm:p-6"
         >
-          <label className="block text-sm font-semibold text-olive-900">
-            Código de 6 dígitos
-            <input
-              value={code}
-              onChange={(event) => {
-                setCode(event.target.value.replace(/\D/g, "").slice(0, 6));
+          <label
+            htmlFor="code-input"
+            className="block text-sm font-semibold text-olive-900"
+          >
+            Código do membro
+          </label>
+          <input
+            id="code-input"
+            value={code}
+            onChange={(e) => {
+              setCode(e.target.value.replace(/\D/g, "").slice(0, 6));
+              if (preview) {
                 setPreview(undefined);
                 setStatus("idle");
                 setMessage("");
-              }}
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              pattern="[0-9]{6}"
-              maxLength={6}
-              className="mt-3 w-full rounded-xl bg-white px-4 py-4 text-center text-2xl tracking-[0.35em] outline-none"
-              placeholder="000000"
-              required
-            />
-          </label>
+              }
+            }}
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="[0-9]{6}"
+            maxLength={6}
+            className="focus:border-wine-700 mt-3 w-full rounded-xl border border-olive-900/12 bg-white py-4 text-center font-mono text-3xl tracking-[0.35em] text-olive-900 outline-none"
+            placeholder="000000"
+            required
+          />
           <button
+            type="submit"
             disabled={status === "previewing" || code.length !== 6}
-            className="bg-wine-700 mt-6 min-h-11 rounded-full px-6 py-3 text-sm font-semibold text-white disabled:opacity-50"
+            className="bg-wine-700 hover:bg-wine-800 mt-5 inline-flex min-h-[44px] w-full items-center justify-center rounded-full px-6 text-sm font-semibold text-white transition disabled:opacity-50"
           >
             {status === "previewing" ? "A verificar…" : "Verificar código"}
           </button>
         </form>
 
-        {message ? (
-          <p role="alert" className="text-wine-700 mt-5 text-sm">
-            {message}
-          </p>
+        {/* Error message */}
+        {status === "error" || message ? (
+          <div className="border-wine-700/20 bg-wine-700/5 mt-4 rounded-xl border px-4 py-3">
+            <p role="alert" className="text-wine-700 text-sm font-semibold">
+              {message ||
+                "Código inválido ou expirado. Verifique e tente novamente."}
+            </p>
+          </div>
         ) : null}
 
+        {/* Preview */}
         {preview ? (
-          <section className="mt-8 rounded-3xl bg-olive-900 p-7 text-white sm:p-9">
-            <p className="text-gold-500 text-xs font-semibold tracking-[0.2em] uppercase">
-              Utilização encontrada
-            </p>
-            <h2 className="font-display mt-4 text-3xl">
-              {preview.benefit_title}
-            </h2>
-            <dl className="text-cream-100/80 mt-6 space-y-3 text-sm">
-              <div className="flex justify-between gap-5">
-                <dt>Membro</dt>
-                <dd className="text-right font-semibold text-white">
-                  {preview.member_name || "Membro do Clube"}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-5">
-                <dt>Local</dt>
-                <dd className="text-right font-semibold text-white">
-                  {preview.business_location_name}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-5">
-                <dt>Válido até</dt>
-                <dd className="text-right font-semibold text-white">
-                  {new Intl.DateTimeFormat("pt-PT", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }).format(new Date(preview.expires_at))}
-                </dd>
-              </div>
-            </dl>
-            <p className="text-cream-100/70 mt-6 text-sm leading-6">
-              {preview.benefit_terms}
-            </p>
+          <section className="mt-6 overflow-hidden rounded-2xl border border-olive-900/10">
+            {/* Header */}
+            <div className="bg-olive-900 px-5 py-5 sm:px-6">
+              <p className="text-gold-500 text-[11px] font-bold tracking-[0.22em] uppercase">
+                Utilização encontrada
+              </p>
+              <h2 className="font-display mt-1.5 text-2xl text-white">
+                {preview.benefit_title}
+              </h2>
+            </div>
 
-            {status === "success" ? (
-              <div className="mt-7">
-                <p className="text-gold-500 font-semibold">
-                  Benefício confirmado com sucesso.
+            {/* Details */}
+            <div className="bg-cream-100 px-5 py-5 sm:px-6">
+              <dl className="space-y-3 text-sm">
+                <div className="flex items-baseline justify-between gap-4">
+                  <dt className="text-olive-600">Membro</dt>
+                  <dd className="text-right font-semibold text-olive-900">
+                    {preview.member_name || "Membro do Clube"}
+                  </dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-4">
+                  <dt className="text-olive-600">Local</dt>
+                  <dd className="text-right font-semibold text-olive-900">
+                    {preview.business_location_name}
+                  </dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-4">
+                  <dt className="text-olive-600">Código válido até</dt>
+                  <dd className="text-right font-semibold text-olive-900">
+                    {new Intl.DateTimeFormat("pt-PT", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }).format(new Date(preview.expires_at))}
+                  </dd>
+                </div>
+              </dl>
+
+              {preview.benefit_terms && (
+                <p className="mt-4 rounded-xl bg-olive-900/5 px-3 py-2.5 text-xs leading-5 text-olive-600">
+                  {preview.benefit_terms}
                 </p>
+              )}
+
+              {/* Actions */}
+              {status === "success" ? (
+                <div className="mt-6">
+                  <div className="flex items-center gap-3 rounded-xl bg-olive-700/10 px-4 py-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-olive-700 text-sm text-white">
+                      ✓
+                    </span>
+                    <p className="text-sm font-semibold text-olive-900">
+                      Benefício confirmado com sucesso.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={reset}
+                    className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-olive-900/20 px-5 text-sm font-semibold text-olive-900 transition hover:bg-olive-900/5"
+                  >
+                    Validar outro código
+                  </button>
+                </div>
+              ) : (
                 <button
                   type="button"
-                  onClick={reset}
-                  className="mt-5 min-h-11 rounded-full border border-white/30 px-5 py-3 text-sm font-semibold"
+                  onClick={confirm}
+                  disabled={status === "confirming"}
+                  className="bg-gold-500 hover:bg-gold-500/90 mt-5 inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl text-base font-semibold text-olive-900 transition disabled:opacity-50"
                 >
-                  Validar outro código
+                  {status === "confirming"
+                    ? "A confirmar…"
+                    : "Confirmar utilização"}
                 </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={confirm}
-                disabled={status === "confirming"}
-                className="bg-gold-500 mt-7 min-h-11 rounded-full px-6 py-3 text-sm font-semibold text-olive-900 disabled:opacity-50"
-              >
-                {status === "confirming"
-                  ? "A confirmar…"
-                  : "Confirmar utilização"}
-              </button>
-            )}
+              )}
+            </div>
           </section>
         ) : null}
       </section>
