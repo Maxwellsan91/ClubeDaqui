@@ -251,7 +251,7 @@ export default function AccountPage() {
           />
         </div>
         <div className="mt-6">
-          <SavingsOverview records={records} />
+          <SavingsOverview records={records} summary={summary} />
         </div>
         <div className="mt-6">
           <SavingsByCategory records={records} />
