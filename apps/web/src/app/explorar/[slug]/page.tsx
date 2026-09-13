@@ -153,6 +153,7 @@ export default async function BusinessPage({
             address: string;
             description?: string;
             image?: string;
+            imageUrl?: string;
             businessLocationId?: string;
             latitude?: number;
             longitude?: number;
@@ -164,6 +165,7 @@ export default async function BusinessPage({
             phone?: string;
             whatsapp?: string;
             website?: string;
+            imageUrl?: string;
           };
           business = {
             name: d.name,
@@ -173,6 +175,7 @@ export default async function BusinessPage({
             description:
               d.description ?? "Uma descoberta do nosso roteiro local.",
             image:
+              d.imageUrl ??
               d.image ??
               "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=85",
             businessLocationId: d.businessLocationId,
