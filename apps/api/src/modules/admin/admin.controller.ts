@@ -83,22 +83,36 @@ export class AdminController {
 
   @Get("users")
   async users() {
-    const { data, error } = await this.db
-      .from("profiles")
-      .select("id,full_name,role,created_at")
-      .order("created_at", { ascending: false });
+    const [
+      { data, error },
+      { data: counts },
+      { data: authUsers },
+      { data: influencerRows },
+    ] = await Promise.all([
+      this.db
+        .from("profiles")
+        .select("id,full_name,role,created_at")
+        .order("created_at", { ascending: false }),
+      this.db.from("redemptions").select("member_id").eq("status", "CONFIRMED"),
+      this.db.auth.admin.listUsers({ perPage: 1000 }),
+      this.db.from("influencers").select("email,unique_code").eq("is_active", true),
+    ]);
     if (error) return { data: [], total: 0 };
-
-    // Redemption counts per user
-    const { data: counts } = await this.db
-      .from("redemptions")
-      .select("member_id")
-      .eq("status", "CONFIRMED");
 
     const countMap = new Map<string, number>();
     for (const r of (counts ?? []) as { member_id: string }[]) {
       countMap.set(r.member_id, (countMap.get(r.member_id) ?? 0) + 1);
     }
+
+    const emailMap = new Map<string, string>(
+      (authUsers?.users ?? []).map((u) => [u.id, u.email ?? ""]),
+    );
+
+    const influencerEmails = new Set(
+      ((influencerRows ?? []) as { email: string; unique_code: string }[]).map(
+        (i) => i.email.toLowerCase(),
+      ),
+    );
 
     const presented = (
       (data ?? []) as {
@@ -107,15 +121,101 @@ export class AdminController {
         role: string;
         created_at: string;
       }[]
-    ).map((p) => ({
-      id: p.id,
-      fullName: p.full_name ?? "—",
-      role: p.role,
-      createdAt: p.created_at,
-      redemptionsCount: countMap.get(p.id) ?? 0,
-    }));
+    ).map((p) => {
+      const email = emailMap.get(p.id) ?? "";
+      return {
+        id: p.id,
+        fullName: p.full_name ?? "—",
+        email,
+        role: p.role,
+        createdAt: p.created_at,
+        redemptionsCount: countMap.get(p.id) ?? 0,
+        isInfluencer: influencerEmails.has(email.toLowerCase()),
+      };
+    });
 
     return { data: presented, total: presented.length };
+  }
+
+  @Post("users/:id/promote-influencer")
+  async promoteInfluencer(
+    @Param("id") id: string,
+    @Body()
+    body: {
+      commissionRate?: number;
+      customCode?: string;
+    },
+  ) {
+    const { data: authUser, error: authError } =
+      await this.db.auth.admin.getUserById(id);
+    if (authError || !authUser.user?.email) {
+      return { error: "Utilizador não encontrado" };
+    }
+    const email = authUser.user.email;
+
+    const { data: existingInfluencer } = await this.db
+      .from("influencers")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
+    if (existingInfluencer) {
+      return { error: "Este utilizador já é influencer" };
+    }
+
+    const { data: profile } = await this.db
+      .from("profiles")
+      .select("full_name")
+      .eq("id", id)
+      .maybeSingle();
+    const name =
+      (profile as { full_name: string | null } | null)?.full_name ?? email;
+
+    const code =
+      body.customCode?.trim().toUpperCase() ||
+      name
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/[^a-zA-Z]/g, "")
+        .slice(0, 4)
+        .toUpperCase()
+        .padEnd(4, "X") +
+        "-" +
+        Math.floor(1000 + Math.random() * 9000).toString();
+
+    const { data: influencer, error: infError } = await this.db
+      .from("influencers")
+      .insert({
+        name,
+        email,
+        unique_code: code,
+        commission_rate: body.commissionRate ?? 10,
+        is_active: true,
+      })
+      .select("id,unique_code")
+      .single();
+    if (infError) return { error: infError.message };
+
+    // Conceder adesão gratuita de 1 ano se não tiver uma activa
+    const { data: existingMembership } = await this.db
+      .from("memberships")
+      .select("id")
+      .eq("profile_id", id)
+      .eq("status", "active")
+      .gte("ends_at", new Date().toISOString())
+      .limit(1)
+      .maybeSingle();
+
+    if (!existingMembership) {
+      const endsAt = new Date();
+      endsAt.setFullYear(endsAt.getFullYear() + 1);
+      await this.db.from("memberships").insert({
+        profile_id: id,
+        status: "active",
+        ends_at: endsAt.toISOString(),
+      });
+    }
+
+    return { data: influencer };
   }
 
   // ── Businesses / Partners ──────────────────────────────────────────────
