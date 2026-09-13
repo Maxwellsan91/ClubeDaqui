@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
@@ -69,6 +70,16 @@ export class PartnerRedemptionsController {
     }
 
     return { data: redemption };
+  }
+
+  @Get("stats")
+  async stats(@Req() request: AuthenticatedRequest) {
+    const { data, error } = await this.supabase
+      .createUserClient(request.accessToken)
+      .rpc("get_partner_dashboard");
+
+    if (error) throw new BadRequestException(error.message);
+    return { data: data ?? null };
   }
 
   private manualCode(value: unknown) {

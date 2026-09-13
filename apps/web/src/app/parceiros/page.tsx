@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { AppHeader } from "@/components/app-header";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -27,28 +28,27 @@ export default function PartnersPage() {
       setStatus("error");
     }
   }
+  const partnerNav = (
+    <div className="flex items-center gap-4">
+      <Link
+        href="/parceiros/dashboard"
+        className="text-sm font-semibold text-olive-700"
+      >
+        Dashboard
+      </Link>
+      <Link
+        href="/parceiros/validar"
+        className="bg-gold-500 inline-flex min-h-[36px] items-center rounded-full px-4 text-sm font-semibold text-olive-900"
+      >
+        Validar código
+      </Link>
+    </div>
+  );
+
   return (
-    <main className="min-h-screen px-6 py-8 sm:px-10 lg:px-16">
-      <header className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link
-          href="/"
-          className="font-display text-xl font-semibold text-olive-900"
-        >
-          Clube Ribatejo
-        </Link>
-        <div className="flex items-center gap-5">
-          <Link
-            href="/parceiros/validar"
-            className="text-wine-700 text-sm font-semibold"
-          >
-            Validar benefício
-          </Link>
-          <Link href="/" className="text-wine-700 text-sm font-semibold">
-            ← Voltar à Home
-          </Link>
-        </div>
-      </header>
-      <section className="mx-auto grid max-w-7xl gap-12 py-20 lg:grid-cols-[1fr_0.8fr] lg:py-28">
+    <main className="min-h-screen">
+      <AppHeader rightSlot={partnerNav} mobileRight={partnerNav} />
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_0.8fr] lg:py-28">
         <div>
           <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
             Para estabelecimentos locais
