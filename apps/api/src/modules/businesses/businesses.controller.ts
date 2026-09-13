@@ -65,10 +65,14 @@ type BusinessRecord = {
   name: string;
   slug: string;
   description: string | null;
+  phone: string | null;
+  website_url: string | null;
+  instagram: string | null;
   business_locations: Array<{
     id?: string;
     address_line_1: string;
     locality: string;
+    phone: string | null;
     latitude: number | null;
     longitude: number | null;
   }>;
@@ -86,7 +90,7 @@ export class BusinessesController {
         .createPublicClient()
         .from("businesses")
         .select(
-          "id,name,slug,description,business_locations(address_line_1,postal_code,locality,latitude,longitude),business_categories(categories(name))",
+          "id,name,slug,description,phone,website_url,instagram,business_locations(id,address_line_1,postal_code,locality,phone,latitude,longitude),business_categories(categories(name))",
         )
         .eq("is_active", true)
         .order("name");
@@ -130,6 +134,9 @@ export class BusinessesController {
       latitude: location?.latitude,
       longitude: location?.longitude,
       description: item.description,
+      phone: item.phone ?? location?.phone ?? null,
+      website: item.website_url ?? null,
+      instagram: item.instagram ?? null,
     };
   }
 
@@ -140,7 +147,7 @@ export class BusinessesController {
         .createPublicClient()
         .from("businesses")
         .select(
-          "id,name,slug,description,business_locations(address_line_1,postal_code,locality,latitude,longitude),business_categories(categories(name))",
+          "id,name,slug,description,phone,website_url,instagram,business_locations(id,address_line_1,postal_code,locality,phone,latitude,longitude),business_categories(categories(name))",
         )
         .eq("is_active", true)
         .eq("slug", id)
