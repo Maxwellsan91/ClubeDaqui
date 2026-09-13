@@ -11,6 +11,23 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [resetSent, setResetSent] = useState(false);
+  const [resetSending, setResetSending] = useState(false);
+
+  async function sendReset() {
+    const trimmed = email.trim();
+    if (!trimmed) {
+      setError("Preencha o email antes de recuperar a senha.");
+      return;
+    }
+    setResetSending(true);
+    setError("");
+    await createClient().auth.resetPasswordForEmail(trimmed, {
+      redirectTo: `${window.location.origin}/auth/callback?next=/conta`,
+    });
+    setResetSent(true);
+    setResetSending(false);
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -110,6 +127,14 @@ export default function SignInPage() {
                 >
                   Palavra-passe
                 </label>
+                <button
+                  type="button"
+                  onClick={() => void sendReset()}
+                  disabled={resetSending}
+                  className="text-xs text-olive-500 hover:text-wine-700 underline underline-offset-2 transition-colors disabled:opacity-60"
+                >
+                  {resetSending ? "A enviar…" : "Esqueceu a senha?"}
+                </button>
               </div>
               <input
                 id="password"
@@ -122,6 +147,13 @@ export default function SignInPage() {
                 required
               />
             </div>
+
+            {resetSent && (
+              <p className="rounded-xl bg-olive-900/8 px-4 py-3 text-sm text-olive-700">
+                Email de recuperação enviado para <strong>{email}</strong>.
+                Verifique a sua caixa de entrada e siga as instruções.
+              </p>
+            )}
 
             {error && (
               <p
