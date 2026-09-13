@@ -6,7 +6,7 @@ import { type BusinessCardData } from "@/components/business-card";
 import { EmptyState } from "@/components/empty-state";
 import { AppHeader } from "@/components/app-header";
 
-const places: BusinessCardData[] = [
+const staticPlaces: BusinessCardData[] = [
   {
     slug: "a-tasca-do-bronze",
     name: "A Tasca do Bronze",
@@ -56,17 +56,50 @@ const places: BusinessCardData[] = [
   },
 ];
 
-const filters = ["Todos", "Comer", "Dormir", "Lazer"];
+const FAVORITES_KEY = "clube-ribatejo-favorites";
+const categoryFilters = ["Todos", "Comer", "Dormir", "Lazer"];
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+function HeartIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
 
 export default function ExplorePage() {
   const [filter, setFilter] = useState("Todos");
+  const [showFavorites, setShowFavorites] = useState(false);
   const [query, setQuery] = useState("");
-  const [visibleCount, setVisibleCount] = useState(9);
-  const [remotePlaces, setRemotePlaces] = useState<BusinessCardData[]>(places);
+  const [visibleCount, setVisibleCount] = useState(20);
+  const [remotePlaces, setRemotePlaces] =
+    useState<BusinessCardData[]>(staticPlaces);
   const [loading, setLoading] = useState(Boolean(apiUrl));
   const [error, setError] = useState(false);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
+  // Load favorites from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(FAVORITES_KEY);
+      if (stored) setFavorites(new Set(JSON.parse(stored) as string[]));
+    } catch {
+      /* ignore parse errors */
+    }
+  }, []);
+
+  // Fetch businesses from API
   useEffect(() => {
     if (!apiUrl) return;
     fetch(`${apiUrl}/api/businesses`)
@@ -76,7 +109,6 @@ export default function ExplorePage() {
           setRemotePlaces(
             payload.data.map(
               (item: {
-                id?: string;
                 name: string;
                 category: string;
                 kind: string;
@@ -88,7 +120,7 @@ export default function ExplorePage() {
                 kind: item.kind,
                 city: item.city,
                 image:
-                  places.find((p) => p.name === item.name)?.image ??
+                  staticPlaces.find((p) => p.name === item.name)?.image ??
                   "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
               }),
             ),
@@ -99,19 +131,35 @@ export default function ExplorePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const visible = useMemo(
-    () =>
-      remotePlaces.filter((p) => {
-        const matchesFilter = filter === "Todos" || p.category === filter;
-        return (
-          matchesFilter &&
-          `${p.name} ${p.kind} ${p.city}`
-            .toLowerCase()
-            .includes(query.toLowerCase())
-        );
-      }),
-    [filter, query, remotePlaces],
-  );
+  function toggleFavorite(slug: string, e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setFavorites((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) {
+        next.delete(slug);
+      } else {
+        next.add(slug);
+      }
+      try {
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify([...next]));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }
+
+  const visible = useMemo(() => {
+    return remotePlaces.filter((p) => {
+      if (showFavorites && !favorites.has(p.slug)) return false;
+      const matchesCategory = filter === "Todos" || p.category === filter;
+      const matchesQuery = `${p.name} ${p.kind} ${p.city}`
+        .toLowerCase()
+        .includes(query.toLowerCase());
+      return matchesCategory && matchesQuery;
+    });
+  }, [filter, showFavorites, query, remotePlaces, favorites]);
 
   const displayed = visible.slice(0, visibleCount);
 
@@ -166,7 +214,44 @@ export default function ExplorePage() {
           role="group"
           aria-label="Filtrar por categoria"
         >
-          {filters.map((item) => (
+          {/* Favoritos chip */}
+          <button
+            onClick={() => {
+              setShowFavorites((v) => !v);
+              setVisibleCount(20);
+            }}
+            aria-pressed={showFavorites}
+            className={`flex min-h-[38px] flex-none items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition ${
+              showFavorites
+                ? "bg-wine-700 text-white"
+                : "border border-olive-900/15 text-olive-700 hover:border-olive-900/30"
+            }`}
+          >
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill={showFavorites ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            Favoritos
+            {favorites.size > 0 && (
+              <span
+                className={`rounded-full px-1.5 text-[10px] font-bold ${showFavorites ? "bg-white/20 text-white" : "bg-olive-900/10 text-olive-700"}`}
+              >
+                {favorites.size}
+              </span>
+            )}
+          </button>
+
+          {/* Category chips */}
+          {categoryFilters.map((item) => (
             <button
               key={item}
               onClick={() => {
@@ -187,17 +272,18 @@ export default function ExplorePage() {
 
         {/* Count */}
         <p className="mt-5 text-sm text-olive-600">
-          {visible.length}{" "}
-          {visible.length === 1 ? "lugar encontrado" : "lugares encontrados"}
+          {showFavorites && favorites.size === 0
+            ? "Nenhum favorito guardado ainda"
+            : `${visible.length} ${visible.length === 1 ? "lugar encontrado" : "lugares encontrados"}`}
         </p>
 
         {/* List */}
         {loading ? (
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 space-y-px">
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
-                className="flex h-20 animate-pulse items-center gap-4 rounded-2xl bg-olive-900/8 p-3"
+                className="flex h-[76px] animate-pulse items-center gap-4 bg-olive-900/5 px-4 first:rounded-t-2xl last:rounded-b-2xl"
               />
             ))}
           </div>
@@ -208,57 +294,74 @@ export default function ExplorePage() {
           />
         ) : displayed.length === 0 ? (
           <div className="mt-4">
-            <EmptyState
-              title="Não encontrámos lugares"
-              description="Experimente outro termo ou remova os filtros."
-            />
+            {showFavorites && favorites.size === 0 ? (
+              <div className="rounded-2xl border border-dashed border-olive-900/20 p-8 text-center">
+                <p className="font-display text-xl text-olive-900">
+                  Ainda sem favoritos
+                </p>
+                <p className="mt-2 text-sm leading-6 text-olive-600">
+                  Toque no coração ao lado de um lugar para o guardar aqui.
+                </p>
+              </div>
+            ) : (
+              <EmptyState
+                title="Não encontrámos lugares"
+                description="Experimente outro termo ou remova os filtros."
+              />
+            )}
           </div>
         ) : (
           <div className="mt-4 overflow-hidden rounded-2xl border border-olive-900/10">
             {displayed.map((place, idx) => (
-              <Link
+              <div
                 key={place.slug}
-                href={`/explorar/${place.slug}`}
-                className={`flex items-center gap-4 bg-white px-4 py-3.5 transition hover:bg-cream-100 active:bg-cream-100 ${
+                className={`flex items-center gap-3 bg-white px-4 py-3.5 ${
                   idx < displayed.length - 1
                     ? "border-b border-olive-900/8"
                     : ""
                 }`}
               >
                 {/* Thumbnail */}
-                <div
-                  className="h-14 w-14 flex-none rounded-xl bg-cover bg-center"
-                  style={{ backgroundImage: `url(${place.image})` }}
-                  aria-hidden="true"
-                />
-                {/* Info */}
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-olive-900">
-                    {place.name}
-                  </p>
-                  <p className="mt-0.5 text-xs text-olive-600">
-                    {place.kind} · {place.city}
-                  </p>
-                  <p className="mt-0.5 text-xs text-olive-500">
-                    1 oferta disponível
-                  </p>
-                </div>
-                {/* Chevron */}
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="shrink-0 text-olive-900/30"
-                  aria-hidden="true"
+                <Link
+                  href={`/explorar/${place.slug}`}
+                  className="flex flex-1 items-center gap-3 transition hover:opacity-90"
                 >
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </Link>
+                  <div
+                    className="h-14 w-14 flex-none rounded-xl bg-cover bg-center"
+                    style={{ backgroundImage: `url(${place.image})` }}
+                    aria-hidden="true"
+                  />
+                  {/* Info */}
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold text-olive-900">
+                      {place.name}
+                    </p>
+                    <p className="mt-0.5 text-xs text-olive-600">
+                      {place.kind} · {place.city}
+                    </p>
+                    <p className="mt-0.5 text-xs text-olive-500">
+                      1 oferta disponível
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Favorite button */}
+                <button
+                  onClick={(e) => toggleFavorite(place.slug, e)}
+                  aria-label={
+                    favorites.has(place.slug)
+                      ? `Remover ${place.name} dos favoritos`
+                      : `Adicionar ${place.name} aos favoritos`
+                  }
+                  className={`shrink-0 p-1 transition-transform active:scale-90 ${
+                    favorites.has(place.slug)
+                      ? "text-wine-700"
+                      : "text-olive-900/20 hover:text-olive-900/40"
+                  }`}
+                >
+                  <HeartIcon filled={favorites.has(place.slug)} />
+                </button>
+              </div>
             ))}
           </div>
         )}
