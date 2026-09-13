@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Business = {
@@ -31,6 +32,7 @@ function RoleBadge({ benefits }: { benefits: number }) {
 }
 
 export default function AdminParceiros() {
+  const router = useRouter();
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
@@ -81,15 +83,20 @@ export default function AdminParceiros() {
         body: JSON.stringify(form),
       },
     );
-    const json = (await res.json()) as { error?: string };
+    const json = (await res.json()) as { error?: string; data?: { id: string } };
     if (json.error) {
       setError(json.error);
+      setSaving(false);
     } else {
       setAdding(false);
-      setForm({ name: "", slug: "", description: "", categorySlug: "comer" });
-      void load();
+      // Redirect to edit page to fill in all details
+      if (json.data?.id) {
+        router.push(`/admin/parceiros/${json.data.id}`);
+      } else {
+        void load();
+        setSaving(false);
+      }
     }
-    setSaving(false);
   }
 
   function autoSlug(name: string) {
@@ -258,14 +265,22 @@ export default function AdminParceiros() {
                       <RoleBadge benefits={b.activeBenefits} />
                     </td>
                     <td className="px-4 py-4 text-right">
-                      <a
-                        href={`/explorar/${b.slug}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs font-medium text-olive-600 hover:text-olive-900 underline underline-offset-2"
-                      >
-                        Ver página
-                      </a>
+                      <div className="flex items-center justify-end gap-3">
+                        <a
+                          href={`/explorar/${b.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs text-olive-400 hover:text-olive-600 underline underline-offset-2"
+                        >
+                          Ver página
+                        </a>
+                        <a
+                          href={`/admin/parceiros/${b.id}`}
+                          className="rounded-lg bg-olive-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-olive-900/90 transition-colors"
+                        >
+                          Editar
+                        </a>
+                      </div>
                     </td>
                   </tr>
                 ))}
