@@ -282,8 +282,10 @@ export default function AdminUtilizadores() {
     void load();
   }, []);
 
+  const effectiveRole = (u: User) => (u.isInfluencer ? "INFLUENCER" : u.role);
+
   const filtered =
-    filter === "ALL" ? users : users.filter((u) => u.role === filter);
+    filter === "ALL" ? users : users.filter((u) => effectiveRole(u) === filter);
 
   function fmtDate(iso: string) {
     return new Date(iso).toLocaleDateString("pt-PT", {
@@ -295,10 +297,10 @@ export default function AdminUtilizadores() {
 
   const tabs = [
     { key: "ALL", label: `Todos (${users.length})` },
-    { key: "MEMBER", label: `Membros (${users.filter((u) => u.role === "MEMBER").length})` },
-    { key: "INFLUENCER", label: `Influencers (${users.filter((u) => u.role === "INFLUENCER").length})` },
-    { key: "PARTNER", label: `Parceiros (${users.filter((u) => u.role === "PARTNER").length})` },
-    { key: "ADMIN", label: `Admin (${users.filter((u) => u.role === "ADMIN").length})` },
+    { key: "MEMBER", label: `Membros (${users.filter((u) => effectiveRole(u) === "MEMBER").length})` },
+    { key: "INFLUENCER", label: `Influencers (${users.filter((u) => effectiveRole(u) === "INFLUENCER").length})` },
+    { key: "PARTNER", label: `Parceiros (${users.filter((u) => effectiveRole(u) === "PARTNER").length})` },
+    { key: "ADMIN", label: `Admin (${users.filter((u) => effectiveRole(u) === "ADMIN").length})` },
   ];
 
   return (
@@ -370,7 +372,7 @@ export default function AdminUtilizadores() {
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <RoleBadge role={u.role} />
+                        <RoleBadge role={u.isInfluencer ? "INFLUENCER" : u.role} />
                         {!u.isActive && (
                           <span className="inline-block rounded-full bg-wine-700/10 px-2 py-0.5 text-[10px] font-bold text-wine-700">
                             Inativo
