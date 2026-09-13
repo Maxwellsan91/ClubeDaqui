@@ -4,11 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
-import {
-  BusinessCard,
-  type BusinessCardData,
-} from "@/components/business-card";
-import { EmptyState } from "@/components/empty-state";
+import type { BusinessCardData } from "@/components/business-card";
 import { MemberSummary } from "@/components/member-summary";
 import { RecordSavingsForm } from "@/components/record-savings-form";
 import { SavingsByCategory } from "@/components/savings-by-category";
@@ -64,9 +60,8 @@ const places: BusinessCardData[] = [
 const storageKey = "clube-ribatejo-savings";
 
 export default function AccountPage() {
-  const [email, setEmail] = useState<string>();
-  const [query, setQuery] = useState("");
-  const [map, setMap] = useState(false);
+  const [firstName, setFirstName] = useState<string>();
+  const [showMap, setShowMap] = useState(false);
   const [records, setRecords] = useState<SavingsRecord[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -88,9 +83,12 @@ export default function AccountPage() {
 
   useEffect(() => {
     const client = createClient();
-    client.auth
-      .getUser()
-      .then(({ data }) => setEmail(data.user?.email ?? undefined));
+    client.auth.getUser().then(({ data }) => {
+      const meta = data.user?.user_metadata;
+      const name: string | undefined =
+        meta?.full_name || meta?.name || data.user?.email;
+      setFirstName(name?.split(/[\s@]/)[0]);
+    });
     client.auth.getSession().then(async ({ data }) => {
       const token = data.session?.access_token;
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -135,15 +133,15 @@ export default function AccountPage() {
     });
   }, []);
 
-  const filtered = useMemo(
-    () =>
-      places.filter((place) =>
-        `${place.name} ${place.kind} ${place.city}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      ),
-    [query],
-  );
+  const byCategory = useMemo(() => {
+    const map: Record<string, BusinessCardData[]> = {};
+    places.forEach((p) => {
+      if (!map[p.category]) map[p.category] = [];
+      map[p.category].push(p);
+    });
+    return Object.entries(map);
+  }, []);
+
   const saveServerRecord = (record: SavingsRecord) => {
     setRecords((current) => [record, ...current]);
     setUnrecordedRedemptions((current) =>
@@ -177,24 +175,21 @@ export default function AccountPage() {
         <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
           Área de membros
         </p>
-        <div className="mt-5 flex flex-wrap items-end justify-between gap-5">
+        <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-display text-5xl tracking-tight text-olive-900">
+            <h1 className="font-display text-[2rem] leading-tight tracking-tight text-olive-900 sm:text-5xl">
               Olá,{" "}
-              {serverSummary?.fullName?.split(" ")[0] ??
-                email?.split("@")[0] ??
-                "membro"}
-              .
+              {serverSummary?.fullName?.split(" ")[0] ?? firstName ?? "membro"}.
             </h1>
-            <p className="mt-4 text-lg leading-7 text-olive-700">
-              Descubra o próximo lugar e acompanhe quanto já poupou com o Clube.
+            <p className="mt-2 text-base leading-6 text-olive-700 sm:mt-4 sm:text-lg sm:leading-7">
+              Descubra o próximo lugar e acompanhe as suas poupanças.
             </p>
           </div>
           <button
-            onClick={() => setMap(!map)}
+            onClick={() => setShowMap(!showMap)}
             className="min-h-11 rounded-full bg-olive-900 px-5 py-3 text-sm font-semibold text-white"
           >
-            {map ? "Ver lista" : "Ver mapa"}
+            {showMap ? "Ver lista" : "Ver mapa"}
           </button>
         </div>
         {/* Ações pendentes após visita — mostradas primeiro quando existem */}
@@ -275,18 +270,19 @@ export default function AccountPage() {
               <p className="text-wine-700 text-xs font-semibold tracking-[0.2em] uppercase">
                 Descobrir
               </p>
-              <h2 className="font-display mt-2 text-3xl text-olive-900">
-                Benefícios e lugares disponíveis
+              <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
+                Lugares e benefícios
               </h2>
             </div>
             <Link
               href="/explorar"
-              className="text-wine-700 text-sm font-semibold"
+              className="text-wine-700 shrink-0 text-sm font-semibold"
             >
               Ver todos →
             </Link>
           </div>
-          {map ? (
+
+          {showMap ? (
             <div className="mt-6 overflow-hidden rounded-3xl border border-olive-900/10">
               <iframe
                 title="Mapa de lugares no Ribatejo"
@@ -299,37 +295,59 @@ export default function AccountPage() {
               </p>
             </div>
           ) : (
-            <>
-              <div className="mt-6 flex max-w-xl items-center rounded-full border border-olive-900/15 bg-white p-2 shadow-sm">
-                <span className="px-4 text-olive-700" aria-hidden="true">
-                  ⌕
-                </span>
-                <label htmlFor="member-search" className="sr-only">
-                  Pesquisar lugares
-                </label>
-                <input
-                  id="member-search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  className="min-w-0 flex-1 bg-transparent py-3 text-sm outline-none"
-                  placeholder="Pesquisar restaurante, hotel ou experiência"
-                />
-              </div>
-              {filtered.length ? (
-                <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {filtered.map((place) => (
-                    <BusinessCard key={place.slug} place={place} />
-                  ))}
+            <div className="mt-6 space-y-8">
+              {byCategory.map(([category, items]) => (
+                <div key={category}>
+                  <div className="mb-3 flex items-center justify-between">
+                    <h3 className="font-display text-xl text-olive-900 sm:text-2xl">
+                      {category}
+                    </h3>
+                    <Link
+                      href={`/explorar?categoria=${encodeURIComponent(category)}`}
+                      className="text-wine-700 shrink-0 text-sm font-semibold"
+                    >
+                      Ver todos →
+                    </Link>
+                  </div>
+                  <div className="-mx-5 flex [scrollbar-width:none] gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+                    {items.map((place) => (
+                      <Link
+                        key={place.slug}
+                        href={`/explorar/${place.slug}`}
+                        className="group w-36 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white shadow-sm transition hover:shadow-md sm:w-44"
+                      >
+                        <div
+                          className="h-24 bg-cover bg-center sm:h-28"
+                          style={{ backgroundImage: `url(${place.image})` }}
+                          aria-label={`Imagem de ${place.name}`}
+                        />
+                        <div className="p-2.5">
+                          <p className="text-gold-500 text-[10px] font-bold tracking-wider uppercase">
+                            {place.kind}
+                          </p>
+                          <p className="group-hover:text-wine-700 mt-0.5 text-sm leading-tight font-semibold text-olive-900 transition-colors">
+                            {place.name}
+                          </p>
+                          <p className="mt-0.5 text-xs text-olive-600">
+                            {place.city}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                    {/* CTA card */}
+                    <Link
+                      href={`/explorar?categoria=${encodeURIComponent(category)}`}
+                      className="bg-cream-100 hover:bg-cream-100/80 flex w-36 flex-none flex-col items-center justify-center gap-2 rounded-2xl border border-olive-900/10 p-4 text-center transition sm:w-44"
+                    >
+                      <span className="text-2xl text-olive-700/40">→</span>
+                      <p className="text-xs font-semibold text-olive-700">
+                        Ver mais em {category}
+                      </p>
+                    </Link>
+                  </div>
                 </div>
-              ) : (
-                <div className="mt-6">
-                  <EmptyState
-                    title="Não encontrámos lugares"
-                    description="Experimente outro termo de pesquisa."
-                  />
-                </div>
-              )}
-            </>
+              ))}
+            </div>
           )}
         </div>
       </section>
