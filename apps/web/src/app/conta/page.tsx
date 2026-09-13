@@ -15,7 +15,7 @@ import type {
   SavingsRecord,
 } from "@/types/member";
 
-const places: BusinessCardData[] = [
+const staticPlaces: BusinessCardData[] = [
   {
     slug: "a-tasca-do-bronze",
     name: "A Tasca do Bronze",
@@ -46,6 +46,15 @@ const places: BusinessCardData[] = [
       "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
   },
   {
+    slug: "experiências-do-tejo",
+    name: "Experiências do Tejo",
+    category: "Lazer",
+    kind: "Experiência",
+    city: "Almeirim",
+    image:
+      "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=80",
+  },
+  {
     slug: "casa-ribatejana",
     name: "Casa Ribatejana",
     category: "Dormir",
@@ -58,9 +67,12 @@ const places: BusinessCardData[] = [
 
 const storageKey = "clube-ribatejo-savings";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 export default function AccountPage() {
   const [firstName, setFirstName] = useState<string>();
   const [showMap, setShowMap] = useState(false);
+  const [places, setPlaces] = useState<BusinessCardData[]>(staticPlaces);
   const [records, setRecords] = useState<SavingsRecord[]>([]);
   const [serverSummary, setServerSummary] = useState<MemberSummaryData | null>(
     null,
@@ -80,9 +92,36 @@ export default function AccountPage() {
         meta?.full_name || meta?.name || data.user?.email;
       setFirstName(name?.split(/[\s@]/)[0]);
     });
+    if (apiUrl) {
+      fetch(`${apiUrl}/api/businesses`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((payload) => {
+          if (payload?.data?.length) {
+            setPlaces(
+              payload.data.map(
+                (item: {
+                  name: string;
+                  category: string;
+                  kind: string;
+                  city: string;
+                }) => ({
+                  slug: item.name.toLowerCase().replaceAll(" ", "-"),
+                  name: item.name,
+                  category: item.category,
+                  kind: item.kind,
+                  city: item.city,
+                  image:
+                    staticPlaces.find((p) => p.name === item.name)?.image ??
+                    "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
+                }),
+              ),
+            );
+          }
+        })
+        .catch(() => {});
+    }
     client.auth.getSession().then(async ({ data }) => {
       const token = data.session?.access_token;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       if (!token || !apiUrl) {
         setApiStatus("fallback");
         return;
@@ -131,7 +170,7 @@ export default function AccountPage() {
       map[p.category].push(p);
     });
     return Object.entries(map);
-  }, []);
+  }, [places]);
 
   const saveServerRecord = (record: SavingsRecord) => {
     setRecords((current) => [record, ...current]);
@@ -288,42 +327,42 @@ export default function AccountPage() {
                       href={`/explorar?categoria=${encodeURIComponent(category)}`}
                       className="text-wine-700 shrink-0 text-sm font-semibold"
                     >
-                      Ver todos →
+                      {items.length} ofertas →
                     </Link>
                   </div>
-                  <div className="-mx-5 flex [scrollbar-width:none] gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+                  <div className="-mx-5 flex [scrollbar-width:none] gap-3 overflow-x-auto px-5 pb-3 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
                     {items.map((place) => (
                       <Link
                         key={place.slug}
                         href={`/explorar/${place.slug}`}
-                        className="group w-36 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white shadow-sm transition hover:shadow-md sm:w-44"
+                        className="group w-40 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white shadow-sm transition hover:shadow-md"
                       >
                         <div
-                          className="h-24 bg-cover bg-center sm:h-28"
+                          className="h-[100px] bg-cover bg-center"
                           style={{ backgroundImage: `url(${place.image})` }}
                           aria-label={`Imagem de ${place.name}`}
                         />
-                        <div className="p-2.5">
+                        <div className="p-3">
                           <p className="text-gold-500 text-[10px] font-bold tracking-wider uppercase">
                             {place.kind}
                           </p>
-                          <p className="group-hover:text-wine-700 mt-0.5 text-sm leading-tight font-semibold text-olive-900 transition-colors">
+                          <p className="group-hover:text-wine-700 mt-0.5 text-sm font-semibold leading-tight text-olive-900 transition-colors">
                             {place.name}
                           </p>
-                          <p className="mt-0.5 text-xs text-olive-600">
+                          <p className="mt-0.5 text-[11px] text-olive-600">
                             {place.city}
                           </p>
                         </div>
                       </Link>
                     ))}
-                    {/* CTA card */}
+                    {/* Ver mais card */}
                     <Link
                       href={`/explorar?categoria=${encodeURIComponent(category)}`}
-                      className="bg-cream-100 hover:bg-cream-100/80 flex w-36 flex-none flex-col items-center justify-center gap-2 rounded-2xl border border-olive-900/10 p-4 text-center transition sm:w-44"
+                      className="bg-cream-100 hover:bg-olive-900/5 flex w-32 flex-none flex-col items-center justify-center gap-2 rounded-2xl border border-olive-900/10 p-4 text-center transition"
                     >
-                      <span className="text-2xl text-olive-700/40">→</span>
-                      <p className="text-xs font-semibold text-olive-700">
-                        Ver mais em {category}
+                      <span className="text-xl text-olive-700/40">→</span>
+                      <p className="text-[11px] font-semibold leading-tight text-olive-700">
+                        Ver todos em {category}
                       </p>
                     </Link>
                   </div>

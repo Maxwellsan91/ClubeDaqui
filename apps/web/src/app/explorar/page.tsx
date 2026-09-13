@@ -2,10 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  BusinessCard,
-  type BusinessCardData,
-} from "@/components/business-card";
+import { type BusinessCardData } from "@/components/business-card";
 import { EmptyState } from "@/components/empty-state";
 import { AppHeader } from "@/components/app-header";
 
@@ -122,30 +119,22 @@ export default function ExplorePage() {
     <main className="min-h-screen">
       <AppHeader
         rightSlot={
-          <nav className="flex items-center gap-4">
-            <Link
-              href="/registar"
-              className="text-sm font-medium text-olive-700 transition-colors hover:text-olive-900"
-            >
-              Criar conta
-            </Link>
-            <Link
-              href="/entrar"
-              className="bg-wine-700 hover:bg-wine-800 rounded-full px-5 py-2 text-sm font-semibold text-white transition-colors"
-            >
-              Entrar
-            </Link>
-          </nav>
+          <Link
+            href="/conta"
+            className="text-sm font-semibold text-olive-700 transition-colors hover:text-olive-900"
+          >
+            Área de membros
+          </Link>
         }
       />
 
-      <section className="mx-auto max-w-7xl px-5 pt-8 pb-16 sm:px-8">
+      <section className="mx-auto max-w-2xl px-5 pt-8 pb-16 sm:px-8">
         {/* Page title */}
-        <div className="mb-7">
+        <div className="mb-5">
           <p className="text-wine-700 text-[11px] font-semibold tracking-[0.28em] uppercase">
             Guia piloto · Almeirim
           </p>
-          <h1 className="font-display mt-3 text-[2.2rem] leading-tight tracking-tight text-olive-900 sm:text-5xl">
+          <h1 className="font-display mt-2 text-2xl leading-tight tracking-tight text-olive-900 sm:text-3xl">
             Encontre o seu próximo lugar.
           </h1>
         </div>
@@ -173,7 +162,7 @@ export default function ExplorePage() {
 
         {/* Filter chips */}
         <div
-          className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+          className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
           role="group"
           aria-label="Filtrar por categoria"
         >
@@ -182,10 +171,10 @@ export default function ExplorePage() {
               key={item}
               onClick={() => {
                 setFilter(item);
-                setVisibleCount(9);
+                setVisibleCount(20);
               }}
               aria-pressed={filter === item}
-              className={`min-h-[40px] flex-none rounded-full px-5 py-2.5 text-sm font-semibold transition ${
+              className={`min-h-[38px] flex-none rounded-full px-4 py-2 text-sm font-semibold transition ${
                 filter === item
                   ? "text-cream-50 bg-olive-900"
                   : "border border-olive-900/15 text-olive-700 hover:border-olive-900/30"
@@ -197,18 +186,18 @@ export default function ExplorePage() {
         </div>
 
         {/* Count */}
-        <p className="mt-6 text-sm text-olive-600">
+        <p className="mt-5 text-sm text-olive-600">
           {visible.length}{" "}
           {visible.length === 1 ? "lugar encontrado" : "lugares encontrados"}
         </p>
 
-        {/* Grid */}
+        {/* List */}
         {loading ? (
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
+          <div className="mt-4 space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
-                className="h-[380px] animate-pulse rounded-2xl bg-olive-900/8"
+                className="flex h-20 animate-pulse items-center gap-4 rounded-2xl bg-olive-900/8 p-3"
               />
             ))}
           </div>
@@ -218,24 +207,66 @@ export default function ExplorePage() {
             description="Tente novamente dentro de instantes."
           />
         ) : displayed.length === 0 ? (
-          <div className="mt-5">
+          <div className="mt-4">
             <EmptyState
               title="Não encontrámos lugares"
               description="Experimente outro termo ou remova os filtros."
             />
           </div>
         ) : (
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {displayed.map((place) => (
-              <BusinessCard key={place.slug} place={place} />
+          <div className="mt-4 overflow-hidden rounded-2xl border border-olive-900/10">
+            {displayed.map((place, idx) => (
+              <Link
+                key={place.slug}
+                href={`/explorar/${place.slug}`}
+                className={`flex items-center gap-4 bg-white px-4 py-3.5 transition hover:bg-cream-100 active:bg-cream-100 ${
+                  idx < displayed.length - 1
+                    ? "border-b border-olive-900/8"
+                    : ""
+                }`}
+              >
+                {/* Thumbnail */}
+                <div
+                  className="h-14 w-14 flex-none rounded-xl bg-cover bg-center"
+                  style={{ backgroundImage: `url(${place.image})` }}
+                  aria-hidden="true"
+                />
+                {/* Info */}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-semibold text-olive-900">
+                    {place.name}
+                  </p>
+                  <p className="mt-0.5 text-xs text-olive-600">
+                    {place.kind} · {place.city}
+                  </p>
+                  <p className="mt-0.5 text-xs text-olive-500">
+                    1 oferta disponível
+                  </p>
+                </div>
+                {/* Chevron */}
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="shrink-0 text-olive-900/30"
+                  aria-hidden="true"
+                >
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </Link>
             ))}
           </div>
         )}
 
         {displayed.length < visible.length && (
-          <div className="mt-10 text-center">
+          <div className="mt-8 text-center">
             <button
-              onClick={() => setVisibleCount((c) => c + 9)}
+              onClick={() => setVisibleCount((c) => c + 20)}
               className="min-h-[44px] rounded-full border border-olive-900/20 px-7 py-2.5 text-sm font-semibold text-olive-900 transition hover:bg-olive-900 hover:text-white"
             >
               Carregar mais
