@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { validateNIF } from "@/lib/nif";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -19,11 +20,16 @@ export default function SignUpPage() {
 
     const form = new FormData(event.currentTarget);
     const fullName = String(form.get("fullName") ?? "").trim();
+    const nif = String(form.get("nif") ?? "").replace(/\s/g, "");
     const password = String(form.get("password") ?? "");
     const passwordConfirmation = String(form.get("passwordConfirmation") ?? "");
 
     if (fullName.length < 2) {
       setError("Introduza o seu nome completo.");
+      return;
+    }
+    if (!validateNIF(nif)) {
+      setError("NIF inválido. Verifique os 9 dígitos introduzidos.");
       return;
     }
     if (password.length < 8) {
@@ -43,6 +49,7 @@ export default function SignUpPage() {
         options: {
           data: {
             full_name: fullName,
+            nif,
             ...(referralCode.trim() && {
               referral_code: referralCode.trim().toUpperCase(),
             }),
@@ -171,6 +178,31 @@ export default function SignUpPage() {
                     placeholder="a.sua@email.pt"
                     required
                   />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="nif"
+                    className="block text-sm font-semibold text-olive-900"
+                  >
+                    NIF{" "}
+                    <span className="font-normal text-olive-500 text-xs">
+                      — Número de Identificação Fiscal (9 dígitos)
+                    </span>
+                  </label>
+                  <input
+                    id="nif"
+                    name="nif"
+                    inputMode="numeric"
+                    maxLength={9}
+                    autoComplete="off"
+                    className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 font-mono text-olive-900 tracking-widest transition-colors placeholder:font-sans placeholder:tracking-normal placeholder:text-olive-700/40 focus:outline-none"
+                    placeholder="123456789"
+                    required
+                  />
+                  <p className="mt-1.5 text-xs text-olive-500">
+                    O NIF garante um acesso por pessoa e não pode ser alterado após o registo.
+                  </p>
                 </div>
 
                 <div>

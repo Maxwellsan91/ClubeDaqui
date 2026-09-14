@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
@@ -15,6 +15,7 @@ import type {
   MemberSummaryData,
   SavingsRecord,
 } from "@/types/member";
+import { validateNIF } from "@/lib/nif";
 
 const staticPlaces: BusinessCardData[] = [
   {
@@ -66,6 +67,231 @@ const staticPlaces: BusinessCardData[] = [
   },
 ];
 
+type ProfileData = {
+  fullName: string | null;
+  phone: string | null;
+  nif: string | null;
+  email: string | null;
+};
+
+function ProfileEditSection({
+  profile,
+  apiUrl,
+  onSaved,
+}: {
+  profile: ProfileData | null;
+  apiUrl: string;
+  onSaved: (updated: Partial<ProfileData>) => void;
+}) {
+  const supabase = createClient();
+  const [name, setName] = useState(profile?.fullName ?? "");
+  const [phone, setPhone] = useState(profile?.phone ?? "");
+  const [nif, setNif] = useState(profile?.nif ?? "");
+  const [saving, setSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [emailInput, setEmailInput] = useState("");
+  const [emailMsg, setEmailMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [pwMsg, setPwMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [savingPw, setSavingPw] = useState(false);
+  const initialised = useRef(false);
+
+  useEffect(() => {
+    if (profile && !initialised.current) {
+      setName(profile.fullName ?? "");
+      setPhone(profile.phone ?? "");
+      setNif(profile.nif ?? "");
+      initialised.current = true;
+    }
+  }, [profile]);
+
+  const nifLocked = Boolean(profile?.nif);
+
+  async function saveProfile() {
+    if (!nifLocked && nif && !validateNIF(nif)) {
+      setProfileMsg({ text: "NIF inválido. Verifique os 9 dígitos.", ok: false });
+      return;
+    }
+    setSaving(true);
+    setProfileMsg(null);
+    const { data: session } = await supabase.auth.getSession();
+    const token = session.session?.access_token ?? "";
+    const body: Record<string, string> = {};
+    if (name !== (profile?.fullName ?? "")) body.fullName = name;
+    if (phone !== (profile?.phone ?? "")) body.phone = phone;
+    if (!nifLocked && nif && nif !== (profile?.nif ?? "")) body.nif = nif;
+    if (Object.keys(body).length === 0) {
+      setSaving(false);
+      setProfileMsg({ text: "Sem alterações para guardar.", ok: true });
+      return;
+    }
+    const res = await fetch(`${apiUrl}/api/me/profile`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const json = (await res.json()) as { error?: string; data?: Partial<ProfileData> };
+    if (json.error) {
+      setProfileMsg({ text: json.error, ok: false });
+    } else {
+      setProfileMsg({ text: "Dados guardados com sucesso.", ok: true });
+      onSaved({ fullName: name, phone: phone || null, nif: nif || null });
+    }
+    setSaving(false);
+  }
+
+  async function changeEmail() {
+    if (!emailInput.trim()) return;
+    setSendingEmail(true);
+    setEmailMsg(null);
+    const { error } = await supabase.auth.updateUser({ email: emailInput.trim() });
+    if (error) {
+      setEmailMsg({ text: error.message, ok: false });
+    } else {
+      setEmailMsg({ text: "Confirme o novo email — enviámos um link para ambos os endereços.", ok: true });
+      setEmailInput("");
+    }
+    setSendingEmail(false);
+  }
+
+  async function changePassword() {
+    if (newPw.length < 8) { setPwMsg({ text: "Mínimo 8 caracteres.", ok: false }); return; }
+    if (newPw !== confirmPw) { setPwMsg({ text: "As palavras-passe não coincidem.", ok: false }); return; }
+    setSavingPw(true);
+    setPwMsg(null);
+    const { error } = await supabase.auth.updateUser({ password: newPw });
+    if (error) {
+      setPwMsg({ text: "Não foi possível alterar. Tente terminar sessão e entrar novamente.", ok: false });
+    } else {
+      setPwMsg({ text: "Palavra-passe alterada com sucesso.", ok: true });
+      setNewPw(""); setConfirmPw("");
+    }
+    setSavingPw(false);
+  }
+
+  if (!profile) return null;
+
+  const inputClass = "w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10";
+  const labelClass = "mb-1.5 block text-xs font-semibold text-olive-900";
+
+  return (
+    <div className="mt-16 border-t border-cream-100 pt-12">
+      <h2 className="font-display text-2xl text-olive-900">O meu perfil</h2>
+      <p className="mt-1 text-sm text-olive-600">Actualize os seus dados pessoais e credenciais de acesso.</p>
+
+      {/* Personal data */}
+      <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
+        <h3 className="text-sm font-bold text-olive-900 mb-5">Dados pessoais</h3>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className={labelClass}>Nome completo</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>Telefone</label>
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" className={inputClass} placeholder="+351 9XX XXX XXX" />
+          </div>
+          <div>
+            <label className={labelClass}>NIF</label>
+            {nifLocked ? (
+              <div className="flex items-center gap-3">
+                <span className={`${inputClass} bg-cream-50 text-olive-500 font-mono tracking-widest cursor-not-allowed`}>
+                  {profile.nif}
+                </span>
+                <span className="shrink-0 text-xs text-olive-400">Não editável</span>
+              </div>
+            ) : (
+              <>
+                <input
+                  value={nif}
+                  onChange={(e) => setNif(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                  inputMode="numeric"
+                  maxLength={9}
+                  className={`${inputClass} font-mono tracking-widest`}
+                  placeholder="123456789"
+                />
+                <p className="mt-1 text-xs text-olive-400">Após guardar, o NIF não poderá ser alterado.</p>
+              </>
+            )}
+          </div>
+          <div>
+            <label className={labelClass}>Email actual</label>
+            <span className={`${inputClass} block bg-cream-50 text-olive-500 cursor-not-allowed`}>
+              {profile.email ?? "—"}
+            </span>
+          </div>
+        </div>
+        {profileMsg && (
+          <p className={`mt-4 text-sm ${profileMsg.ok ? "text-olive-700" : "text-wine-700"}`}>{profileMsg.text}</p>
+        )}
+        <div className="mt-5">
+          <button
+            onClick={() => void saveProfile()}
+            disabled={saving}
+            className="rounded-xl bg-olive-900 px-6 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 disabled:opacity-60"
+          >
+            {saving ? "A guardar…" : "Guardar alterações"}
+          </button>
+        </div>
+      </div>
+
+      {/* Change email */}
+      <div className="mt-4 rounded-2xl bg-white p-6 shadow-sm">
+        <h3 className="text-sm font-bold text-olive-900 mb-1">Alterar email</h3>
+        <p className="text-xs text-olive-500 mb-4">Será enviado um link de confirmação para o novo endereço e para o actual.</p>
+        <div className="flex gap-3">
+          <input
+            type="email"
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
+            placeholder="novo@email.pt"
+            className={`${inputClass} flex-1`}
+          />
+          <button
+            onClick={() => void changeEmail()}
+            disabled={sendingEmail || !emailInput.trim()}
+            className="shrink-0 rounded-xl bg-olive-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 disabled:opacity-60"
+          >
+            {sendingEmail ? "A enviar…" : "Confirmar"}
+          </button>
+        </div>
+        {emailMsg && (
+          <p className={`mt-3 text-sm ${emailMsg.ok ? "text-olive-700" : "text-wine-700"}`}>{emailMsg.text}</p>
+        )}
+      </div>
+
+      {/* Change password */}
+      <div className="mt-4 rounded-2xl bg-white p-6 shadow-sm">
+        <h3 className="text-sm font-bold text-olive-900 mb-4">Alterar palavra-passe</h3>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className={labelClass}>Nova palavra-passe</label>
+            <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} minLength={8} placeholder="Mín. 8 caracteres" className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>Confirmar palavra-passe</label>
+            <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} placeholder="Repita a nova palavra-passe" className={inputClass} />
+          </div>
+        </div>
+        {pwMsg && (
+          <p className={`mt-3 text-sm ${pwMsg.ok ? "text-olive-700" : "text-wine-700"}`}>{pwMsg.text}</p>
+        )}
+        <div className="mt-5">
+          <button
+            onClick={() => void changePassword()}
+            disabled={savingPw}
+            className="rounded-xl bg-olive-900 px-6 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 disabled:opacity-60"
+          >
+            {savingPw ? "A alterar…" : "Alterar palavra-passe"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const storageKey = "clube-ribatejo-savings";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -86,6 +312,13 @@ function AccountPageInner() {
   const [apiStatus, setApiStatus] = useState<
     "loading" | "connected" | "fallback"
   >("loading");
+  const [profile, setProfile] = useState<{
+    fullName: string | null;
+    phone: string | null;
+    nif: string | null;
+    email: string | null;
+  } | null>(null);
+
   const [influencerData, setInfluencerData] = useState<{
     uniqueCode: string;
     commissionRate: number;
@@ -158,13 +391,18 @@ function AccountPageInner() {
             headers,
           });
         }
-        const [summaryResponse, savingsResponse, redemptionsResponse, influencerResponse] =
+        const [summaryResponse, savingsResponse, redemptionsResponse, influencerResponse, profileResponse] =
           await Promise.all([
             fetch(`${apiUrl}/api/me/summary`, { headers }),
             fetch(`${apiUrl}/api/me/savings`, { headers }),
             fetch(`${apiUrl}/api/me/redemptions`, { headers }),
             fetch(`${apiUrl}/api/me/influencer`, { headers }),
+            fetch(`${apiUrl}/api/me/profile`, { headers }),
           ]);
+        if (profileResponse.ok) {
+          const pp = (await profileResponse.json()) as { data?: typeof profile };
+          if (pp.data) setProfile(pp.data);
+        }
         if (
           !summaryResponse.ok ||
           !savingsResponse.ok ||
@@ -592,6 +830,13 @@ function AccountPageInner() {
             )}
           </div>
         )}
+
+        {/* Profile edit section */}
+        <ProfileEditSection
+          profile={profile}
+          apiUrl={apiUrl ?? ""}
+          onSaved={(updated) => setProfile((p) => p ? { ...p, ...updated } : p)}
+        />
       </section>
     </main>
   );

@@ -1071,6 +1071,30 @@ export class AdminController {
     return { data: { id, isActive: body.isActive } };
   }
 
+  @Patch("users/:id/profile")
+  async updateUserProfile(
+    @Param("id") id: string,
+    @Body() body: { fullName?: string; phone?: string; nif?: string },
+  ) {
+    const patch: Record<string, unknown> = {};
+    if (body.fullName !== undefined) patch.full_name = body.fullName.trim() || null;
+    if (body.phone !== undefined) patch.phone = body.phone.trim() || null;
+    if (body.nif !== undefined) {
+      if (body.nif && !/^\d{9}$/.test(body.nif)) return { error: "NIF inválido — deve ter 9 dígitos" };
+      patch.nif = body.nif || null;
+    }
+    if (Object.keys(patch).length === 0) return { data: {} };
+    const { data, error } = await this.db
+      .from("profiles")
+      .update(patch)
+      .eq("id", id)
+      .select("full_name,phone,nif")
+      .single();
+    if (error?.code === "23505") return { error: "Este NIF já está registado noutro utilizador" };
+    if (error) return { error: error.message };
+    return { data };
+  }
+
   @Post("users/:id/grant-membership")
   async grantMembership(@Param("id") id: string) {
     const { data: existing } = await this.db

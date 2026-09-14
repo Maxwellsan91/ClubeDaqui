@@ -42,6 +42,97 @@ type UserDetail = {
   statusLogs: StatusLog[];
 };
 
+function EditProfileModal({
+  user,
+  onClose,
+  onSaved,
+}: {
+  user: UserDetail;
+  onClose: () => void;
+  onSaved: (updated: { fullName: string; phone: string; nif: string }) => void;
+}) {
+  const [fullName, setFullName] = useState(user.fullName === "—" ? "" : user.fullName);
+  const [phone, setPhone] = useState("");
+  const [nif, setNif] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function save() {
+    setSaving(true);
+    setError(null);
+    const { data: session } = await createClient().auth.getSession();
+    const token = session.session?.access_token ?? "";
+    const body: Record<string, string> = {};
+    if (fullName) body.fullName = fullName;
+    if (phone) body.phone = phone;
+    if (nif) body.nif = nif;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${user.id}/profile`,
+      {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      },
+    );
+    const json = (await res.json()) as { error?: string };
+    if (json.error) {
+      setError(json.error);
+      setSaving(false);
+    } else {
+      onSaved({ fullName: fullName || user.fullName, phone, nif });
+      onClose();
+    }
+  }
+
+  const inputClass = "w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 backdrop-blur-sm p-4">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+        <h2 className="mb-1 text-base font-bold text-olive-900">Editar perfil</h2>
+        <p className="mb-5 text-sm text-olive-600">{user.fullName}</p>
+        <div className="space-y-4">
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-olive-900">Nome completo</label>
+            <input value={fullName} onChange={(e) => setFullName(e.target.value)} className={inputClass} placeholder={user.fullName} />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-olive-900">Telefone</label>
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputClass} placeholder="+351 9XX XXX XXX" inputMode="tel" />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-olive-900">
+              NIF{" "}
+              <span className="font-normal text-olive-400">(substitui o actual se preenchido)</span>
+            </label>
+            <input
+              value={nif}
+              onChange={(e) => setNif(e.target.value.replace(/\D/g, "").slice(0, 9))}
+              inputMode="numeric"
+              maxLength={9}
+              className={`${inputClass} font-mono tracking-widest`}
+              placeholder="123456789"
+            />
+          </div>
+        </div>
+        {error && <p className="mt-3 text-sm text-wine-700">{error}</p>}
+        <div className="mt-5 flex gap-3">
+          <button onClick={onClose} className="flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50">
+            Cancelar
+          </button>
+          <button
+            onClick={() => void save()}
+            disabled={saving}
+            className="flex-1 rounded-xl bg-olive-900 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 disabled:opacity-60"
+          >
+            {saving ? "A guardar…" : "Guardar"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const ROLE_LABELS: Record<string, string> = {
   MEMBER: "Membro",
   PARTNER: "Parceiro",
@@ -247,6 +338,7 @@ export default function UserDetailPage() {
   const [loading, setLoading] = useState(true);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showGrantModal, setShowGrantModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   async function load() {
     const { data: session } = await createClient().auth.getSession();
@@ -309,6 +401,16 @@ export default function UserDetailPage() {
           onSaved={() => void load()}
         />
       )}
+      {showEditModal && (
+        <EditProfileModal
+          user={user}
+          onClose={() => setShowEditModal(false)}
+          onSaved={(updated) => {
+            setUser((u) => u ? { ...u, fullName: updated.fullName } : u);
+            void load();
+          }}
+        />
+      )}
 
       {/* Header */}
       <div className="flex items-center gap-3">
@@ -353,6 +455,12 @@ export default function UserDetailPage() {
           </div>
 
           <div className="flex flex-col gap-2">
+            <button
+              onClick={() => setShowEditModal(true)}
+              className="rounded-xl border border-olive-900/15 px-4 py-2 text-sm font-medium text-olive-700 hover:bg-cream-50"
+            >
+              Editar perfil
+            </button>
             <button
               onClick={() => setShowStatusModal(true)}
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${

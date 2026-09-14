@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Body,
   Req,
@@ -79,6 +80,68 @@ export class MembersController {
         potentialSavings: null,
       },
     };
+  }
+
+  @Get("profile")
+  async getProfile(@Req() request: AuthenticatedRequest) {
+    const admin = this.supabase.createAdminClient();
+    const [{ data: profile }, authRes] = await Promise.all([
+      admin.from("profiles").select("full_name,phone,nif").eq("id", request.user.id).maybeSingle(),
+      admin.auth.admin.getUserById(request.user.id),
+    ]);
+    type PRow = { full_name: string | null; phone: string | null; nif: string | null };
+    const p = profile as unknown as PRow | null;
+    return {
+      data: {
+        fullName: p?.full_name ?? null,
+        phone: p?.phone ?? null,
+        nif: p?.nif ?? null,
+        email: authRes.data?.user?.email ?? null,
+      },
+    };
+  }
+
+  @Patch("profile")
+  async updateProfile(
+    @Req() request: AuthenticatedRequest,
+    @Body() body: { fullName?: string; phone?: string; nif?: string },
+  ) {
+    const admin = this.supabase.createAdminClient();
+
+    // NIF: can only be set if currently null; cannot be changed once set
+    if (body.nif !== undefined) {
+      if (!/^\d{9}$/.test(body.nif)) {
+        throw new BadRequestException("NIF inválido — deve ter 9 dígitos");
+      }
+      const { data: existing } = await admin
+        .from("profiles")
+        .select("nif")
+        .eq("id", request.user.id)
+        .maybeSingle();
+      if ((existing as { nif: string | null } | null)?.nif) {
+        throw new BadRequestException("O NIF não pode ser alterado após estar definido");
+      }
+    }
+
+    const patch: Record<string, unknown> = {};
+    if (body.fullName !== undefined) patch.full_name = body.fullName.trim() || null;
+    if (body.phone !== undefined) patch.phone = body.phone.trim() || null;
+    if (body.nif !== undefined) patch.nif = body.nif;
+
+    if (Object.keys(patch).length === 0) return { data: {} };
+
+    const { data, error } = await admin
+      .from("profiles")
+      .update(patch)
+      .eq("id", request.user.id)
+      .select("full_name,phone,nif")
+      .single();
+    if (error?.code === "23505") throw new ConflictException("Este NIF já está registado noutro utilizador");
+    if (error) throw new BadRequestException(error.message);
+
+    type PRow = { full_name: string | null; phone: string | null; nif: string | null };
+    const p = data as unknown as PRow;
+    return { data: { fullName: p.full_name, phone: p.phone, nif: p.nif } };
   }
 
   @Get("redemptions")
