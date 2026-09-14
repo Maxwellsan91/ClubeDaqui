@@ -113,28 +113,38 @@ export function StickyRedeemBar({
     return () => clearInterval(id);
   }, [phase, redemptionId]);
 
-  // Close sheet on backdrop click — blocked only while savings form is mandatory
+  // Close sheet on backdrop click — only when safe (not while loading or saving)
   useEffect(() => {
     if (!open) return;
-    function handleClick(e: MouseEvent) {
-      if (sheetRef.current && !sheetRef.current.contains(e.target as Node)) {
-        if (phase !== "confirmed" && phase !== "saving") {
-          setOpen(false);
-          setPhase("idle");
+    // Delay prevents the same tap that opened the sheet from immediately closing it
+    const timer = setTimeout(() => {
+      function handleClick(e: MouseEvent) {
+        if (sheetRef.current && !sheetRef.current.contains(e.target as Node)) {
+          if (phase === "code" || phase === "error" || phase === "saved") {
+            setOpen(false);
+            setPhase("idle");
+          }
         }
       }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+    }, 300);
+    return () => clearTimeout(timer);
   }, [open, phase]);
 
+  function translateError(raw?: string): string {
+    if (!raw) return "Não foi possível iniciar a utilização. Tente novamente.";
+    if (/membership/i.test(raw)) return "Precisa de uma adesão ativa para usar este benefício.";
+    if (/limit reached/i.test(raw)) return "Já atingiu o limite de utilizações deste benefício neste ciclo.";
+    if (/not available today/i.test(raw)) return "Este benefício não está disponível hoje.";
+    if (/not available at this time/i.test(raw)) return "Este benefício não está disponível a esta hora.";
+    if (/outside its validity/i.test(raw)) return "Este benefício está fora do período de validade.";
+    if (/not available/i.test(raw)) return "Benefício não disponível de momento.";
+    if (/expired/i.test(raw)) return "O código expirou. Pode gerar um novo.";
+    return raw;
+  }
+
   async function redeem() {
-    if (!resolvedBenefitId || !resolvedLocationId) {
-      setErrorMessage("Benefício temporariamente indisponível. Recarregue a página.");
-      setPhase("error");
-      setOpen(true);
-      return;
-    }
     setPhase("loading");
     setOpen(true);
     setCode(undefined);
@@ -142,15 +152,28 @@ export function StickyRedeemBar({
     setTotalBill("");
     setDiscount("");
     setFormError(undefined);
+    setErrorMessage(undefined);
+
+    if (!resolvedBenefitId || !resolvedLocationId) {
+      // Give the resolution useEffect a chance to finish before failing
+      await new Promise((r) => setTimeout(r, 800));
+    }
+
     try {
-      const { data: session } = await createClient().auth.getSession();
-      const token = session.session?.access_token;
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!token || !apiUrl) throw new Error();
+      if (!token || !apiUrl) throw new Error("Sessão expirada. Recarregue a página.");
+
+      const bId = resolvedBenefitId;
+      const lId = resolvedLocationId;
+      if (!bId || !lId) throw new Error("Benefício temporariamente indisponível. Recarregue a página.");
+
       const response = await fetch(`${apiUrl}/api/me/redemptions/attempt`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ benefit_id: resolvedBenefitId, business_location_id: resolvedLocationId }),
+        body: JSON.stringify({ benefit_id: bId, business_location_id: lId }),
       });
       const payload = (await response.json()) as { data?: { redemption_id?: string; manual_code?: string }; message?: string };
       if (!response.ok || !payload.data) throw new Error(payload.message);
@@ -158,7 +181,7 @@ export function StickyRedeemBar({
       setRedemptionId(payload.data.redemption_id);
       setPhase("code");
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "Não foi possível iniciar a utilização.");
+      setErrorMessage(translateError(err instanceof Error ? err.message : undefined));
       setPhase("error");
     }
   }
@@ -267,10 +290,21 @@ export function StickyRedeemBar({
             {phase === "error" && (
               <div className="py-4">
                 <p className="font-semibold text-wine-700">Não foi possível iniciar</p>
-                <p className="mt-1 text-sm text-olive-600">{errorMessage ?? "Confirme que tem uma adesão ativa."}</p>
-                <button onClick={() => { setOpen(false); setPhase("idle"); }} className="mt-4 text-sm font-semibold text-olive-700 underline">
-                  Fechar
-                </button>
+                <p className="mt-2 text-sm text-olive-600">{errorMessage}</p>
+                <div className="mt-5 flex gap-3">
+                  <button
+                    onClick={() => void redeem()}
+                    className="flex-1 rounded-full bg-olive-900 py-2.5 text-sm font-semibold text-white"
+                  >
+                    Tentar novamente
+                  </button>
+                  <button
+                    onClick={() => { setOpen(false); setPhase("idle"); }}
+                    className="rounded-full border border-olive-900/20 px-4 py-2.5 text-sm font-semibold text-olive-700"
+                  >
+                    Fechar
+                  </button>
+                </div>
               </div>
             )}
 
