@@ -53,6 +53,7 @@ export function StickyRedeemBar({
   const [benefitUsed, setBenefitUsed] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewHovered, setReviewHovered] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewDone, setReviewDone] = useState(false);
 
@@ -133,6 +134,14 @@ export function StickyRedeemBar({
     return () => clearTimeout(timer);
   }, [open, phase]);
 
+  // Lock body scroll while sheet is open to prevent page scroll on mobile
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [open]);
+
   function translateError(raw?: string): string {
     if (!raw) return "Não foi possível iniciar a utilização. Tente novamente.";
     if (/membership/i.test(raw)) return "Precisa de uma adesão ativa para usar este benefício.";
@@ -156,6 +165,7 @@ export function StickyRedeemBar({
     setErrorMessage(undefined);
     setReviewRating(0);
     setReviewHovered(0);
+    setReviewComment("");
     setReviewDone(false);
 
     if (!resolvedBenefitId || !resolvedLocationId) {
@@ -224,7 +234,7 @@ export function StickyRedeemBar({
       await fetch(`${apiUrl}/api/me/redemptions/${redemptionId}/review`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ rating: reviewRating }),
+        body: JSON.stringify({ rating: reviewRating, comment: reviewComment.trim() || undefined }),
       });
       setReviewDone(true);
     } catch { /* silent — review is optional */ }
@@ -414,13 +424,22 @@ export function StickyRedeemBar({
                       })}
                     </div>
                     {reviewRating > 0 && (
-                      <button
-                        onClick={() => void submitReview()}
-                        disabled={reviewSubmitting}
-                        className="w-full rounded-xl border border-olive-900/15 py-2.5 text-sm font-semibold text-olive-700 transition hover:bg-olive-900/5 disabled:opacity-50"
-                      >
-                        {reviewSubmitting ? "A guardar…" : "Enviar avaliação"}
-                      </button>
+                      <div className="space-y-2">
+                        <textarea
+                          value={reviewComment}
+                          onChange={(e) => setReviewComment(e.target.value)}
+                          placeholder="Partilhe a sua experiência (opcional)"
+                          rows={2}
+                          className="w-full resize-none rounded-xl border border-olive-900/15 bg-cream-50 px-3.5 py-2.5 text-sm text-olive-900 placeholder:text-olive-400 outline-none focus:border-olive-700"
+                        />
+                        <button
+                          onClick={() => void submitReview()}
+                          disabled={reviewSubmitting}
+                          className="w-full rounded-xl border border-olive-900/15 py-2.5 text-sm font-semibold text-olive-700 transition hover:bg-olive-900/5 disabled:opacity-50"
+                        >
+                          {reviewSubmitting ? "A guardar…" : "Enviar avaliação"}
+                        </button>
+                      </div>
                     )}
                   </div>
                 )}

@@ -235,22 +235,22 @@ export default function PartnerDashboardPage() {
             {/* KPI cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <div className="rounded-2xl border border-olive-900/10 bg-white p-4">
-                <p className="text-[11px] font-semibold text-olive-500">Este mês</p>
+                <p className="text-[11px] font-semibold text-olive-500">Visitas este mês</p>
                 <p className="mt-2 text-2xl font-bold text-olive-900">{stats.thisMonthRedemptions}</p>
                 <div className="mt-1">
                   <DeltaBadge current={stats.thisMonthRedemptions} previous={stats.lastMonthRedemptions} />
                 </div>
               </div>
               <div className="rounded-2xl border border-olive-900/10 bg-white p-4">
+                <p className="text-[11px] font-semibold text-olive-500">Total faturado</p>
+                <p className="mt-2 text-2xl font-bold text-olive-900">{euro.format(stats.totalRevenue)}</p>
+              </div>
+              <div className="rounded-2xl border border-olive-900/10 bg-white p-4">
                 <p className="text-[11px] font-semibold text-olive-500">Fatura média</p>
                 <p className="mt-2 text-2xl font-bold text-olive-900">{euro.format(stats.avgBillAmount)}</p>
               </div>
               <div className="rounded-2xl border border-olive-900/10 bg-white p-4">
-                <p className="text-[11px] font-semibold text-olive-500">Desconto total</p>
-                <p className="mt-2 text-2xl font-bold text-olive-900">{euro.format(stats.totalDiscount ?? 0)}</p>
-              </div>
-              <div className="rounded-2xl border border-olive-900/10 bg-white p-4">
-                <p className="text-[11px] font-semibold text-olive-500">Mês anterior</p>
+                <p className="text-[11px] font-semibold text-olive-500">Visitas mês anterior</p>
                 <p className="mt-2 text-2xl font-bold text-olive-900">{stats.lastMonthRedemptions}</p>
               </div>
             </div>
