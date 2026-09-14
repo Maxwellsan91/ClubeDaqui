@@ -127,8 +127,8 @@ export default async function AdminLayout({
           />
         </nav>
 
-        {/* User */}
-        <div className="border-t border-cream-50/10 p-3">
+        {/* User + logout */}
+        <div className="border-t border-cream-50/10 p-3 space-y-1">
           <div className="flex items-center gap-3 rounded-xl px-1 py-2">
             <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-cream-50/15 text-xs font-semibold text-cream-50">
               {initials}
@@ -140,6 +140,19 @@ export default async function AdminLayout({
               <p className="text-[10px] text-cream-50/40">Administrador</p>
             </div>
           </div>
+          <form action="/auth/logout" method="POST">
+            <button
+              type="submit"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-cream-50/60 hover:bg-cream-50/10 hover:text-cream-50 transition-colors"
+            >
+              <svg className="h-5 w-5 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              <span className="hidden lg:block">Sair</span>
+            </button>
+          </form>
         </div>
       </aside>
 
