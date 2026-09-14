@@ -34,23 +34,39 @@ export default function SignInPage() {
     setError("");
     setSubmitting(true);
     try {
-      const requestedPath = new URLSearchParams(window.location.search).get(
-        "redirectTo",
-      );
-      const next =
-        requestedPath?.startsWith("/") && !requestedPath.startsWith("//")
-          ? requestedPath
-          : "/conta";
-      const { error: authError } = await createClient().auth.signInWithPassword(
+      const requestedPath = new URLSearchParams(window.location.search).get("redirectTo");
+      const supabase = createClient();
+      const { data, error: authError } = await supabase.auth.signInWithPassword(
         { email: email.trim(), password },
       );
-      if (authError) {
+      if (authError || !data.user) {
         setError(
           "Email ou palavra-passe incorretos. Confirme se já validou o seu email.",
         );
         setSubmitting(false);
         return;
       }
+
+      // Determine redirect based on role
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+
+      const role = (profile as { role?: string } | null)?.role;
+      let next = "/conta";
+      if (role === "PARTNER") {
+        next = requestedPath?.startsWith("/parceiros") ? requestedPath : "/parceiros/dashboard";
+      } else if (role === "ADMIN") {
+        next = requestedPath?.startsWith("/admin") ? requestedPath : "/admin";
+      } else {
+        next =
+          requestedPath?.startsWith("/") && !requestedPath.startsWith("//") && !requestedPath.startsWith("/parceiros")
+            ? requestedPath
+            : "/conta";
+      }
+
       router.refresh();
       router.replace(next);
     } catch {

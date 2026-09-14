@@ -29,20 +29,12 @@ export default function PartnersPage() {
     }
   }
   const partnerNav = (
-    <div className="flex items-center gap-4">
-      <Link
-        href="/parceiros/dashboard"
-        className="text-sm font-semibold text-olive-700"
-      >
-        Dashboard
-      </Link>
-      <Link
-        href="/parceiros/validar"
-        className="bg-gold-500 inline-flex min-h-[36px] items-center rounded-full px-4 text-sm font-semibold text-olive-900"
-      >
-        Validar código
-      </Link>
-    </div>
+    <Link
+      href="/entrar"
+      className="text-sm font-semibold text-olive-700 hover:text-olive-900 transition-colors"
+    >
+      Acesso parceiros
+    </Link>
   );
 
   return (

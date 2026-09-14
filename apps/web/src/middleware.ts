@@ -28,13 +28,7 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/explorar") ||
     request.nextUrl.pathname.startsWith("/admin");
 
-  if (!user && isPartnerRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/parceiros/entrar";
-    url.searchParams.set("redirectTo", request.nextUrl.pathname);
-    return NextResponse.redirect(url);
-  }
-  if (!user && isMemberRoute) {
+  if (!user && (isPartnerRoute || isMemberRoute)) {
     const url = request.nextUrl.clone();
     url.pathname = "/entrar";
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
