@@ -5,6 +5,7 @@ import { RatingDisplay } from "@/components/rating-display";
 import { RedeemBenefitButton } from "@/components/redeem-benefit-button";
 import { StickyRedeemBar } from "@/components/sticky-redeem-bar";
 import ReviewForm from "@/components/review-form";
+import { createClient } from "@/lib/supabase/server";
 
 const AVATAR_COLORS = [
   "#743b40",
@@ -135,6 +136,10 @@ export default async function BusinessPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const isAuthenticated = Boolean(user);
+
   let business: BusinessDetail | undefined = details[slug];
   let benefit: Benefit | undefined;
 
@@ -718,6 +723,7 @@ export default async function BusinessPage({
               title={benefit?.title}
               description={benefit?.description}
               terms={benefit?.terms}
+              hideCta={isAuthenticated}
             />
             <RedeemBenefitButton
               benefitId={benefit?.id}

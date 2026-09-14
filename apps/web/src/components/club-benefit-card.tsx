@@ -5,11 +5,13 @@ export function ClubBenefitCard({
   description,
   terms,
   compact = false,
+  hideCta = false,
 }: {
   title?: string | null;
   description?: string | null;
   terms?: string | null;
   compact?: boolean;
+  hideCta?: boolean;
 }) {
   return (
     <div
@@ -27,12 +29,14 @@ export function ClubBenefitCard({
       {terms ? (
         <p className="mt-2 text-xs leading-5 text-olive-600">{terms}</p>
       ) : null}
-      <Link
-        href="/clube"
-        className="bg-wine-700 mt-5 inline-flex min-h-11 items-center rounded-full px-5 py-3 text-sm font-semibold text-white"
-      >
-        Desbloquear este benefício
-      </Link>
+      {!hideCta && (
+        <Link
+          href="/registar"
+          className="bg-wine-700 mt-5 inline-flex min-h-11 items-center rounded-full px-5 py-3 text-sm font-semibold text-white"
+        >
+          Aderir ao Clube
+        </Link>
+      )}
     </div>
   );
 }
