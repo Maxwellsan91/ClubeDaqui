@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { RecordSavingsForm } from "./record-savings-form";
-import type { SavingsRecord } from "@/types/member";
 
 function CountdownTimer({ seconds }: { seconds: number }) {
   const [remaining, setRemaining] = useState(seconds);
@@ -37,9 +35,7 @@ export function StickyRedeemBar({
   businessSlug: string;
   isAuthenticated?: boolean;
 }) {
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "code" | "saved" | "error"
-  >("idle");
+a  const [status, setStatus] = useState<"idle" | "loading" | "code" | "error">("idle");
   const [code, setCode] = useState<string>();
   const [redemptionId, setRedemptionId] = useState<string>();
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -136,11 +132,6 @@ export function StickyRedeemBar({
     }
   }
 
-  function handleSaved(record: SavingsRecord) {
-    void record;
-    setStatus("saved");
-  }
-
   // Non-authenticated: show "Aderir ao Clube"
   if (!isAuthenticated) {
     return (
@@ -224,6 +215,7 @@ export function StickyRedeemBar({
 
             {status === "code" && (
               <div className="space-y-5">
+                {/* Step 1 — code */}
                 <div>
                   <div className="mb-3 flex items-center gap-2">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-olive-900 text-[11px] font-bold text-white">
@@ -243,49 +235,29 @@ export function StickyRedeemBar({
                   </div>
                 </div>
 
-                <div>
-                  <div className="mb-3 flex items-center gap-2">
+                {/* Step 2 — after restaurant confirms */}
+                <div className="rounded-2xl bg-cream-50 border border-olive-900/8 p-4">
+                  <div className="mb-2 flex items-center gap-2">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-olive-900/15 text-[11px] font-bold text-olive-900">
                       2
                     </span>
                     <p className="text-sm font-semibold text-olive-900">
-                      Registe a economia após a visita
+                      Após a confirmação do parceiro
                     </p>
                   </div>
-                  {redemptionId && (
-                    <RecordSavingsForm
-                      redemptionId={redemptionId}
-                      businessName={businessName}
-                      businessSlug={businessSlug}
-                      onSaved={handleSaved}
-                    />
-                  )}
+                  <p className="text-sm leading-5 text-olive-600">
+                    Quando o parceiro confirmar o código, aceda à sua área de membro para registar o valor da fatura e a poupança obtida.
+                  </p>
+                  <button
+                    onClick={() => { setOpen(false); setStatus("idle"); }}
+                    className="mt-3 text-sm font-semibold text-olive-700 underline"
+                  >
+                    Fechar
+                  </button>
                 </div>
               </div>
             )}
 
-            {status === "saved" && (
-              <div className="py-6 text-center">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-olive-700/10 text-xl text-olive-700">
-                  ✓
-                </div>
-                <p className="font-display text-xl text-olive-900">
-                  Visita registada!
-                </p>
-                <p className="mt-1 text-sm text-olive-600">
-                  A sua economia foi guardada.
-                </p>
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    setStatus("idle");
-                  }}
-                  className="mt-5 text-sm font-semibold text-olive-700 underline"
-                >
-                  Fechar
-                </button>
-              </div>
-            )}
           </div>
         </div>
       )}
