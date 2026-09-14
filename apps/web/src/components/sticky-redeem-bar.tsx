@@ -29,11 +29,13 @@ export function StickyRedeemBar({
   businessLocationId,
   businessName,
   businessSlug,
+  isAuthenticated = true,
 }: {
   benefitId?: string;
   businessLocationId?: string;
   businessName: string;
   businessSlug: string;
+  isAuthenticated?: boolean;
 }) {
   const [status, setStatus] = useState<
     "idle" | "loading" | "code" | "saved" | "error"
@@ -97,6 +99,30 @@ export function StickyRedeemBar({
   function handleSaved(record: SavingsRecord) {
     void record;
     setStatus("saved");
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm lg:hidden"
+        style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+      >
+        <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
+          <div className="min-w-0">
+            <p className="truncate text-xs text-olive-600">Benefício Clube</p>
+            <p className="truncate text-sm font-semibold text-olive-900">
+              {businessName}
+            </p>
+          </div>
+          <a
+            href="/registar"
+            className="bg-gold-500 hover:bg-gold-500/90 flex-none rounded-full px-6 py-3 text-sm font-semibold text-olive-900 transition"
+          >
+            Aderir ao Clube
+          </a>
+        </div>
+      </div>
+    );
   }
 
   if (!benefitId || !businessLocationId) return null;

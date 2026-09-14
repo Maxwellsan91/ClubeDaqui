@@ -874,6 +874,7 @@ export default async function BusinessPage({
         businessLocationId={business.businessLocationId}
         businessName={business.name}
         businessSlug={slug}
+        isAuthenticated={isAuthenticated}
       />
     </main>
   );
