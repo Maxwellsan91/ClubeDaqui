@@ -46,6 +46,41 @@ export function StickyRedeemBar({
   const [open, setOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
+  // Client-side fallback: resolve missing benefitId / businessLocationId
+  const [resolvedBenefitId, setResolvedBenefitId] = useState(benefitId);
+  const [resolvedLocationId, setResolvedLocationId] = useState(businessLocationId);
+
+  useEffect(() => {
+    if (resolvedBenefitId && resolvedLocationId) return;
+    if (!isAuthenticated) return;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiUrl) return;
+
+    void (async () => {
+      try {
+        const bizRes = await fetch(`${apiUrl}/api/businesses/${businessSlug}`);
+        if (!bizRes.ok) return;
+        const bizPayload = (await bizRes.json()) as {
+          data?: { id?: string; businessLocationId?: string };
+        };
+        const locId = bizPayload.data?.businessLocationId;
+        const bizId = bizPayload.data?.id;
+        if (locId) setResolvedLocationId(locId);
+        if (!bizId) return;
+
+        const beneRes = await fetch(`${apiUrl}/api/businesses/${bizId}/benefits`);
+        if (!beneRes.ok) return;
+        const benePayload = (await beneRes.json()) as {
+          data?: { id?: string }[];
+        };
+        const firstId = benePayload.data?.[0]?.id;
+        if (firstId) setResolvedBenefitId(firstId);
+      } catch {
+        /* silent — redeem() will surface the error on click */
+      }
+    })();
+  }, [businessSlug, resolvedBenefitId, resolvedLocationId, isAuthenticated]);
+
   // Close sheet on outside click
   useEffect(() => {
     if (!open) return;
@@ -59,7 +94,12 @@ export function StickyRedeemBar({
   }, [open, status]);
 
   async function redeem() {
-    if (!benefitId || !businessLocationId) return;
+    if (!resolvedBenefitId || !resolvedLocationId) {
+      setErrorMessage("Benefício temporariamente indisponível. Recarregue a página.");
+      setStatus("error");
+      setOpen(true);
+      return;
+    }
     setStatus("loading");
     setOpen(true);
     try {
@@ -74,8 +114,8 @@ export function StickyRedeemBar({
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          benefit_id: benefitId,
-          business_location_id: businessLocationId,
+          benefit_id: resolvedBenefitId,
+          business_location_id: resolvedLocationId,
         }),
       });
       const payload = (await response.json()) as {
@@ -101,6 +141,7 @@ export function StickyRedeemBar({
     setStatus("saved");
   }
 
+  // Non-authenticated: show "Aderir ao Clube"
   if (!isAuthenticated) {
     return (
       <div
@@ -124,8 +165,6 @@ export function StickyRedeemBar({
       </div>
     );
   }
-
-  if (!benefitId || !businessLocationId) return null;
 
   return (
     <>
@@ -175,7 +214,7 @@ export function StickyRedeemBar({
                   {errorMessage ?? "Confirme que tem uma adesão ativa."}
                 </p>
                 <button
-                  onClick={() => setOpen(false)}
+                  onClick={() => { setOpen(false); setStatus("idle"); }}
                   className="mt-4 text-sm font-semibold text-olive-700 underline"
                 >
                   Fechar
@@ -185,7 +224,6 @@ export function StickyRedeemBar({
 
             {status === "code" && (
               <div className="space-y-5">
-                {/* Step 1 */}
                 <div>
                   <div className="mb-3 flex items-center gap-2">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-olive-900 text-[11px] font-bold text-white">
@@ -205,7 +243,6 @@ export function StickyRedeemBar({
                   </div>
                 </div>
 
-                {/* Step 2 */}
                 <div>
                   <div className="mb-3 flex items-center gap-2">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-olive-900/15 text-[11px] font-bold text-olive-900">
@@ -253,7 +290,7 @@ export function StickyRedeemBar({
         </div>
       )}
 
-      {/* Sticky bar */}
+      {/* Sticky bar — always visible on mobile for authenticated users */}
       <div
         className="fixed inset-x-0 bottom-0 z-30 border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm lg:hidden"
         style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
@@ -267,7 +304,7 @@ export function StickyRedeemBar({
           </div>
           <button
             type="button"
-            onClick={redeem}
+            onClick={() => void redeem()}
             disabled={status === "loading"}
             className="bg-gold-500 hover:bg-gold-500/90 flex-none rounded-full px-6 py-3 text-sm font-semibold text-olive-900 transition disabled:opacity-60"
           >
