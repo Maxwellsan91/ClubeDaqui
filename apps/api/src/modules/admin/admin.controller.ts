@@ -972,13 +972,13 @@ export class AdminController {
 
   @Get("users/:id")
   async userDetail(@Param("id") id: string) {
-    type ProfileRow = { id: string; full_name: string | null; role: string; is_active: boolean; created_at: string };
+    type ProfileRow = { id: string; full_name: string | null; phone: string | null; nif: string | null; role: string; is_active: boolean; created_at: string };
     type MembershipRow = { id: string; status: string; source: string; ends_at: string | null; created_at: string };
     type LogRow = { id: string; previous_active: boolean; new_active: boolean; reason: string; changed_by_name: string; created_at: string };
 
     // Phase 1: independent queries
     const [profileRes, authRes, membershipsRes, statusLogsRes] = await Promise.all([
-      this.db.from("profiles").select("id,full_name,role,is_active,created_at").eq("id", id).maybeSingle(),
+      this.db.from("profiles").select("id,full_name,phone,nif,role,is_active,created_at").eq("id", id).maybeSingle(),
       this.db.auth.admin.getUserById(id),
       this.db.from("memberships").select("id,status,source,ends_at,created_at").eq("profile_id", id).order("created_at", { ascending: false }),
       this.db.from("profile_status_logs").select("id,previous_active,new_active,reason,changed_by_name,created_at").eq("profile_id", id).order("created_at", { ascending: false }),
@@ -1004,6 +1004,8 @@ export class AdminController {
       data: {
         id: p.id,
         fullName: p.full_name ?? "—",
+        phone: p.phone ?? null,
+        nif: p.nif ?? null,
         email,
         role: p.role,
         isActive: p.is_active,

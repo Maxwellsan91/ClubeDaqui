@@ -32,6 +32,8 @@ type StatusLog = {
 type UserDetail = {
   id: string;
   fullName: string;
+  phone: string | null;
+  nif: string | null;
   email: string;
   role: string;
   isActive: boolean;
@@ -429,7 +431,7 @@ export default function UserDetailPage() {
       {/* Profile card */}
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Role</p>
               <p className="mt-1 font-semibold text-olive-900">{ROLE_LABELS[user.role] ?? user.role}</p>
@@ -443,6 +445,14 @@ export default function UserDetailPage() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Membro desde</p>
               <p className="mt-1 text-olive-700">{fmtDate(user.createdAt)}</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">NIF</p>
+              <p className="mt-1 font-mono text-olive-900">{user.nif ?? <span className="text-olive-400 font-sans">—</span>}</p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Telefone</p>
+              <p className="mt-1 text-olive-700">{user.phone ?? <span className="text-olive-400">—</span>}</p>
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Adesão activa</p>
