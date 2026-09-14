@@ -168,19 +168,19 @@ export function StickyRedeemBar({
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Backdrop — z-[65] to sit above sticky bar (z-[60]) */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-olive-900/30 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 z-[65] bg-olive-900/30 backdrop-blur-sm transition-opacity"
           aria-hidden="true"
         />
       )}
 
-      {/* Bottom sheet when open */}
+      {/* Bottom sheet — z-[70] above backdrop */}
       {open && (
         <div
           ref={sheetRef}
-          className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-white shadow-2xl"
+          className="fixed inset-x-0 bottom-0 z-[70] rounded-t-3xl bg-white shadow-2xl"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
           {/* Handle */}
