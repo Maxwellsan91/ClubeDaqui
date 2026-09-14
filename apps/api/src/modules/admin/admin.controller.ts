@@ -218,6 +218,7 @@ export class AdminController {
       await this.db.from("memberships").insert({
         profile_id: id,
         status: "active",
+        starts_at: new Date().toISOString(),
         ends_at: endsAt.toISOString(),
         source: "INFLUENCER_GRANT",
       });
@@ -1113,7 +1114,7 @@ export class AdminController {
     endsAt.setFullYear(endsAt.getFullYear() + 1);
     const { data, error } = await this.db
       .from("memberships")
-      .insert({ profile_id: id, status: "active", ends_at: endsAt.toISOString(), source: "ADMIN_GRANT" })
+      .insert({ profile_id: id, status: "active", starts_at: new Date().toISOString(), ends_at: endsAt.toISOString(), source: "ADMIN_GRANT" })
       .select("id,status,source,ends_at")
       .single();
     if (error) return { error: error.message };
