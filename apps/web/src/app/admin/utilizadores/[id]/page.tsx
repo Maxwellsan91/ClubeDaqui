@@ -38,7 +38,7 @@ type UserDetail = {
   createdAt: string;
   memberships: Membership[];
   recentRedemptions: Redemption[];
-  influencer: { uniqueCode: string; commissionRate: number } | null;
+  influencer: { id: string; uniqueCode: string; commissionRate: number } | null;
   statusLogs: StatusLog[];
 };
 
@@ -382,7 +382,7 @@ export default function UserDetailPage() {
               Comissão: {user.influencer.commissionRate}%
             </span>
             <Link
-              href={`/admin/influencers/${user.id}`}
+              href={`/admin/influencers/${user.influencer!.id}`}
               className="text-xs font-medium text-olive-700 underline underline-offset-2"
             >
               Ver detalhe

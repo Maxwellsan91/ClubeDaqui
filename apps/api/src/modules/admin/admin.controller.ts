@@ -992,13 +992,13 @@ export class AdminController {
 
     // Phase 2: queries that need email or membershipIds
     const [influencerRes, redemptionRes] = await Promise.all([
-      this.db.from("influencers").select("unique_code,commission_rate").eq("email", email).maybeSingle(),
+      this.db.from("influencers").select("id,unique_code,commission_rate").eq("email", email).maybeSingle(),
       membershipIds.length
         ? this.db.from("redemptions").select("id,redeemed_at,status,benefits(title,businesses(name))").in("membership_id", membershipIds).order("redeemed_at", { ascending: false }).limit(20)
         : Promise.resolve({ data: [] as unknown[] }),
     ]);
 
-    const inf = influencerRes.data as unknown as { unique_code: string; commission_rate: number } | null;
+    const inf = influencerRes.data as unknown as { id: string; unique_code: string; commission_rate: number } | null;
 
     return {
       data: {
@@ -1016,7 +1016,7 @@ export class AdminController {
           createdAt: m.created_at,
         })),
         recentRedemptions: (redemptionRes.data ?? []).slice(0, 10),
-        influencer: inf ? { uniqueCode: inf.unique_code, commissionRate: Number(inf.commission_rate) } : null,
+        influencer: inf ? { id: inf.id, uniqueCode: inf.unique_code, commissionRate: Number(inf.commission_rate) } : null,
         statusLogs: ((statusLogsRes.data ?? []) as unknown as LogRow[]).map((l) => ({
           id: l.id,
           previousActive: l.previous_active,
