@@ -268,7 +268,7 @@ export default async function BusinessPage({
   const validDays: number[] = benefit?.validDays ?? [];
 
   return (
-    <main className="min-h-screen pb-24 lg:pb-0">
+    <main className="min-h-screen pb-36 sm:pb-24 lg:pb-0">
       <AppHeader rightSlot={backLink} mobileRight={backLink} />
 
       {/* Hero image */}

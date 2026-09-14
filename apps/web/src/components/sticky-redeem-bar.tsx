@@ -145,7 +145,7 @@ export function StickyRedeemBar({
   if (!isAuthenticated) {
     return (
       <div
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm lg:hidden"
+        className="fixed inset-x-0 bottom-16 z-[60] border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm sm:bottom-0 lg:hidden"
         style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
@@ -290,9 +290,9 @@ export function StickyRedeemBar({
         </div>
       )}
 
-      {/* Sticky bar — always visible on mobile for authenticated users */}
+      {/* Sticky bar — sits above MobileNav (bottom-16) on mobile, at bottom-0 on tablet */}
       <div
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm lg:hidden"
+        className="fixed inset-x-0 bottom-16 z-[60] border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm sm:bottom-0 lg:hidden"
         style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
