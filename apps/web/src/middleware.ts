@@ -20,13 +20,21 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const protectedRoute =
+  const isPartnerRoute =
+    request.nextUrl.pathname.startsWith("/parceiros/validar") ||
+    request.nextUrl.pathname.startsWith("/parceiros/dashboard");
+  const isMemberRoute =
     request.nextUrl.pathname.startsWith("/conta") ||
     request.nextUrl.pathname.startsWith("/explorar") ||
-    request.nextUrl.pathname.startsWith("/parceiros/validar") ||
-    request.nextUrl.pathname.startsWith("/parceiros/dashboard") ||
     request.nextUrl.pathname.startsWith("/admin");
-  if (!user && protectedRoute) {
+
+  if (!user && isPartnerRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/parceiros/entrar";
+    url.searchParams.set("redirectTo", request.nextUrl.pathname);
+    return NextResponse.redirect(url);
+  }
+  if (!user && isMemberRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/entrar";
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
