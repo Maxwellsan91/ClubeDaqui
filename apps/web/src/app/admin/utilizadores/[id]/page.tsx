@@ -430,66 +430,66 @@ export default function UserDetailPage() {
 
       {/* Profile card */}
       <div className="rounded-2xl bg-white p-6 shadow-sm">
-        <div className="flex items-start justify-between gap-4">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Role</p>
-              <p className="mt-1 font-semibold text-olive-900">{ROLE_LABELS[user.role] ?? user.role}</p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Estado</p>
-              <p className={`mt-1 font-semibold ${user.isActive ? "text-olive-700" : "text-wine-700"}`}>
-                {user.isActive ? "Ativo" : "Inativo"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Membro desde</p>
-              <p className="mt-1 text-olive-700">{fmtDate(user.createdAt)}</p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">NIF</p>
-              <p className="mt-1 font-mono text-olive-900">{user.nif ?? <span className="text-olive-400 font-sans">—</span>}</p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Telefone</p>
-              <p className="mt-1 text-olive-700">{user.phone ?? <span className="text-olive-400">—</span>}</p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Adesão activa</p>
-              <p className="mt-1 text-olive-700">
-                {activeMembership
-                  ? `${SOURCE_LABELS[activeMembership.source] ?? activeMembership.source} · até ${fmtDate(activeMembership.endsAt!)}`
-                  : "—"}
-              </p>
-            </div>
+        {/* Info grid */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Role</p>
+            <p className="mt-1 font-semibold text-olive-900">{ROLE_LABELS[user.role] ?? user.role}</p>
           </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Estado conta</p>
+            <p className={`mt-1 font-semibold ${user.isActive ? "text-olive-700" : "text-wine-700"}`}>
+              {user.isActive ? "Ativo" : "Inativo"}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Membro desde</p>
+            <p className="mt-1 text-olive-700">{fmtDate(user.createdAt)}</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">NIF</p>
+            <p className="mt-1 font-mono text-olive-900">{user.nif ?? "—"}</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Telefone</p>
+            <p className="mt-1 text-olive-700">{user.phone ?? "—"}</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Adesão activa</p>
+            <p className="mt-1 text-olive-700">
+              {activeMembership
+                ? `${SOURCE_LABELS[activeMembership.source] ?? activeMembership.source} · até ${fmtDate(activeMembership.endsAt!)}`
+                : <span className="text-wine-700 font-semibold">Sem adesão</span>}
+            </p>
+          </div>
+        </div>
 
-          <div className="flex flex-col gap-2">
+        {/* Action buttons — always visible below the grid */}
+        <div className="mt-6 flex flex-wrap gap-3 border-t border-cream-100 pt-5">
+          <button
+            onClick={() => setShowEditModal(true)}
+            className="rounded-xl border border-olive-900/15 px-4 py-2 text-sm font-medium text-olive-700 hover:bg-cream-50"
+          >
+            Editar perfil
+          </button>
+          {!activeMembership && (
             <button
-              onClick={() => setShowEditModal(true)}
+              onClick={() => setShowGrantModal(true)}
               className="rounded-xl border border-olive-900/15 px-4 py-2 text-sm font-medium text-olive-700 hover:bg-cream-50"
             >
-              Editar perfil
+              Conceder cortesia
             </button>
-            <button
-              onClick={() => setShowStatusModal(true)}
-              className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
-                user.isActive
-                  ? "border border-wine-700/20 text-wine-700 hover:bg-wine-700/5"
-                  : "bg-olive-900 text-white hover:bg-olive-900/90"
-              }`}
-            >
-              {user.isActive ? "Desativar" : "Ativar"}
-            </button>
-            {!activeMembership && (
-              <button
-                onClick={() => setShowGrantModal(true)}
-                className="rounded-xl border border-olive-900/15 px-4 py-2 text-sm font-medium text-olive-700 hover:bg-cream-50"
-              >
-                Cortesia
-              </button>
-            )}
-          </div>
+          )}
+          <button
+            onClick={() => setShowStatusModal(true)}
+            className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
+              user.isActive
+                ? "border border-wine-700/30 bg-wine-700/5 text-wine-700 hover:bg-wine-700/10"
+                : "bg-olive-900 text-white hover:bg-olive-900/90"
+            }`}
+          >
+            {user.isActive ? "Desativar conta" : "Ativar conta"}
+          </button>
         </div>
 
         {user.influencer && (
