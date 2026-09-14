@@ -21,6 +21,7 @@ import {
 
 type FinancialBody = { total_bill_amount?: unknown; discount_amount?: unknown };
 type AttemptBody = { benefit_id?: unknown; business_location_id?: unknown };
+type ReviewBody = { rating?: unknown; comment?: unknown };
 
 @Controller("me")
 @UseGuards(MemberAuthGuard)
@@ -374,6 +375,61 @@ export class MembersController {
     );
   }
 
+  @Post("redemptions/:id/review")
+  async submitReview(
+    @Param("id") redemptionId: string,
+    @Body() body: ReviewBody,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    const rating = typeof body.rating === "number" ? body.rating : Number(body.rating);
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      throw new BadRequestException("A avaliação deve ser entre 1 e 5 estrelas");
+    }
+    const comment =
+      typeof body.comment === "string" && body.comment.trim()
+        ? body.comment.trim()
+        : null;
+
+    const client = this.supabase.createUserClient(request.accessToken);
+    const { data: redemption } = await client
+      .from("redemptions")
+      .select("id,business_location_id,membership_id")
+      .eq("id", redemptionId)
+      .eq("status", "redeemed")
+      .maybeSingle();
+    if (!redemption) throw new BadRequestException("Utilização não encontrada ou não confirmada");
+
+    type RRow = { id: string; business_location_id: string; membership_id: string };
+    const r = redemption as unknown as RRow;
+
+    // Use admin client to insert as published (bypasses RLS status restriction)
+    const admin = this.supabase.createAdminClient();
+    const now = new Date().toISOString();
+    const { data, error } = await admin
+      .from("reviews")
+      .insert({
+        redemption_id: r.id,
+        profile_id: request.user.id,
+        business_location_id: r.business_location_id,
+        food_rating: rating,
+        service_rating: rating,
+        ambience_rating: rating,
+        value_rating: rating,
+        comment,
+        status: "published",
+        published_at: now,
+      })
+      .select("id,food_rating,comment,published_at")
+      .single();
+
+    if (error?.code === "23505")
+      throw new ConflictException("Esta utilização já tem uma avaliação");
+    if (error)
+      throw new BadRequestException("Não foi possível guardar a avaliação");
+
+    return { data };
+  }
+
   private async getRedemptions(request: AuthenticatedRequest) {
     const client = this.supabase.createUserClient(request.accessToken);
     const { data: memberships, error: membershipsError } = await client
@@ -396,18 +452,24 @@ export class MembersController {
     }
     const redemptionIds = (redemptions ?? []).map((item) => item.id);
     if (!redemptionIds.length) return [];
-    const { data: financials, error: financialsError } = await client
-      .from("redemption_financials")
-      .select(
-        "redemption_id,total_bill_amount,discount_amount,savings_recorded_at",
-      )
-      .in("redemption_id", redemptionIds);
+    const [{ data: financials, error: financialsError }, { data: reviews }] =
+      await Promise.all([
+        client
+          .from("redemption_financials")
+          .select("redemption_id,total_bill_amount,discount_amount,savings_recorded_at")
+          .in("redemption_id", redemptionIds),
+        client
+          .from("reviews")
+          .select("redemption_id")
+          .in("redemption_id", redemptionIds),
+      ]);
     if (financialsError) {
       throw new BadRequestException("Não foi possível carregar as economias");
     }
     const byRedemption = new Map(
       (financials ?? []).map((item) => [item.redemption_id, item]),
     );
+    const reviewedIds = new Set((reviews ?? []).map((r) => r.redemption_id));
     return (redemptions ?? []).map((item) => {
       const financial = byRedemption.get(item.id);
       const benefit = Array.isArray(item.benefits)
@@ -425,6 +487,7 @@ export class MembersController {
         businessSlug: business?.slug ?? "explorar",
         category: "Gastronomia" as const,
         redeemedAt: item.redeemed_at,
+        hasReview: reviewedIds.has(item.id),
         financial: financial
           ? {
               totalBillAmount: Number(financial.total_bill_amount),

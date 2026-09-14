@@ -4,7 +4,6 @@ import { ClubBenefitCard } from "@/components/club-benefit-card";
 import { RatingDisplay } from "@/components/rating-display";
 import { RedeemBenefitButton } from "@/components/redeem-benefit-button";
 import { StickyRedeemBar } from "@/components/sticky-redeem-bar";
-import ReviewForm from "@/components/review-form";
 import { createClient } from "@/lib/supabase/server";
 
 const AVATAR_COLORS = [
@@ -142,6 +141,9 @@ export default async function BusinessPage({
 
   let business: BusinessDetail | undefined = details[slug];
   let benefit: Benefit | undefined;
+  type ReviewItem = { id: string; rating: number; comment: string | null; publishedAt: string; reviewerName: string };
+  let reviews: ReviewItem[] = [];
+  let avgRating: number | null = null;
 
   if (apiUrl) {
     try {
@@ -203,6 +205,15 @@ export default async function BusinessPage({
     } catch {
       /* keep demo fallback */
     }
+
+    try {
+      const reviewsRes = await fetch(`${apiUrl}/api/businesses/${slug}/reviews`, { cache: "no-store" });
+      if (reviewsRes.ok) {
+        const rp = (await reviewsRes.json()) as { data?: ReviewItem[]; avgRating?: number | null };
+        reviews = rp.data ?? [];
+        avgRating = rp.avgRating ?? null;
+      }
+    } catch { /* silent */ }
   }
 
   if (!business)
@@ -304,7 +315,7 @@ export default async function BusinessPage({
 
           {/* Rating row */}
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <RatingDisplay />
+            <RatingDisplay rating={avgRating} reviewCount={reviews.length || null} />
             <a
               href={mapsUrl}
               target="_blank"
@@ -706,14 +717,55 @@ export default async function BusinessPage({
                 Avaliações
               </p>
               <h2 className="font-display mt-2 text-2xl text-olive-900 sm:text-3xl">
-                Partilhe a sua experiência
+                O que dizem os membros
               </h2>
-              <p className="mt-2 text-sm leading-5 text-olive-600">
-                A sua avaliação ajuda outros membros a escolher melhor.
-              </p>
-              <div className="mt-5">
-                <ReviewForm businessSlug={slug} businessName={business.name} />
-              </div>
+
+              {reviews.length > 0 ? (
+                <div className="mt-5 space-y-4">
+                  {/* Avg rating summary */}
+                  {avgRating !== null && (
+                    <div className="flex items-center gap-3 rounded-xl border border-olive-900/10 bg-cream-50 px-4 py-3">
+                      <span className="font-display text-4xl font-bold text-olive-900">{avgRating.toFixed(1)}</span>
+                      <div>
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <span key={s} className={`text-lg ${Math.round(avgRating) >= s ? "text-gold-500" : "text-olive-900/15"}`}>★</span>
+                          ))}
+                        </div>
+                        <p className="text-xs text-olive-500">{reviews.length} avaliação{reviews.length !== 1 ? "ões" : ""}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Review list */}
+                  {reviews.map((r) => (
+                    <div key={r.id} className="rounded-xl border border-olive-900/8 bg-white p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-olive-900">{r.reviewerName}</p>
+                          <div className="mt-0.5 flex gap-0.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <span key={s} className={`text-sm ${Math.round(r.rating) >= s ? "text-gold-500" : "text-olive-900/15"}`}>★</span>
+                            ))}
+                          </div>
+                        </div>
+                        <p className="shrink-0 text-xs text-olive-400">
+                          {new Intl.DateTimeFormat("pt-PT", { month: "short", year: "numeric" }).format(new Date(r.publishedAt))}
+                        </p>
+                      </div>
+                      {r.comment && (
+                        <p className="mt-2 text-sm leading-5 text-olive-700">{r.comment}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-5 rounded-xl border border-olive-900/10 bg-cream-50 px-5 py-8 text-center">
+                  <p className="text-sm text-olive-600">
+                    Ainda não há avaliações. Seja o primeiro a partilhar a sua experiência após usar um benefício do Clube.
+                  </p>
+                </div>
+              )}
             </section>
           </div>
 

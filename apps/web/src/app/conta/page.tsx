@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
 import type { BusinessCardData } from "@/components/business-card";
 import { RecordSavingsForm } from "@/components/record-savings-form";
+import ReviewForm from "@/components/review-form";
 import { SavingsByCategory } from "@/components/savings-by-category";
 import { SavingsHistory } from "@/components/savings-history";
 import { SavingsOverview } from "@/components/savings-overview";
@@ -80,6 +81,9 @@ function AccountPageInner() {
     null,
   );
   const [unrecordedRedemptions, setUnrecordedRedemptions] = useState<
+    MemberRedemption[]
+  >([]);
+  const [unreviewedRedemptions, setUnreviewedRedemptions] = useState<
     MemberRedemption[]
   >([]);
   const [apiStatus, setApiStatus] = useState<
@@ -195,8 +199,10 @@ function AccountPageInner() {
           }
         }
         setRecords(savingsPayload.data?.records ?? []);
-        setUnrecordedRedemptions(
-          (redemptionsPayload.data ?? []).filter((item) => !item.financial),
+        const allRedemptions = redemptionsPayload.data ?? [];
+        setUnrecordedRedemptions(allRedemptions.filter((item) => !item.financial));
+        setUnreviewedRedemptions(
+          allRedemptions.filter((item) => item.financial && !item.hasReview),
         );
         setApiStatus("connected");
       } catch {
@@ -336,6 +342,42 @@ function AccountPageInner() {
                     businessName={redemption.businessName}
                     businessSlug={redemption.businessSlug}
                     onSaved={saveServerRecord}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {/* Avaliações pendentes */}
+        {apiStatus === "connected" && unreviewedRedemptions.length > 0 ? (
+          <section className="mt-8">
+            <div className="rounded-2xl border border-olive-900/10 bg-cream-50 p-5 sm:p-6">
+              <p className="text-[11px] font-bold tracking-[0.25em] text-olive-500 uppercase">
+                A sua opinião
+              </p>
+              <h2 className="font-display mt-2 text-xl text-olive-900">
+                Avalie as suas visitas recentes
+              </h2>
+              <p className="mt-1 text-sm text-olive-600">
+                Ajude outros membros a escolher melhor.
+              </p>
+            </div>
+            <div className="mt-5 space-y-6">
+              {unreviewedRedemptions.map((redemption) => (
+                <div key={redemption.id} className="rounded-xl border border-olive-900/8 bg-white p-5">
+                  <div className="mb-4">
+                    <p className="font-semibold text-olive-900">{redemption.businessName}</p>
+                    <p className="text-sm text-olive-500">{redemption.benefitTitle} · {new Intl.DateTimeFormat("pt-PT", { dateStyle: "medium" }).format(new Date(redemption.redeemedAt))}</p>
+                  </div>
+                  <ReviewForm
+                    redemptionId={redemption.id}
+                    businessName={redemption.businessName}
+                    onDone={() =>
+                      setUnreviewedRedemptions((current) =>
+                        current.filter((r) => r.id !== redemption.id),
+                      )
+                    }
                   />
                 </div>
               ))}

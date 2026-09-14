@@ -51,6 +51,10 @@ export function StickyRedeemBar({
   const [discount, setDiscount] = useState("");
   const [formError, setFormError] = useState<string>();
   const [benefitUsed, setBenefitUsed] = useState(false);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewHovered, setReviewHovered] = useState(0);
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewDone, setReviewDone] = useState(false);
 
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -150,6 +154,9 @@ export function StickyRedeemBar({
     setDiscount("");
     setFormError(undefined);
     setErrorMessage(undefined);
+    setReviewRating(0);
+    setReviewHovered(0);
+    setReviewDone(false);
 
     if (!resolvedBenefitId || !resolvedLocationId) {
       await new Promise((r) => setTimeout(r, 800));
@@ -204,6 +211,24 @@ export function StickyRedeemBar({
       setFormError(err instanceof Error ? err.message : "Não foi possível guardar. Tente novamente.");
       setPhase("confirmed");
     }
+  }
+
+  async function submitReview() {
+    if (!redemptionId || reviewRating === 0) return;
+    setReviewSubmitting(true);
+    try {
+      const { data: session } = await createClient().auth.getSession();
+      const token = session.session?.access_token;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!token || !apiUrl) throw new Error();
+      await fetch(`${apiUrl}/api/me/redemptions/${redemptionId}/review`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ rating: reviewRating }),
+      });
+      setReviewDone(true);
+    } catch { /* silent — review is optional */ }
+    finally { setReviewSubmitting(false); }
   }
 
   // ── Non-authenticated ─────────────────────────────────────────────────────
@@ -353,17 +378,58 @@ export function StickyRedeemBar({
             )}
 
             {phase === "saved" && (
-              <div className="py-6 text-center">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-olive-700/10">
-                  <svg className="h-6 w-6 text-olive-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+              <div className="py-4">
+                <div className="flex items-center gap-3 rounded-xl bg-olive-700/10 px-4 py-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-olive-700 text-white">
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-olive-900">Poupança registada!</p>
+                    <p className="text-xs text-olive-600">
+                      Poupou <span className="font-semibold">{parseFloat(discount.replace(",", ".")).toFixed(2)} €</span> nesta visita.
+                    </p>
+                  </div>
                 </div>
-                <p className="font-display text-xl text-olive-900">Poupança registada!</p>
-                <p className="mt-1 text-sm text-olive-600">
-                  Poupou <span className="font-semibold text-olive-900">{parseFloat(discount.replace(",", ".")).toFixed(2)} €</span> nesta visita.
-                </p>
-                <button onClick={() => { setOpen(false); setPhase("idle"); }} className="mt-5 text-sm font-semibold text-olive-700 underline">
+
+                {!reviewDone && (
+                  <div className="mt-4 space-y-2">
+                    <p className="text-sm font-semibold text-olive-900">Como foi a visita?</p>
+                    <p className="text-xs text-olive-500">A sua opinião ajuda outros membros. Opcional.</p>
+                    <div className="flex gap-0.5">
+                      {[1, 2, 3, 4, 5].map((star) => {
+                        const filled = (reviewHovered || reviewRating) >= star;
+                        return (
+                          <button
+                            key={star}
+                            type="button"
+                            aria-label={`${star} estrela${star !== 1 ? "s" : ""}`}
+                            onMouseEnter={() => setReviewHovered(star)}
+                            onMouseLeave={() => setReviewHovered(0)}
+                            onClick={() => setReviewRating(star)}
+                            className={`min-h-[44px] min-w-[44px] text-3xl leading-none transition-colors ${filled ? "text-gold-500" : "text-olive-900/15"}`}
+                          >★</button>
+                        );
+                      })}
+                    </div>
+                    {reviewRating > 0 && (
+                      <button
+                        onClick={() => void submitReview()}
+                        disabled={reviewSubmitting}
+                        className="w-full rounded-xl border border-olive-900/15 py-2.5 text-sm font-semibold text-olive-700 transition hover:bg-olive-900/5 disabled:opacity-50"
+                      >
+                        {reviewSubmitting ? "A guardar…" : "Enviar avaliação"}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {reviewDone && (
+                  <p className="mt-3 text-center text-xs text-olive-500">Obrigado pela avaliação!</p>
+                )}
+
+                <button onClick={() => { setOpen(false); setPhase("idle"); }} className="mt-4 w-full text-center text-sm font-semibold text-olive-700 underline">
                   Fechar
                 </button>
               </div>

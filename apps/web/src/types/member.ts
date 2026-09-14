@@ -24,6 +24,7 @@ export type MemberRedemption = {
     discountAmount: number;
     recordedAt: string;
   } | null;
+  hasReview: boolean;
 };
 
 export type MemberSummaryData = {
