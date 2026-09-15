@@ -39,11 +39,11 @@ export function validateEnvironment(
 
   if (
     result.data.NODE_ENV === "production" &&
-    (!result.data.SUPABASE_URL ||
-      !result.data.SUPABASE_PUBLISHABLE_KEY ||
-      !result.data.SUPABASE_SERVICE_ROLE_KEY)
+    (!result.data.SUPABASE_URL || !result.data.SUPABASE_PUBLISHABLE_KEY)
   ) {
-    throw new Error("Supabase configuration is required in production");
+    throw new Error(
+      "Supabase URL and publishable key are required in production",
+    );
   }
 
   return result.data;
