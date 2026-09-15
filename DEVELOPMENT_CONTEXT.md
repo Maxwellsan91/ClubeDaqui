@@ -553,6 +553,28 @@ serena memories check
 - Próximo passo: testar os headers/429 em ambiente de staging e rever CSP com
   os domínios finais de Auth, imagens e API.
 
+### 2026-09-15 — Verificação das migrations Supabase
+
+- Tentada verificação remota das migrations, trigger e advisors através do MCP
+  Supabase após o utilizador indicar que a aplicação foi concluída.
+- Todas as chamadas (`list_migrations`, `execute_sql` e advisors) continuam a
+  falhar antes da consulta por erro de renovação OAuth; não foi possível obter
+  confirmação independente do estado remoto nesta sessão.
+- Nenhuma alteração local foi feita às migrations; o commit `2299c34` contém a
+  versão que deve estar aplicada.
+
+### 2026-09-15 — Migrations confirmadas no Supabase
+
+- Renovado o login MCP com scopes válidos `projects:read`, `database:read` e
+  `database:write` após recriar a entrada global do servidor.
+- `list_migrations` confirmou as versões `20260915100000` e `20260915110000`
+  aplicadas no projeto remoto.
+- Query SQL confirmou o trigger `profiles_prevent_nif_change` e as três
+  policies de acesso próprio para `influencers`/`referrals`.
+- Advisors continuam a reportar como pendentes: proteção contra passwords
+  comprometidas desativada, funções `SECURITY DEFINER` executáveis por
+  authenticated, tabelas RLS sem policies intencionais e alguns índices/FKs.
+
 ### Modelo para entradas futuras
 
 ```text
