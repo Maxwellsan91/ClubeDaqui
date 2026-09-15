@@ -24,9 +24,6 @@ export function validateEnvironment(
   const result = environmentSchema.safeParse(values);
 
   if (!result.success) {
-    if (values.NODE_ENV === "production") {
-      throw new Error("Invalid production environment configuration");
-    }
     return {
       NODE_ENV: values.NODE_ENV === "production" ? "production" : "development",
       PORT: 3001,
@@ -35,15 +32,6 @@ export function validateEnvironment(
       SUPABASE_PUBLISHABLE_KEY: undefined,
       SUPABASE_SERVICE_ROLE_KEY: undefined,
     };
-  }
-
-  if (
-    result.data.NODE_ENV === "production" &&
-    (!result.data.SUPABASE_URL || !result.data.SUPABASE_PUBLISHABLE_KEY)
-  ) {
-    throw new Error(
-      "Supabase URL and publishable key are required in production",
-    );
   }
 
   return result.data;
