@@ -538,8 +538,9 @@ serena memories check
   respostas, incluindo `nosniff`, `DENY`, Referrer-Policy e Permissions-Policy.
 - Adicionado rate limiting em memória por IP/rota para POSTs sensíveis
   (Auth/inquiries/resgates), com resposta 429 e `Retry-After`.
-- Configuração de produção agora falha rápido se faltar qualquer variável
-  Supabase obrigatória, em vez de arrancar com valores vazios.
+- A configuração mantém compatibilidade de arranque com o comportamento anterior;
+  os clientes Supabase falham apenas quando uma operação que exige credenciais
+  é executada.
 - `partner-inquiries` ganhou limites de tamanho e deixa de guardar pedidos em
   memória quando a persistência falha em produção.
 - Web adicionou headers de segurança globais via `next.config.ts`.
@@ -574,6 +575,17 @@ serena memories check
 - Advisors continuam a reportar como pendentes: proteção contra passwords
   comprometidas desativada, funções `SECURITY DEFINER` executáveis por
   authenticated, tabelas RLS sem policies intencionais e alguns índices/FKs.
+
+### 2026-09-15 — Correção de regressão no deploy da API
+
+- O deployment `clube-ribatejo-api.vercel.app` devolvia
+  `FUNCTION_INVOCATION_FAILED` após as alterações de segurança.
+- Identificada a validação fail-fast de ambiente como regressão provável e
+  restaurado o comportamento de arranque compatível no commit `3794c3a`.
+- O commit foi enviado para `origin/main`.
+- Após o redeploy, `https://clube-ribatejo-api.vercel.app/api/health` respondeu
+  HTTP 200 com `service: clube-ribatejo-api`.
+- Próximo passo: testar novamente as áreas membro, parceiro e admin no frontend.
 
 ### Modelo para entradas futuras
 
