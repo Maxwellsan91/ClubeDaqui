@@ -34,6 +34,20 @@ export async function middleware(request: NextRequest) {
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
+  if (user && isPartnerRoute) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (profile?.role !== "PARTNER") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/conta";
+      url.search = "";
+      url.searchParams.set("access", "denied");
+      return NextResponse.redirect(url);
+    }
+  }
   return response;
 }
 

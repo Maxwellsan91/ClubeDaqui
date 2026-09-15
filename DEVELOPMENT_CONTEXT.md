@@ -115,6 +115,8 @@ reivindicado antes de ser apresentado como parceiro.
 - [ ] Fluxo de benefícios e resgates ligado à interface.
 - [x] Validação transacional de códigos por utilizadores parceiros ligada à
       interface.
+- [x] Auditoria técnica de fluxos, roles, segurança e desempenho documentada em
+      `docs/APP_AUDIT_2026-09-15.md`.
 - [ ] Área de parceiro.
 - [ ] Sistema de avaliações dos clientes em produção.
 
@@ -453,6 +455,104 @@ serena memories check
 - Próximo passo: validar ciclo completo membro → resgate → parceiro com contas
   de teste com adesão ativa.
 
+### 2026-09-15 — Auditoria técnica e revisão cruzada
+
+- Produzido `docs/APP_AUDIT_2026-09-15.md` com fluxo de uso, matriz de páginas
+  por role, achados de segurança, desempenho e roadmap priorizado.
+- Confirmado no código que `/admin` valida `ADMIN` no layout e na API, enquanto
+  as páginas de parceiro validam sessão mas não role antes de renderizar.
+- Identificado uso excessivo de `createAdminClient()` em endpoints de membro e
+  endpoint administrativo de alteração de role sem proteção contra
+  autoelevação.
+- `npm run check` foi executado e falhou com erros de lint existentes (17 na
+  API e 10 na web, além de avisos); não foram feitas alterações corretivas nesta
+  tarefa de análise.
+- MCP Supabase não conseguiu renovar o OAuth nesta sessão, logo advisors e
+  estado remoto atual devem ser repetidos quando a ligação estiver disponível.
+- Claude CLI foi tentado duas vezes em modo read-only não interativo, sem
+  resposta; o relatório não atribui conclusões ao Claude.
+- Próximo passo: corrigir autorização por role e privilégios service-role,
+  ativar proteção contra palavras-passe expostas e criar testes E2E/RLS.
+
+### 2026-09-15 — Primeira correção P0 de autorização
+
+- Criado `PartnerAuthGuard`, com validação de sessão e role `PARTNER` via RLS;
+  endpoints de resgate do parceiro deixaram de usar apenas `MemberAuthGuard`.
+- Middleware web passou a redirecionar sessões sem role `PARTNER` antes de abrir
+  dashboard/validação.
+- A área `/conta` passou a mostrar a role atual com etiqueta legível.
+- Endpoint administrativo de role passou a impedir autoalteração e atribuição
+  direta de `ADMIN`.
+- Typecheck e Prettier dos ficheiros alterados passaram; o lint global continua
+  bloqueado pelos erros preexistentes documentados na auditoria.
+- Próximo passo: remover `createAdminClient()` dos endpoints de membro e criar
+  testes automatizados para a matriz MEMBER/PARTNER/ADMIN/INFLUENCER.
+
+### 2026-09-15 — Remoção de service-role no perfil de membro
+
+- `GET/PATCH /api/me/profile` passou a usar o cliente autenticado com RLS;
+  deixou de consultar `auth.admin.getUserById` e de escrever com service-role.
+- Adicionada migration `20260915100000_member_profile_security.sql` com trigger
+  de base de dados que impede alterar ou limpar um NIF depois de definido.
+- O email devolvido pelo perfil usa a identidade já validada pelo guard.
+- Typecheck da API e Prettier do controller passaram; migration ainda precisa
+  ser aplicada/testada numa branch Supabase antes de produção.
+- O uso de service-role permanece deliberado nos endpoints de influenciador,
+  referrals e reviews publicados, que ficam para uma revisão separada.
+- Próximo passo: criar testes de autorização e rever esses restantes usos
+  administrativos por endpoint.
+
+### 2026-09-15 — Redução adicional de privilégios em membro
+
+- Reviews submetidas por membros passaram a ser inseridas como `pending` pelo
+  cliente autenticado, respeitando a policy RLS; deixaram de ser publicadas via
+  service-role.
+- Criada migration `20260915110000_member_owned_influencer_rls.sql` com acesso
+  autenticado apenas ao próprio perfil de influencer e referrals do próprio
+  membro.
+- Endpoints `/api/me/influencer` e `/api/me/referral` passaram a usar o cliente
+  autenticado; códigos de referral têm validação de formato.
+- Typecheck da API, Prettier e `git diff --check` passaram.
+- As migrations aguardam aplicação/teste numa branch Supabase antes de
+  produção.
+- Próximo passo: aplicar as migrations numa branch e validar RLS com contas de
+  membro/influencer, incluindo tentativa de leitura cruzada.
+
+### 2026-09-15 — Fecho da P0 de autorização
+
+- `MemberAuthGuard` passou a rejeitar contas com `profiles.is_active = false`;
+  a regra aplica-se a todos os endpoints `/api/me`.
+- `PartnerAuthGuard` e `AdminAuthGuard` também rejeitam perfis desativados,
+  mantendo a validação de role correspondente.
+- Typecheck dos workspaces, Prettier dos guards e `git diff --check` passaram.
+- A P0 de autorização fica implementada no código: autenticação, role,
+  associação de parceiro, estado ativo e proteção da alteração de role.
+- Pendência operacional: aplicar as migrations 20260915100000 e
+  20260915110000 numa branch Supabase e executar testes reais de 401/403/RLS.
+- Próxima prioridade: robustez P1 (DTOs/ValidationPipe, rate limiting,
+  headers de segurança e observabilidade).
+
+### 2026-09-15 — Implementação P1 de robustez
+
+- API passou a emitir `X-Request-Id` e headers de segurança básicos em todas as
+  respostas, incluindo `nosniff`, `DENY`, Referrer-Policy e Permissions-Policy.
+- Adicionado rate limiting em memória por IP/rota para POSTs sensíveis
+  (Auth/inquiries/resgates), com resposta 429 e `Retry-After`.
+- Configuração de produção agora falha rápido se faltar qualquer variável
+  Supabase obrigatória, em vez de arrancar com valores vazios.
+- `partner-inquiries` ganhou limites de tamanho e deixa de guardar pedidos em
+  memória quando a persistência falha em produção.
+- Web adicionou headers de segurança globais via `next.config.ts`.
+- Typecheck dos workspaces e Prettier passaram; o rate limit em memória deve ser
+  substituído por Redis/KV quando houver múltiplas instâncias.
+- A validação de DTOs continua parcialmente manual nos controllers; deve ser
+  consolidada com `ValidationPipe` + schemas quando as dependências forem
+  adicionadas.
+- O rate limiter limpa entradas expiradas quando o mapa cresce, reduzindo risco
+  de abuso/memória.
+- Próximo passo: testar os headers/429 em ambiente de staging e rever CSP com
+  os domínios finais de Auth, imagens e API.
+
 ### Modelo para entradas futuras
 
 ```text
@@ -465,4 +565,3 @@ serena memories check
 - Bloqueios:
 - Próximo passo:
 ```
-

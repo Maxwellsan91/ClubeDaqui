@@ -10,9 +10,9 @@ import {
 } from "@nestjs/common";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 import {
-  MemberAuthGuard,
   type AuthenticatedRequest,
 } from "../members/member-auth.guard.js";
+import { PartnerAuthGuard } from "./partner-auth.guard.js";
 
 /* Supabase's untyped RPC result is normalized into the response contracts below. */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -20,7 +20,7 @@ import {
 type RedemptionCodeBody = { manual_code?: unknown };
 
 @Controller("partner/redemptions")
-@UseGuards(MemberAuthGuard)
+@UseGuards(PartnerAuthGuard)
 export class PartnerRedemptionsController {
   constructor(private readonly supabase: SupabaseService) {}
 

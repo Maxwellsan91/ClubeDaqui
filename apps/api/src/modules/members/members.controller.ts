@@ -57,7 +57,9 @@ export class MembersController {
     return {
       data: {
         fullName: profile?.full_name ?? null,
-        role: (profile as { full_name: string | null; role: string } | null)?.role ?? "MEMBER",
+        role:
+          (profile as { full_name: string | null; role: string } | null)
+            ?.role ?? "MEMBER",
         subscriptionStatus: membership?.status ?? "inactive",
         validUntil: membership?.ends_at ?? null,
         usedBenefits: usedBenefits ?? 0,
@@ -85,19 +87,18 @@ export class MembersController {
 
   @Get("profile")
   async getProfile(@Req() request: AuthenticatedRequest) {
-    const admin = this.supabase.createAdminClient();
-    const [{ data: profile }, authRes] = await Promise.all([
-      admin.from("profiles").select("full_name,phone,nif").eq("id", request.user.id).maybeSingle(),
-      admin.auth.admin.getUserById(request.user.id),
-    ]);
-    type PRow = { full_name: string | null; phone: string | null; nif: string | null };
-    const p = profile as unknown as PRow | null;
+    const { data: profile } = await this.supabase
+      .createUserClient(request.accessToken)
+      .from("profiles")
+      .select("full_name,phone,nif")
+      .eq("id", request.user.id)
+      .maybeSingle();
     return {
       data: {
-        fullName: p?.full_name ?? null,
-        phone: p?.phone ?? null,
-        nif: p?.nif ?? null,
-        email: authRes.data?.user?.email ?? null,
+        fullName: profile?.full_name ?? null,
+        phone: profile?.phone ?? null,
+        nif: profile?.nif ?? null,
+        email: request.user.email ?? null,
       },
     };
   }
@@ -107,42 +108,48 @@ export class MembersController {
     @Req() request: AuthenticatedRequest,
     @Body() body: { fullName?: string; phone?: string; nif?: string },
   ) {
-    const admin = this.supabase.createAdminClient();
+    const client = this.supabase.createUserClient(request.accessToken);
 
     // NIF: can only be set if currently null; cannot be changed once set
     if (body.nif !== undefined) {
       if (!/^\d{9}$/.test(body.nif)) {
         throw new BadRequestException("NIF inválido — deve ter 9 dígitos");
       }
-      const { data: existing } = await admin
+      const { data: existing } = await client
         .from("profiles")
         .select("nif")
         .eq("id", request.user.id)
         .maybeSingle();
-      if ((existing as { nif: string | null } | null)?.nif) {
-        throw new BadRequestException("O NIF não pode ser alterado após estar definido");
+      if (existing?.nif) {
+        throw new BadRequestException(
+          "O NIF não pode ser alterado após estar definido",
+        );
       }
     }
 
     const patch: Record<string, unknown> = {};
-    if (body.fullName !== undefined) patch.full_name = body.fullName.trim() || null;
+    if (body.fullName !== undefined)
+      patch.full_name = body.fullName.trim() || null;
     if (body.phone !== undefined) patch.phone = body.phone.trim() || null;
     if (body.nif !== undefined) patch.nif = body.nif;
 
     if (Object.keys(patch).length === 0) return { data: {} };
 
-    const { data, error } = await admin
+    const { data, error } = await client
       .from("profiles")
       .update(patch)
       .eq("id", request.user.id)
       .select("full_name,phone,nif")
       .single();
-    if (error?.code === "23505") throw new ConflictException("Este NIF já está registado noutro utilizador");
+    if (error?.code === "23505")
+      throw new ConflictException(
+        "Este NIF já está registado noutro utilizador",
+      );
     if (error) throw new BadRequestException(error.message);
 
-    type PRow = { full_name: string | null; phone: string | null; nif: string | null };
-    const p = data as unknown as PRow;
-    return { data: { fullName: p.full_name, phone: p.phone, nif: p.nif } };
+    return {
+      data: { fullName: data.full_name, phone: data.phone, nif: data.nif },
+    };
   }
 
   @Get("redemptions")
@@ -192,16 +199,13 @@ export class MembersController {
 
   @Get("influencer")
   async influencerProfile(@Req() request: AuthenticatedRequest) {
-    const admin = this.supabase.createAdminClient();
-    const {
-      data: { user },
-    } = await this.supabase.createUserClient(request.accessToken).auth.getUser();
-    if (!user?.email) return { data: null };
+    const client = this.supabase.createUserClient(request.accessToken);
+    if (!request.user.email) return { data: null };
 
-    const { data: influencer } = await admin
+    const { data: influencer } = await client
       .from("influencers")
       .select("id,name,unique_code,commission_rate,is_active")
-      .eq("email", user.email)
+      .eq("email", request.user.email)
       .eq("is_active", true)
       .maybeSingle();
     if (!influencer) return { data: null };
@@ -221,7 +225,7 @@ export class MembersController {
     };
 
     const inf = influencer as unknown as InfRow;
-    const { data: referrals } = await admin
+    const { data: referrals } = await client
       .from("referrals")
       .select("status,created_at,validates_at,cancelled_at")
       .eq("influencer_code", inf.unique_code)
@@ -277,7 +281,8 @@ export class MembersController {
         totalReferrals: total,
         totalValidated,
         totalPending,
-        totalValidatedCommission: Math.round(totalValidated * PRICE * rate) / 100,
+        totalValidatedCommission:
+          Math.round(totalValidated * PRICE * rate) / 100,
         totalPendingCommission: Math.round(totalPending * PRICE * rate) / 100,
         monthly,
       },
@@ -286,16 +291,17 @@ export class MembersController {
 
   @Post("referral")
   async registerReferral(@Req() request: AuthenticatedRequest) {
-    const admin = this.supabase.createAdminClient();
     const userClient = this.supabase.createUserClient(request.accessToken);
     const {
       data: { user },
     } = await userClient.auth.getUser();
     const rawCode = user?.user_metadata?.referral_code as string | undefined;
     const referralCode = rawCode?.trim().toUpperCase();
-    if (!referralCode) return { data: null };
+    if (!referralCode || !/^[A-Z0-9_-]{3,32}$/.test(referralCode)) {
+      return { data: null };
+    }
 
-    const { data: influencer } = await admin
+    const { data: influencer } = await userClient
       .from("influencers")
       .select("id")
       .eq("unique_code", referralCode)
@@ -306,7 +312,7 @@ export class MembersController {
     const validatesAt = new Date(
       Date.now() + 15 * 24 * 60 * 60 * 1000,
     ).toISOString();
-    const { data } = await admin
+    const { data } = await userClient
       .from("referrals")
       .upsert(
         {
@@ -381,9 +387,12 @@ export class MembersController {
     @Body() body: ReviewBody,
     @Req() request: AuthenticatedRequest,
   ) {
-    const rating = typeof body.rating === "number" ? body.rating : Number(body.rating);
+    const rating =
+      typeof body.rating === "number" ? body.rating : Number(body.rating);
     if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-      throw new BadRequestException("A avaliação deve ser entre 1 e 5 estrelas");
+      throw new BadRequestException(
+        "A avaliação deve ser entre 1 e 5 estrelas",
+      );
     }
     const comment =
       typeof body.comment === "string" && body.comment.trim()
@@ -397,15 +406,19 @@ export class MembersController {
       .eq("id", redemptionId)
       .eq("status", "redeemed")
       .maybeSingle();
-    if (!redemption) throw new BadRequestException("Utilização não encontrada ou não confirmada");
+    if (!redemption)
+      throw new BadRequestException(
+        "Utilização não encontrada ou não confirmada",
+      );
 
-    type RRow = { id: string; business_location_id: string; membership_id: string };
+    type RRow = {
+      id: string;
+      business_location_id: string;
+      membership_id: string;
+    };
     const r = redemption as unknown as RRow;
 
-    // Use admin client to insert as published (bypasses RLS status restriction)
-    const admin = this.supabase.createAdminClient();
-    const now = new Date().toISOString();
-    const { data, error } = await admin
+    const { data, error } = await client
       .from("reviews")
       .insert({
         redemption_id: r.id,
@@ -416,8 +429,8 @@ export class MembersController {
         ambience_rating: rating,
         value_rating: rating,
         comment,
-        status: "published",
-        published_at: now,
+        status: "pending",
+        published_at: null,
       })
       .select("id,food_rating,comment,published_at")
       .single();
@@ -456,7 +469,9 @@ export class MembersController {
       await Promise.all([
         client
           .from("redemption_financials")
-          .select("redemption_id,total_bill_amount,discount_amount,savings_recorded_at")
+          .select(
+            "redemption_id,total_bill_amount,discount_amount,savings_recorded_at",
+          )
           .in("redemption_id", redemptionIds),
         client
           .from("reviews")

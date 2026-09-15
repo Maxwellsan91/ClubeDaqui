@@ -26,10 +26,13 @@ export class AdminAuthGuard implements CanActivate {
     const { data: profile } = await this.supabase
       .createAdminClient()
       .from("profiles")
-      .select("role")
+      .select("role,is_active")
       .eq("id", data.user.id)
       .maybeSingle();
 
+    if (profile?.is_active === false) {
+      throw new ForbiddenException("Conta desativada");
+    }
     if (profile?.role !== "ADMIN") {
       throw new ForbiddenException("Acesso restrito a administradores");
     }

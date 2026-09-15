@@ -1,5 +1,6 @@
 import {
   Body,
+  BadRequestException,
   Controller,
   Get,
   Headers,
@@ -7,8 +8,10 @@ import {
   Patch,
   Post,
   Put,
+  Req,
   UseGuards,
 } from "@nestjs/common";
+import type { AuthenticatedRequest } from "../members/member-auth.guard.js";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 import { AdminAuthGuard } from "./admin-auth.guard.js";
 
@@ -1127,10 +1130,19 @@ export class AdminController {
   async updateUserRole(
     @Param("id") id: string,
     @Body() body: { role?: string },
+    @Req() request: AuthenticatedRequest,
   ) {
     const allowed = ["MEMBER", "PARTNER", "ADMIN", "INFLUENCER"];
     if (!body.role || !allowed.includes(body.role)) {
       return { error: "Role inválido. Use: MEMBER, PARTNER, ADMIN ou INFLUENCER" };
+    }
+    if (id === request.user.id) {
+      throw new BadRequestException("Não pode alterar a sua própria role");
+    }
+    if (body.role === "ADMIN") {
+      throw new BadRequestException(
+        "A atribuição de ADMIN requer um procedimento de superadmin",
+      );
     }
     const { data, error } = await this.db
       .from("profiles")
