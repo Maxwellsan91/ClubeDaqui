@@ -24,7 +24,11 @@ const config = {
       },
     ],
   ],
-  ios: { supportsTablet: true, bundleIdentifier: "pt.cluberibatejo.app" },
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier: "pt.cluberibatejo.app",
+    infoPlist: { ITSAppUsesNonExemptEncryption: false },
+  },
   android: { package: "pt.cluberibatejo.app" },
   experiments: { typedRoutes: true },
   extra: {

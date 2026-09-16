@@ -805,6 +805,8 @@ serena memories check
 - Projeto EAS ligado manualmente no `app.config.js` com o project ID
   `60279e41-ac9e-4098-bbef-d799f680e64d`, porque o CLI não pode editar uma
   configuração dinâmica automaticamente.
+- O build preview iOS reconheceu o projeto; falta configurar variáveis no
+  ambiente EAS `preview` e credenciais Apple para distribuição interna.
 
 ### Modelo para entradas futuras
 
