@@ -23,11 +23,12 @@ export function SavingsOverview({
       total + (summary?.totalBenefits ?? 10) * Math.max(avgPerUse, 15),
       total + 100,
     );
-  const avgTotal =
-    avgPerUse * Math.max(summary?.totalBenefits ?? 0, records.length);
+  const subscriptionPrice = summary?.subscriptionPrice ?? 59;
+  const scale = Math.max(potential, subscriptionPrice, total, 100);
 
-  const totalPct = potential ? Math.min((total / potential) * 100, 100) : 0;
-  const avgPct = potential ? Math.min((avgTotal / potential) * 100, 100) : 0;
+  const totalPct = Math.min((total / scale) * 100, 100);
+  const breakEvenPct = Math.min((subscriptionPrice / scale) * 100, 100);
+  const profitablePct = Math.max(totalPct - breakEvenPct, 0);
   const tooltipLeft = Math.max(8, Math.min(totalPct, 88));
 
   const used = summary?.usedBenefits ?? records.length;
@@ -98,27 +99,30 @@ export function SavingsOverview({
           <span className="bg-cream-50 rounded-full px-2.5 py-1 text-[11px] font-bold text-olive-900 shadow-sm">
             {euro.format(total)}
           </span>
-          {avgTotal > total + 1 && (
-            <span className="bg-gold-500 rounded-full px-2.5 py-1 text-[11px] font-bold text-olive-900 shadow-sm">
-              {euro.format(avgTotal)}
-            </span>
-          )}
+          <span
+            className="text-gold-300 absolute top-8 -translate-x-1/2 text-[10px] font-bold"
+            style={{ left: `${breakEvenPct}%` }}
+          >
+            Subscrição {euro.format(subscriptionPrice)}
+          </span>
         </div>
 
         <div className="relative h-3.5 overflow-hidden rounded-full bg-white/15">
           <div
-            className="bg-cream-50 absolute inset-y-0 left-0 rounded-full transition-all duration-700"
-            style={{ width: `${totalPct}%` }}
+            className="bg-gold-500 absolute inset-y-0 left-0 rounded-full transition-all duration-700"
+            style={{ width: `${Math.min(totalPct, breakEvenPct)}%` }}
           />
-          {avgPct > totalPct + 1 && (
+          {profitablePct > 0 && (
             <div
-              className="bg-gold-500/70 absolute inset-y-0"
-              style={{
-                left: `${totalPct}%`,
-                width: `${Math.max(avgPct - totalPct, 2)}%`,
-              }}
+              className="absolute inset-y-0 rounded-full bg-olive-400 transition-all duration-700"
+              style={{ left: `${breakEvenPct}%`, width: `${profitablePct}%` }}
             />
           )}
+          <div
+            className="absolute -top-1 h-5 w-0.5 bg-white/80"
+            style={{ left: `${breakEvenPct}%` }}
+            aria-hidden="true"
+          />
         </div>
 
         <p className="text-cream-100/50 mt-1 text-right text-[11px]">
@@ -129,12 +133,12 @@ export function SavingsOverview({
       {/* Legend */}
       <div className="text-cream-100/60 mt-3 flex flex-wrap gap-4 text-xs">
         <span className="flex items-center gap-1.5">
-          <span className="bg-cream-50 inline-block h-2 w-2 rounded-full" />
-          Sua economia
+          <span className="bg-gold-500 inline-block h-2 w-2 rounded-full" />
+          Desconto até recuperar a subscrição
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="bg-gold-500 inline-block h-2 w-2 rounded-full" />
-          Média
+          <span className="inline-block h-2 w-2 rounded-full bg-olive-400" />
+          Lucro após a subscrição
         </span>
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-full bg-white/20" />

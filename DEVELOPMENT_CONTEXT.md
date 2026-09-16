@@ -724,6 +724,13 @@ serena memories check
 - Corrigida também a `Permissions-Policy` para permitir geolocalização no
   próprio domínio (`geolocation=(self)`).
 
+### 2026-09-16 — Ponto de equilíbrio da subscrição
+
+- O card de poupanças da `/conta` passou a mostrar o valor pago na subscrição,
+  usando o último pagamento registado (com fallback de 59 €).
+- A barra fica amarela até recuperar o investimento e verde depois do ponto de
+  equilíbrio, com marcador e legenda explicativos.
+
 ### Modelo para entradas futuras
 
 ```text

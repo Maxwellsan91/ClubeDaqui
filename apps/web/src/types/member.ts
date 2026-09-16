@@ -36,4 +36,5 @@ export type MemberSummaryData = {
   availableBenefits: number;
   totalBenefits: number;
   potentialSavings?: number | null;
+  subscriptionPrice?: number | null;
 };

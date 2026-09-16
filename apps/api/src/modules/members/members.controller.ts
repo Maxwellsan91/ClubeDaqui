@@ -43,6 +43,15 @@ export class MembersController {
       .order("ends_at", { ascending: false })
       .limit(1)
       .maybeSingle();
+    const { data: payment } = membership
+      ? await client
+          .from("payments")
+          .select("amount_cents")
+          .eq("membership_id", membership.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle()
+      : { data: null };
     const { count: usedBenefits } = membership
       ? await client
           .from("redemptions")
@@ -66,6 +75,9 @@ export class MembersController {
         availableBenefits: availableBenefits ?? 0,
         totalBenefits: (usedBenefits ?? 0) + (availableBenefits ?? 0),
         potentialSavings: null,
+        subscriptionPrice: payment?.amount_cents
+          ? payment.amount_cents / 100
+          : 59,
       },
     };
   }
