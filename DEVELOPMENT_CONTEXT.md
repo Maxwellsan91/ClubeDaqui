@@ -772,6 +772,14 @@ serena memories check
 - Conta mostra sessão, poupança acumulada e valor da subscrição.
 - Typecheck mobile passou; esta versão está pronta para validação em Expo Go.
 
+### 2026-09-16 — Funcionalidades móveis críticas
+
+- Adicionado mapa nativo com `expo-location` e `react-native-maps`, incluindo
+  parceiros e posição do utilizador.
+- Detalhe do parceiro permite iniciar resgate e mostrar o código ao parceiro.
+- Criado fluxo mobile de validação para parceiros (preview e confirmação).
+- Typecheck mobile passou; alterações aguardam validação manual em Expo Go.
+
 ### Modelo para entradas futuras
 
 ```text

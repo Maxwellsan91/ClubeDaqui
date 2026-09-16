@@ -33,6 +33,8 @@ export default function BusinessDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const [detail, setDetail] = useState<Detail>();
   const [benefit, setBenefit] = useState<Benefit>();
+  const [code, setCode] = useState<string>();
+  const [redeeming, setRedeeming] = useState(false);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!slug) return;
@@ -67,6 +69,26 @@ export default function BusinessDetailScreen() {
     detail.latitude && detail.longitude
       ? `https://www.google.com/maps/dir/?api=1&destination=${detail.latitude},${detail.longitude}`
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${detail.name}, ${detail.address ?? detail.city ?? ""}`)}`;
+  const locationId = detail.businessLocationId;
+  async function redeem() {
+    if (!benefit || !locationId) return;
+    setRedeeming(true);
+    try {
+      const result = await apiFetch<{ data?: { manual_code?: string } }>(
+        "/api/me/redemptions/attempt",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            benefit_id: benefit.id,
+            business_location_id: locationId,
+          }),
+        },
+      );
+      setCode(result.data?.manual_code);
+    } finally {
+      setRedeeming(false);
+    }
+  }
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.eyebrow}>
@@ -90,9 +112,22 @@ export default function BusinessDetailScreen() {
           {benefit.description && (
             <Text style={styles.body}>{benefit.description}</Text>
           )}
-          <Text style={styles.note}>
-            O resgate mobile será ativado na próxima etapa.
-          </Text>
+          {code ? (
+            <View style={styles.code}>
+              <Text style={styles.codeLabel}>MOSTRE AO PARCEIRO</Text>
+              <Text style={styles.codeValue}>{code}</Text>
+            </View>
+          ) : (
+            <Pressable
+              disabled={redeeming || !detail.businessLocationId}
+              onPress={() => void redeem()}
+              style={[styles.redeem, redeeming && styles.disabled]}
+            >
+              <Text style={styles.redeemText}>
+                {redeeming ? "A preparar código…" : "Usar benefício"}
+              </Text>
+            </Pressable>
+          )}
         </View>
       )}
       <Link href="/(tabs)/explorar" style={styles.link}>
@@ -150,5 +185,34 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   note: { marginTop: 14, color: "#743b40", fontSize: 13, fontWeight: "600" },
+  redeem: {
+    marginTop: 20,
+    alignItems: "center",
+    borderRadius: 22,
+    backgroundColor: "#b58b4a",
+    paddingVertical: 14,
+  },
+  redeemText: { color: "#243029", fontWeight: "700" },
+  disabled: { opacity: 0.5 },
+  code: {
+    marginTop: 20,
+    alignItems: "center",
+    borderRadius: 14,
+    backgroundColor: "#243029",
+    padding: 18,
+  },
+  codeLabel: {
+    color: "#b58b4a",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 1,
+  },
+  codeValue: {
+    marginTop: 8,
+    color: "#fff",
+    fontSize: 34,
+    fontWeight: "700",
+    letterSpacing: 6,
+  },
   link: { marginTop: 24, color: "#743b40", fontSize: 15, fontWeight: "600" },
 });
