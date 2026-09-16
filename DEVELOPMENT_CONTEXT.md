@@ -780,6 +780,13 @@ serena memories check
 - Criado fluxo mobile de validação para parceiros (preview e confirmação).
 - Typecheck mobile passou; alterações aguardam validação manual em Expo Go.
 
+### 2026-09-16 — Configuração de chaves mobile
+
+- Criado `apps/mobile/app.config.ts` para injetar chaves nativas Google Maps por
+  plataforma durante o build Expo.
+- Criado `apps/mobile/.env.example` com API, Supabase e chaves Android/iOS;
+  nenhum valor real foi guardado no repositório.
+
 ### Modelo para entradas futuras
 
 ```text
