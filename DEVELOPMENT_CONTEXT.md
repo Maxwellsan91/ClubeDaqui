@@ -609,6 +609,17 @@ serena memories check
 - CSP passou a permitir frames Google Maps; `.env.example` documenta a nova
   variável pública.
 - Typecheck web, Prettier e `git diff --check` passaram.
+
+### 2026-09-16 — Marcador da localização no mapa de membro
+
+- O Embed API não suporta marcador dinâmico da posição do utilizador; criado o
+  componente `MemberGoogleMap` com Maps JavaScript API.
+- `/conta` agora desenha um marcador “Você” na posição obtida pelo browser;
+  usa `NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY` e mantém fallback Embed/OSM.
+- CSP permite `maps.googleapis.com` para carregar o SDK.
+- Typecheck web e `git diff --check` passaram.
+- A chave browser deve ter `Maps JavaScript API` autorizada, além de restrição
+  por referrer do domínio web.
 - A chave deve ser configurada na Vercel com restrição por websites e apenas à
   Maps Embed API.
 

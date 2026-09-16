@@ -5,6 +5,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
+import { MemberGoogleMap } from "@/components/member-google-map";
 import type { BusinessCardData } from "@/components/business-card";
 import { RecordSavingsForm } from "@/components/record-savings-form";
 import ReviewForm from "@/components/review-form";
@@ -474,16 +475,16 @@ function AccountPageInner() {
 
           {showMap ? (
             <div className="mt-6 overflow-hidden rounded-3xl border border-olive-900/10">
-              <iframe
-                title="Mapa de lugares no Ribatejo"
-                className="h-[28rem] w-full"
-                loading="lazy"
-                src={
-                  googleMapsKey
-                    ? `https://www.google.com/maps/embed/v1/view?key=${encodeURIComponent(googleMapsKey)}&center=${mapPosition[0]},${mapPosition[1]}&zoom=12`
-                    : "https://www.openstreetmap.org/export/embed.html?bbox=-8.67%2C39.14%2C-8.54%2C39.24&layer=mapnik&marker=39.2028%2C-8.6281"
-                }
-              />
+              {googleMapsKey ? (
+                <MemberGoogleMap center={mapPosition} />
+              ) : (
+                <iframe
+                  title="Mapa de lugares no Ribatejo"
+                  className="h-[28rem] w-full"
+                  loading="lazy"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=-8.67%2C39.14%2C-8.54%2C39.24&layer=mapnik&marker=39.2028%2C-8.6281"
+                />
+              )}
               <p className="p-4 text-xs text-olive-700">
                 {locationStatus === "loading"
                   ? "A obter a sua localização…"
