@@ -69,6 +69,7 @@ const staticPlaces: BusinessCardData[] = [
 const storageKey = "clube-ribatejo-savings";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const googleMapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY;
 
 const roleLabels: Record<string, string> = {
   MEMBER: "Membro",
@@ -82,6 +83,12 @@ function AccountPageInner() {
   const searchParams = useSearchParams();
   const [firstName, setFirstName] = useState<string>();
   const [showMap, setShowMap] = useState(false);
+  const [mapPosition, setMapPosition] = useState<[number, number]>([
+    39.2028, -8.6281,
+  ]);
+  const [locationStatus, setLocationStatus] = useState<
+    "idle" | "loading" | "ready" | "denied"
+  >("idle");
   const [places, setPlaces] = useState<BusinessCardData[]>(staticPlaces);
   const [records, setRecords] = useState<SavingsRecord[]>([]);
   const [serverSummary, setServerSummary] = useState<MemberSummaryData | null>(
@@ -169,13 +176,17 @@ function AccountPageInner() {
             headers,
           });
         }
-        const [summaryResponse, savingsResponse, redemptionsResponse, influencerResponse] =
-          await Promise.all([
-            fetch(`${apiUrl}/api/me/summary`, { headers }),
-            fetch(`${apiUrl}/api/me/savings`, { headers }),
-            fetch(`${apiUrl}/api/me/redemptions`, { headers }),
-            fetch(`${apiUrl}/api/me/influencer`, { headers }),
-          ]);
+        const [
+          summaryResponse,
+          savingsResponse,
+          redemptionsResponse,
+          influencerResponse,
+        ] = await Promise.all([
+          fetch(`${apiUrl}/api/me/summary`, { headers }),
+          fetch(`${apiUrl}/api/me/savings`, { headers }),
+          fetch(`${apiUrl}/api/me/redemptions`, { headers }),
+          fetch(`${apiUrl}/api/me/influencer`, { headers }),
+        ]);
         if (
           !summaryResponse.ok ||
           !savingsResponse.ok ||
@@ -207,7 +218,9 @@ function AccountPageInner() {
         }
         setRecords(savingsPayload.data?.records ?? []);
         const allRedemptions = redemptionsPayload.data ?? [];
-        setUnrecordedRedemptions(allRedemptions.filter((item) => !item.financial));
+        setUnrecordedRedemptions(
+          allRedemptions.filter((item) => !item.financial),
+        );
         setUnreviewedRedemptions(
           allRedemptions.filter((item) => item.financial && !item.hasReview),
         );
@@ -247,7 +260,7 @@ function AccountPageInner() {
     <div className="flex items-center gap-2">
       <Link
         href="/conta/perfil"
-        className="min-h-[44px] rounded-full border border-olive-900/15 px-4 py-2 text-sm font-semibold text-olive-700 transition hover:bg-olive-900/5 inline-flex items-center"
+        className="inline-flex min-h-[44px] items-center rounded-full border border-olive-900/15 px-4 py-2 text-sm font-semibold text-olive-700 transition hover:bg-olive-900/5"
       >
         Minha conta
       </Link>
@@ -262,6 +275,27 @@ function AccountPageInner() {
     </div>
   );
 
+  function toggleMap() {
+    if (showMap) {
+      setShowMap(false);
+      return;
+    }
+    setShowMap(true);
+    if (!navigator.geolocation) {
+      setLocationStatus("denied");
+      return;
+    }
+    setLocationStatus("loading");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setMapPosition([position.coords.latitude, position.coords.longitude]);
+        setLocationStatus("ready");
+      },
+      () => setLocationStatus("denied"),
+      { enableHighAccuracy: true, maximumAge: 30_000, timeout: 15_000 },
+    );
+  }
+
   return (
     <main className="min-h-screen">
       <AppHeader rightSlot={headerActions} mobileRight={headerActions} />
@@ -270,14 +304,14 @@ function AccountPageInner() {
           href="/admin"
           className="flex items-center justify-between gap-3 bg-olive-900 px-5 py-2.5 sm:px-8"
         >
-          <div className="flex items-center gap-2.5 text-sm text-cream-50/80">
-            <span className="rounded bg-gold-500 px-1.5 py-0.5 text-[10px] font-bold text-olive-900 uppercase tracking-wide">
+          <div className="text-cream-50/80 flex items-center gap-2.5 text-sm">
+            <span className="bg-gold-500 rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-olive-900 uppercase">
               Admin
             </span>
             Está na área de membros — ir para o painel de administração
           </div>
           <svg
-            className="h-4 w-4 flex-none text-cream-50/60"
+            className="text-cream-50/60 h-4 w-4 flex-none"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -305,7 +339,7 @@ function AccountPageInner() {
             </p>
           </div>
           <button
-            onClick={() => setShowMap(!showMap)}
+            onClick={toggleMap}
             className="min-h-11 rounded-full bg-olive-900 px-5 py-3 text-sm font-semibold text-white"
           >
             {showMap ? "Ver lista" : "Ver mapa"}
@@ -362,7 +396,7 @@ function AccountPageInner() {
         {/* Avaliações pendentes */}
         {apiStatus === "connected" && unreviewedRedemptions.length > 0 ? (
           <section className="mt-8">
-            <div className="rounded-2xl border border-olive-900/10 bg-cream-50 p-5 sm:p-6">
+            <div className="bg-cream-50 rounded-2xl border border-olive-900/10 p-5 sm:p-6">
               <p className="text-[11px] font-bold tracking-[0.25em] text-olive-500 uppercase">
                 A sua opinião
               </p>
@@ -375,10 +409,20 @@ function AccountPageInner() {
             </div>
             <div className="mt-5 space-y-6">
               {unreviewedRedemptions.map((redemption) => (
-                <div key={redemption.id} className="rounded-xl border border-olive-900/8 bg-white p-5">
+                <div
+                  key={redemption.id}
+                  className="rounded-xl border border-olive-900/8 bg-white p-5"
+                >
                   <div className="mb-4">
-                    <p className="font-semibold text-olive-900">{redemption.businessName}</p>
-                    <p className="text-sm text-olive-500">{redemption.benefitTitle} · {new Intl.DateTimeFormat("pt-PT", { dateStyle: "medium" }).format(new Date(redemption.redeemedAt))}</p>
+                    <p className="font-semibold text-olive-900">
+                      {redemption.businessName}
+                    </p>
+                    <p className="text-sm text-olive-500">
+                      {redemption.benefitTitle} ·{" "}
+                      {new Intl.DateTimeFormat("pt-PT", {
+                        dateStyle: "medium",
+                      }).format(new Date(redemption.redeemedAt))}
+                    </p>
                   </div>
                   <ReviewForm
                     redemptionId={redemption.id}
@@ -434,10 +478,18 @@ function AccountPageInner() {
                 title="Mapa de lugares no Ribatejo"
                 className="h-[28rem] w-full"
                 loading="lazy"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-8.67%2C39.14%2C-8.54%2C39.24&layer=mapnik&marker=39.2028%2C-8.6281"
+                src={
+                  googleMapsKey
+                    ? `https://www.google.com/maps/embed/v1/view?key=${encodeURIComponent(googleMapsKey)}&center=${mapPosition[0]},${mapPosition[1]}&zoom=12`
+                    : "https://www.openstreetmap.org/export/embed.html?bbox=-8.67%2C39.14%2C-8.54%2C39.24&layer=mapnik&marker=39.2028%2C-8.6281"
+                }
               />
               <p className="p-4 text-xs text-olive-700">
-                Mapa: © OpenStreetMap contributors.
+                {locationStatus === "loading"
+                  ? "A obter a sua localização…"
+                  : googleMapsKey
+                    ? "Mapa Google Maps. Localização aproximada."
+                    : "Mapa: © OpenStreetMap contributors."}
               </p>
             </div>
           ) : (
@@ -471,7 +523,7 @@ function AccountPageInner() {
                           <p className="text-gold-500 text-[10px] font-bold tracking-wider uppercase">
                             {place.kind}
                           </p>
-                          <p className="group-hover:text-wine-700 mt-0.5 text-sm font-semibold leading-tight text-olive-900 transition-colors">
+                          <p className="group-hover:text-wine-700 mt-0.5 text-sm leading-tight font-semibold text-olive-900 transition-colors">
                             {place.name}
                           </p>
                           <p className="mt-0.5 text-[11px] text-olive-600">
@@ -483,10 +535,10 @@ function AccountPageInner() {
                     {/* Ver mais card */}
                     <Link
                       href={`/explorar?categoria=${encodeURIComponent(category)}`}
-                      className="bg-cream-100 hover:bg-olive-900/5 flex w-32 flex-none flex-col items-center justify-center gap-2 rounded-2xl border border-olive-900/10 p-4 text-center transition"
+                      className="bg-cream-100 flex w-32 flex-none flex-col items-center justify-center gap-2 rounded-2xl border border-olive-900/10 p-4 text-center transition hover:bg-olive-900/5"
                     >
                       <span className="text-xl text-olive-700/40">→</span>
-                      <p className="text-[11px] font-semibold leading-tight text-olive-700">
+                      <p className="text-[11px] leading-tight font-semibold text-olive-700">
                         Ver todos em {category}
                       </p>
                     </Link>
@@ -516,12 +568,20 @@ function AccountPageInner() {
                 </span>
                 <button
                   onClick={() =>
-                    void navigator.clipboard.writeText(influencerData.uniqueCode)
+                    void navigator.clipboard.writeText(
+                      influencerData.uniqueCode,
+                    )
                   }
                   title="Copiar código"
-                  className="ml-1 rounded p-0.5 text-olive-400 hover:text-olive-700 transition-colors"
+                  className="ml-1 rounded p-0.5 text-olive-400 transition-colors hover:text-olive-700"
                 >
-                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <rect x="9" y="9" width="13" height="13" rx="2" />
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                   </svg>
@@ -559,11 +619,16 @@ function AccountPageInner() {
                   key={s.label}
                   className={`rounded-2xl p-5 ${s.highlight ? "bg-olive-900 text-white" : "bg-white shadow-sm"}`}
                 >
-                  <p className={`text-xs font-semibold tracking-wide uppercase ${s.highlight ? "text-cream-50/60" : "text-olive-400"}`}>
+                  <p
+                    className={`text-xs font-semibold tracking-wide uppercase ${s.highlight ? "text-cream-50/60" : "text-olive-400"}`}
+                  >
                     {s.label}
                   </p>
-                  <p className={`mt-1 text-2xl font-bold ${s.highlight ? "text-gold-500" : "text-olive-900"}`}>
-                    {s.value}{s.suffix}
+                  <p
+                    className={`mt-1 text-2xl font-bold ${s.highlight ? "text-gold-500" : "text-olive-900"}`}
+                  >
+                    {s.value}
+                    {s.suffix}
                   </p>
                   {s.sub && (
                     <p className="mt-0.5 text-[11px] text-olive-400">{s.sub}</p>
@@ -575,27 +640,30 @@ function AccountPageInner() {
             {/* Tabela mensal */}
             {influencerData.monthly.length > 0 && (
               <div className="mt-6 overflow-hidden rounded-2xl bg-white shadow-sm">
-                <div className="border-b border-cream-100 px-5 py-4">
+                <div className="border-cream-100 border-b px-5 py-4">
                   <p className="text-sm font-semibold text-olive-900">
                     Comissão mês a mês
                   </p>
                   <p className="mt-0.5 text-xs text-olive-500">
-                    Comissão de {influencerData.commissionRate}% por adesão validada · carência de 15 dias
+                    Comissão de {influencerData.commissionRate}% por adesão
+                    validada · carência de 15 dias
                   </p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[480px] text-sm">
                     <thead>
-                      <tr className="border-b border-cream-100 text-left text-xs font-semibold uppercase tracking-wide text-olive-400">
+                      <tr className="border-cream-100 border-b text-left text-xs font-semibold tracking-wide text-olive-400 uppercase">
                         <th className="px-5 py-3">Mês</th>
                         <th className="px-4 py-3 text-center">Novas</th>
                         <th className="px-4 py-3 text-center">Validadas</th>
                         <th className="px-4 py-3 text-center">Canceladas</th>
-                        <th className="px-4 py-3 text-right">Comissão validada</th>
+                        <th className="px-4 py-3 text-right">
+                          Comissão validada
+                        </th>
                         <th className="px-4 py-3 text-right">Em carência</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-cream-100">
+                    <tbody className="divide-cream-100 divide-y">
                       {influencerData.monthly.map((m) => {
                         const [year, month] = m.month.split("-");
                         const label = new Date(
@@ -609,7 +677,7 @@ function AccountPageInner() {
                         const total = m.pending + m.validated + m.cancelled;
                         return (
                           <tr key={m.month} className="hover:bg-cream-50/50">
-                            <td className="px-5 py-3.5 font-medium capitalize text-olive-900">
+                            <td className="px-5 py-3.5 font-medium text-olive-900 capitalize">
                               {label}
                             </td>
                             <td className="px-4 py-3.5 text-center text-olive-600">
@@ -618,7 +686,7 @@ function AccountPageInner() {
                             <td className="px-4 py-3.5 text-center font-semibold text-olive-900">
                               {m.validated > 0 ? m.validated : "—"}
                             </td>
-                            <td className="px-4 py-3.5 text-center text-wine-700/70">
+                            <td className="text-wine-700/70 px-4 py-3.5 text-center">
                               {m.cancelled > 0 ? m.cancelled : "—"}
                             </td>
                             <td className="px-4 py-3.5 text-right font-semibold text-olive-900">
@@ -646,13 +714,16 @@ function AccountPageInner() {
                   Ainda sem referências
                 </p>
                 <p className="mt-2 text-sm leading-6 text-olive-600">
-                  Partilhe o seu código <span className="font-mono font-semibold">{influencerData.uniqueCode}</span> para começar a ganhar comissões.
+                  Partilhe o seu código{" "}
+                  <span className="font-mono font-semibold">
+                    {influencerData.uniqueCode}
+                  </span>{" "}
+                  para começar a ganhar comissões.
                 </p>
               </div>
             )}
           </div>
         )}
-
       </section>
     </main>
   );

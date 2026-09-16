@@ -626,6 +626,16 @@ serena memories check
 - Próximo passo: mapa geral com Google Maps JavaScript API e marcadores, seguido
   de Routes API para distância real por estrada quando necessário.
 
+### 2026-09-16 — Mapa da área de membro e permissão de localização
+
+- Corrigido o mapa de `/conta`: deixou de usar sempre OpenStreetMap e usa
+  Google Maps Embed quando `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY` existe.
+- O botão `Ver mapa` agora solicita a localização do browser ao ser clicado,
+  centra o mapa na posição obtida e apresenta estado de carregamento/erro.
+- Mantido fallback OpenStreetMap e centro de Almeirim quando a chave ou a
+  permissão não estão disponíveis.
+- Typecheck web, Prettier e `git diff --check` passaram.
+
 ### Modelo para entradas futuras
 
 ```text
