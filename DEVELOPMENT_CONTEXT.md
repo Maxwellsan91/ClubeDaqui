@@ -681,6 +681,13 @@ serena memories check
   para que todos os parceiros apresentados na lista tenham marcador na vista
   de mapa.
 
+### 2026-09-16 — Mapa no detalhe do parceiro
+
+- A página `/explorar/[slug]` passou a usar o mesmo mapa escuro da exploração,
+  centrado e com marcador do parceiro.
+- O botão “Abrir no Google Maps” usa coordenadas para abrir diretamente a rota
+  no Google Maps/GPS.
+
 ### Modelo para entradas futuras
 
 ```text

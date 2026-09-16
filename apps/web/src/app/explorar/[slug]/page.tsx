@@ -4,6 +4,7 @@ import { ClubBenefitCard } from "@/components/club-benefit-card";
 import { RatingDisplay } from "@/components/rating-display";
 import { RedeemBenefitButton } from "@/components/redeem-benefit-button";
 import { StickyRedeemBar } from "@/components/sticky-redeem-bar";
+import { ExploreGoogleMap } from "@/components/explore-google-map";
 import { createClient } from "@/lib/supabase/server";
 
 const AVATAR_COLORS = [
@@ -110,6 +111,7 @@ const details: Record<string, BusinessDetail> = {
     kind: "Experiência",
     city: "Almeirim",
     address: "Almeirim, Santarém",
+    coordinates: [39.2086, -8.6267],
     description:
       "Descubra a paisagem, a cultura e o ritmo do Tejo através de experiências locais.",
     image:
@@ -120,6 +122,7 @@ const details: Record<string, BusinessDetail> = {
     kind: "Alojamento",
     city: "Almeirim",
     address: "Almeirim, Santarém",
+    coordinates: [39.2051, -8.6242],
     description:
       "Uma estadia tranquila para explorar Almeirim e tudo o que o Ribatejo tem para oferecer.",
     image:
@@ -263,7 +266,7 @@ export default async function BusinessPage({
   );
 
   const mapsUrl = business.coordinates
-    ? `https://www.openstreetmap.org/?mlat=${business.coordinates[0]}&mlon=${business.coordinates[1]}#map=17/${business.coordinates[0]}/${business.coordinates[1]}`
+    ? `https://www.google.com/maps/dir/?api=1&destination=${business.coordinates[0]},${business.coordinates[1]}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name}, ${business.address}`)}`;
 
   const color = avatarColor(business.name);
@@ -730,21 +733,35 @@ export default async function BusinessPage({
                   Localização
                 </p>
                 <div className="mt-3 overflow-hidden rounded-2xl border border-olive-900/10">
-                  <iframe
-                    title={`Mapa de ${business.name}`}
-                    className="h-64 w-full sm:h-80"
-                    loading="lazy"
-                    src={
-                      process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY
-                        ? `https://www.google.com/maps/embed/v1/view?key=${encodeURIComponent(process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY)}&center=${business.coordinates[0]},${business.coordinates[1]}&zoom=17`
-                        : `https://www.openstreetmap.org/export/embed.html?bbox=${business.coordinates[1] - 0.008}%2C${business.coordinates[0] - 0.005}%2C${business.coordinates[1] + 0.008}%2C${business.coordinates[0] + 0.005}&layer=mapnik&marker=${business.coordinates[0]}%2C${business.coordinates[1]}`
-                    }
-                  />
-                  <p className="px-4 py-2 text-xs text-olive-600">
-                    {process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY
-                      ? "Google Maps. Localização aproximada."
-                      : "© OpenStreetMap contributors. Localização aproximada."}
-                  </p>
+                  <div className="relative h-64 sm:h-80">
+                    <ExploreGoogleMap
+                      places={[
+                        {
+                          slug,
+                          name: business.name,
+                          category: business.kind,
+                          kind: business.kind,
+                          city: business.city,
+                          image: business.image,
+                          coordinates: business.coordinates,
+                        },
+                      ]}
+                      center={business.coordinates}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-3 bg-[#111111] px-4 py-3 text-white">
+                    <p className="text-xs text-white/70">
+                      Localização do parceiro
+                    </p>
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-full bg-white px-4 py-2 text-xs font-bold text-olive-900"
+                    >
+                      Abrir no Google Maps
+                    </a>
+                  </div>
                 </div>
               </section>
             )}
