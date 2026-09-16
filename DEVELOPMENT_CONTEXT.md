@@ -696,6 +696,13 @@ serena memories check
   a integração Places poderá ser usada apenas para preenchimento administrativo.
 - Typechecks web/API, Prettier e `git diff --check` passaram.
 
+### 2026-09-16 — CSP para fontes do Google Maps
+
+- Autorizadas `fonts.googleapis.com` em `style-src` e `fonts.gstatic.com` em
+  `font-src`, eliminando os bloqueios das fontes internas do Maps.
+- Corrigida também a `Permissions-Policy` para permitir geolocalização no
+  próprio domínio (`geolocation=(self)`).
+
 ### Modelo para entradas futuras
 
 ```text
