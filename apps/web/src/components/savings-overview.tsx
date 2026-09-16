@@ -29,7 +29,6 @@ export function SavingsOverview({
   const totalPct = Math.min((total / scale) * 100, 100);
   const breakEvenPct = Math.min((subscriptionPrice / scale) * 100, 100);
   const profitablePct = Math.max(totalPct - breakEvenPct, 0);
-  const tooltipLeft = Math.max(8, Math.min(totalPct, 88));
 
   const used = summary?.usedBenefits ?? records.length;
   const ofTotal = summary?.totalBenefits;
@@ -91,21 +90,13 @@ export function SavingsOverview({
 
       {/* Progress bar with tooltip */}
       <div className="relative mt-10 pb-1">
-        <div
-          className="absolute -top-8 flex -translate-x-1/2 items-center gap-1"
-          style={{ left: `${tooltipLeft}%` }}
+        <span
+          className="text-gold-300 absolute -top-6 -translate-x-1/2 text-[10px] font-bold"
+          style={{ left: `${breakEvenPct}%` }}
           aria-hidden="true"
         >
-          <span className="bg-cream-50 rounded-full px-2.5 py-1 text-[11px] font-bold text-olive-900 shadow-sm">
-            {euro.format(total)}
-          </span>
-          <span
-            className="text-gold-300 absolute top-8 -translate-x-1/2 text-[10px] font-bold"
-            style={{ left: `${breakEvenPct}%` }}
-          >
-            {euro.format(subscriptionPrice)}
-          </span>
-        </div>
+          {euro.format(subscriptionPrice)}
+        </span>
 
         <div className="relative h-3.5 overflow-hidden rounded-full bg-white/15">
           <div

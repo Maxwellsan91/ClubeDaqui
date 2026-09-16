@@ -733,6 +733,8 @@ serena memories check
 
 - Simplificado o marcador do ponto de equilíbrio para mostrar apenas o valor,
   evitando sobreposição com o gráfico.
+- Removido o balão do valor poupado sobre a barra; o valor da subscrição fica
+  agora diretamente sobre a linha de equilíbrio.
 
 ### Modelo para entradas futuras
 
