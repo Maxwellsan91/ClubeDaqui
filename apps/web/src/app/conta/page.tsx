@@ -5,7 +5,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
-import { MemberGoogleMap } from "@/components/member-google-map";
+import { ExploreGoogleMap } from "@/components/explore-google-map";
 import type { BusinessCardData } from "@/components/business-card";
 import { RecordSavingsForm } from "@/components/record-savings-form";
 import ReviewForm from "@/components/review-form";
@@ -27,6 +27,7 @@ const staticPlaces: BusinessCardData[] = [
     image:
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80",
     cuisine: "Tradicional portuguesa",
+    coordinates: [39.2028305, -8.6281241],
   },
   {
     slug: "a-adega",
@@ -37,6 +38,7 @@ const staticPlaces: BusinessCardData[] = [
     image:
       "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80",
     cuisine: "Cozinha portuguesa",
+    coordinates: [39.1767872, -8.5833777],
   },
   {
     slug: "adega-novo-conceito",
@@ -46,6 +48,7 @@ const staticPlaces: BusinessCardData[] = [
     city: "Fazendas de Almeirim",
     image:
       "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
+    coordinates: [39.1791369, -8.5922863],
   },
   {
     slug: "experiências-do-tejo",
@@ -55,6 +58,7 @@ const staticPlaces: BusinessCardData[] = [
     city: "Almeirim",
     image:
       "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=80",
+    coordinates: [39.2086, -8.6267],
   },
   {
     slug: "casa-ribatejana",
@@ -64,13 +68,13 @@ const staticPlaces: BusinessCardData[] = [
     city: "Almeirim",
     image:
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+    coordinates: [39.2051, -8.6242],
   },
 ];
 
 const storageKey = "clube-ribatejo-savings";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-const googleMapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY;
 
 const roleLabels: Record<string, string> = {
   MEMBER: "Membro",
@@ -145,6 +149,8 @@ function AccountPageInner() {
                   kind: string;
                   city: string;
                   imageUrl?: string;
+                  latitude?: number;
+                  longitude?: number;
                 }) => ({
                   slug: item.slug,
                   name: item.name,
@@ -155,6 +161,12 @@ function AccountPageInner() {
                     item.imageUrl ??
                     staticPlaces.find((p) => p.name === item.name)?.image ??
                     "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
+                  coordinates:
+                    typeof item.latitude === "number" &&
+                    typeof item.longitude === "number"
+                      ? [item.latitude, item.longitude]
+                      : staticPlaces.find((p) => p.name === item.name)
+                          ?.coordinates,
                 }),
               ),
             );
@@ -475,22 +487,38 @@ function AccountPageInner() {
 
           {showMap ? (
             <div className="mt-6 overflow-hidden rounded-3xl border border-olive-900/10">
-              {googleMapsKey ? (
-                <MemberGoogleMap center={mapPosition} />
-              ) : (
-                <iframe
-                  title="Mapa de lugares no Ribatejo"
-                  className="h-[28rem] w-full"
-                  loading="lazy"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=-8.67%2C39.14%2C-8.54%2C39.24&layer=mapnik&marker=39.2028%2C-8.6281"
+              <div className="relative h-[28rem] bg-[#202124]">
+                <ExploreGoogleMap
+                  places={places}
+                  center={mapPosition}
+                  userPosition={locationStatus === "ready" ? mapPosition : null}
                 />
-              )}
+                <div className="absolute right-4 bottom-4 left-4 max-h-44 overflow-x-auto rounded-2xl bg-[#111111]/95 p-3 text-white shadow-xl backdrop-blur sm:left-auto sm:w-80">
+                  <p className="mb-2 px-1 text-xs font-semibold text-white/60">
+                    {places.length} parceiros no mapa
+                  </p>
+                  <div className="flex gap-2 sm:block sm:space-y-2">
+                    {places.slice(0, 8).map((place) => (
+                      <Link
+                        key={place.slug}
+                        href={`/explorar/${place.slug}`}
+                        className="block min-w-44 rounded-xl bg-white/10 px-3 py-2 sm:min-w-0"
+                      >
+                        <p className="truncate text-sm font-semibold">
+                          {place.name}
+                        </p>
+                        <p className="text-[11px] text-white/60">
+                          {place.kind} · {place.city}
+                        </p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
               <p className="p-4 text-xs text-olive-700">
                 {locationStatus === "loading"
                   ? "A obter a sua localização…"
-                  : googleMapsKey
-                    ? "Mapa Google Maps. Localização aproximada."
-                    : "Mapa: © OpenStreetMap contributors."}
+                  : "Mapa Google Maps. Localização aproximada."}
               </p>
             </div>
           ) : (

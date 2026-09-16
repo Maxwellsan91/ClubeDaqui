@@ -703,6 +703,13 @@ serena memories check
 - Os dados fallback agora têm slugs reais e o detalhe aceita pesquisa por slug
   ou id.
 
+### 2026-09-16 — Mapa de parceiros na área de membro
+
+- `/conta` passou a reutilizar o mapa Google da exploração, com marcadores de
+  todos os parceiros, localização do membro e painel com links para os detalhes.
+- As coordenadas dos parceiros foram incluídas no carregamento da área de membro.
+- Typecheck web, Prettier e `git diff --check` passaram.
+
 ### 2026-09-16 — CSP para fontes do Google Maps
 
 - Autorizadas `fonts.googleapis.com` em `style-src` e `fonts.gstatic.com` em
