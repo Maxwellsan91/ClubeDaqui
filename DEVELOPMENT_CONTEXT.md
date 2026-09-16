@@ -696,6 +696,13 @@ serena memories check
   a integração Places poderá ser usada apenas para preenchimento administrativo.
 - Typechecks web/API, Prettier e `git diff --check` passaram.
 
+### 2026-09-16 — Correção dos links dos parceiros
+
+- O fallback da API não incluía `slug`, causando links `/explorar/undefined`
+  quando uma consulta remota falhava.
+- Os dados fallback agora têm slugs reais e o detalhe aceita pesquisa por slug
+  ou id.
+
 ### 2026-09-16 — CSP para fontes do Google Maps
 
 - Autorizadas `fonts.googleapis.com` em `style-src` e `fonts.gstatic.com` em

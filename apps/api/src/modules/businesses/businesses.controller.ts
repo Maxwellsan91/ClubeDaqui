@@ -10,6 +10,7 @@ import { SupabaseService } from "../../infrastructure/supabase/supabase.service.
 const businesses = [
   {
     id: "almeirim-tasca-bronze",
+    slug: "a-tasca-do-bronze",
     name: "A Tasca do Bronze",
     category: "Comer",
     kind: "Restaurante",
@@ -22,6 +23,7 @@ const businesses = [
   },
   {
     id: "fazendas-a-adega",
+    slug: "a-adega",
     name: "A Adega",
     category: "Comer",
     kind: "Restaurante",
@@ -34,6 +36,7 @@ const businesses = [
   },
   {
     id: "fazendas-novo-conceito",
+    slug: "adega-novo-conceito",
     name: "Adega Novo Conceito",
     category: "Comer",
     kind: "Adega",
@@ -46,6 +49,7 @@ const businesses = [
   },
   {
     id: "almeirim-tejo",
+    slug: "experiências-do-tejo",
     name: "Experiências do Tejo",
     category: "Lazer",
     kind: "Experiência",
@@ -55,6 +59,7 @@ const businesses = [
   },
   {
     id: "almeirim-casa-ribatejana",
+    slug: "casa-ribatejana",
     name: "Casa Ribatejana",
     category: "Dormir",
     kind: "Alojamento",
@@ -242,7 +247,9 @@ export class BusinessesController {
     } catch {
       /* use demo fallback */
     }
-    const business = businesses.find((item) => item.id === id);
+    const business = businesses.find(
+      (item) => item.id === id || item.slug === id,
+    );
     if (!business)
       throw new NotFoundException("Estabelecimento não encontrado");
     return { data: business };
