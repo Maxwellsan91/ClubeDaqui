@@ -786,6 +786,9 @@ serena memories check
   plataforma durante o build Expo.
 - Criado `apps/mobile/.env.example` com API, Supabase e chaves Android/iOS;
   nenhum valor real foi guardado no repositório.
+- Pendente: depois de gerar os development/preview/production builds EAS,
+  recolher os respetivos certificados SHA-1 Android e restringir
+  `GOOGLE_MAPS_ANDROID_KEY` ao package `pt.cluberibatejo.app`.
 
 ### Modelo para entradas futuras
 
