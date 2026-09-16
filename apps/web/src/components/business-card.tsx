@@ -13,6 +13,7 @@ export type BusinessCardData = {
   rating?: number | null;
   reviewCount?: number | null;
   benefit?: string | null;
+  coordinates?: [number, number];
 };
 
 export function BusinessCard({ place }: { place: BusinessCardData }) {

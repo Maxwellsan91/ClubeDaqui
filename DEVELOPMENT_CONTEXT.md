@@ -612,6 +612,20 @@ serena memories check
 - A chave deve ser configurada na Vercel com restrição por websites e apenas à
   Maps Embed API.
 
+### 2026-09-16 — Localização em tempo real no catálogo
+
+- `/explorar` passou a pedir localização apenas após ação explícita do
+  utilizador, usando `navigator.geolocation.watchPosition` em HTTPS.
+- A posição fica apenas no browser; não é enviada para a API nesta primeira
+  versão.
+- Parceiros com coordenadas são ordenados por distância aproximada (Haversine)
+  e mostram os quilómetros até ao utilizador.
+- O watch é limpo ao parar a funcionalidade ou desmontar a página; quando a
+  API não devolve coordenadas, são usados os dados estáticos conhecidos.
+- Typecheck web, Prettier e `git diff --check` passaram.
+- Próximo passo: mapa geral com Google Maps JavaScript API e marcadores, seguido
+  de Routes API para distância real por estrada quando necessário.
+
 ### Modelo para entradas futuras
 
 ```text

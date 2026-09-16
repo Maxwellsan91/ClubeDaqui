@@ -16,6 +16,7 @@ const staticPlaces: BusinessCardData[] = [
     image:
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80",
     cuisine: "Tradicional portuguesa",
+    coordinates: [39.2028305, -8.6281241],
   },
   {
     slug: "a-adega",
@@ -26,6 +27,7 @@ const staticPlaces: BusinessCardData[] = [
     image:
       "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80",
     cuisine: "Cozinha portuguesa",
+    coordinates: [39.1767872, -8.5833777],
   },
   {
     slug: "adega-novo-conceito",
@@ -35,6 +37,7 @@ const staticPlaces: BusinessCardData[] = [
     city: "Fazendas de Almeirim",
     image:
       "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
+    coordinates: [39.1791369, -8.5922863],
   },
   {
     slug: "experiências-do-tejo",
@@ -59,6 +62,19 @@ const staticPlaces: BusinessCardData[] = [
 const FAVORITES_KEY = "clube-ribatejo-favorites";
 const categoryFilters = ["Todos", "Comer", "Dormir", "Lazer"];
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+function distanceKm(from: [number, number], to: [number, number]) {
+  const earthRadius = 6371;
+  const toRadians = (value: number) => (value * Math.PI) / 180;
+  const dLat = toRadians(to[0] - from[0]);
+  const dLon = toRadians(to[1] - from[1]);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRadians(from[0])) *
+      Math.cos(toRadians(to[0])) *
+      Math.sin(dLon / 2) ** 2;
+  return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 function HeartIcon({ filled }: { filled: boolean }) {
   return (
@@ -88,6 +104,11 @@ export default function ExplorePage() {
   const [loading, setLoading] = useState(Boolean(apiUrl));
   const [error, setError] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [userPosition, setUserPosition] = useState<[number, number]>();
+  const [locationState, setLocationState] = useState<
+    "idle" | "loading" | "ready" | "denied"
+  >("idle");
+  const [watchId, setWatchId] = useState<number>();
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -98,6 +119,14 @@ export default function ExplorePage() {
       /* ignore parse errors */
     }
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (watchId !== undefined && navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
+  }, [watchId]);
 
   // Fetch businesses from API
   useEffect(() => {
@@ -114,6 +143,8 @@ export default function ExplorePage() {
                 category: string;
                 kind: string;
                 city: string;
+                latitude?: number;
+                longitude?: number;
                 imageUrl?: string;
               }) => ({
                 slug: item.slug,
@@ -125,6 +156,12 @@ export default function ExplorePage() {
                   item.imageUrl ??
                   staticPlaces.find((p) => p.name === item.name)?.image ??
                   "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
+                coordinates:
+                  typeof item.latitude === "number" &&
+                  typeof item.longitude === "number"
+                    ? [item.latitude, item.longitude]
+                    : staticPlaces.find((p) => p.name === item.name)
+                        ?.coordinates,
               }),
             ),
           );
@@ -133,6 +170,30 @@ export default function ExplorePage() {
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
+
+  function toggleLocation() {
+    if (watchId !== undefined) {
+      navigator.geolocation.clearWatch(watchId);
+      setWatchId(undefined);
+      setUserPosition(undefined);
+      setLocationState("idle");
+      return;
+    }
+    if (!navigator.geolocation) {
+      setLocationState("denied");
+      return;
+    }
+    setLocationState("loading");
+    const id = navigator.geolocation.watchPosition(
+      (position) => {
+        setUserPosition([position.coords.latitude, position.coords.longitude]);
+        setLocationState("ready");
+      },
+      () => setLocationState("denied"),
+      { enableHighAccuracy: true, maximumAge: 30_000, timeout: 15_000 },
+    );
+    setWatchId(id);
+  }
 
   function toggleFavorite(slug: string, e: React.MouseEvent) {
     e.preventDefault();
@@ -154,7 +215,7 @@ export default function ExplorePage() {
   }
 
   const visible = useMemo(() => {
-    return remotePlaces.filter((p) => {
+    const filtered = remotePlaces.filter((p) => {
       if (showFavorites && !favorites.has(p.slug)) return false;
       const matchesCategory = filter === "Todos" || p.category === filter;
       const matchesQuery = `${p.name} ${p.kind} ${p.city}`
@@ -162,7 +223,17 @@ export default function ExplorePage() {
         .includes(query.toLowerCase());
       return matchesCategory && matchesQuery;
     });
-  }, [filter, showFavorites, query, remotePlaces, favorites]);
+    if (!userPosition) return filtered;
+    return [...filtered].sort((a, b) => {
+      const da = a.coordinates
+        ? distanceKm(userPosition, a.coordinates)
+        : Number.POSITIVE_INFINITY;
+      const db = b.coordinates
+        ? distanceKm(userPosition, b.coordinates)
+        : Number.POSITIVE_INFINITY;
+      return da - db;
+    });
+  }, [filter, showFavorites, query, remotePlaces, favorites, userPosition]);
 
   const displayed = visible.slice(0, visibleCount);
 
@@ -213,7 +284,7 @@ export default function ExplorePage() {
 
         {/* Filter chips */}
         <div
-          className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
+          className="-mx-5 mt-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
           role="group"
           aria-label="Filtrar por categoria"
         >
@@ -272,6 +343,24 @@ export default function ExplorePage() {
             </button>
           ))}
         </div>
+
+        <button
+          type="button"
+          onClick={toggleLocation}
+          className="mt-4 inline-flex min-h-[40px] items-center rounded-full border border-olive-900/15 px-4 py-2 text-sm font-semibold text-olive-700 transition hover:border-olive-900/30"
+        >
+          {locationState === "loading"
+            ? "A obter localização…"
+            : watchId !== undefined
+              ? "Parar localização"
+              : "Usar a minha localização"}
+        </button>
+        {locationState === "denied" && (
+          <p className="text-wine-700 mt-2 text-xs">
+            Não foi possível obter a localização. Verifique a permissão do
+            browser.
+          </p>
+        )}
 
         {/* Count */}
         <p className="mt-5 text-sm text-olive-600">
@@ -345,6 +434,12 @@ export default function ExplorePage() {
                     <p className="mt-0.5 text-xs text-olive-500">
                       1 oferta disponível
                     </p>
+                    {userPosition && place.coordinates && (
+                      <p className="mt-0.5 text-xs font-semibold text-olive-700">
+                        {distanceKm(userPosition, place.coordinates).toFixed(1)}{" "}
+                        km de si
+                      </p>
+                    )}
                   </div>
                 </Link>
 
