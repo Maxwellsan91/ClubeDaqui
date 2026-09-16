@@ -103,7 +103,7 @@ export function SavingsOverview({
             className="text-gold-300 absolute top-8 -translate-x-1/2 text-[10px] font-bold"
             style={{ left: `${breakEvenPct}%` }}
           >
-            Subscrição {euro.format(subscriptionPrice)}
+            {euro.format(subscriptionPrice)}
           </span>
         </div>
 

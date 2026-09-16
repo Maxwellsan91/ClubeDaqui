@@ -731,6 +731,9 @@ serena memories check
 - A barra fica amarela até recuperar o investimento e verde depois do ponto de
   equilíbrio, com marcador e legenda explicativos.
 
+- Simplificado o marcador do ponto de equilíbrio para mostrar apenas o valor,
+  evitando sobreposição com o gráfico.
+
 ### Modelo para entradas futuras
 
 ```text
