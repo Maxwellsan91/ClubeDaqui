@@ -710,6 +710,13 @@ serena memories check
 - As coordenadas dos parceiros foram incluídas no carregamento da área de membro.
 - Typecheck web, Prettier e `git diff --check` passaram.
 
+### 2026-09-16 — Destaque da validação para parceiros
+
+- O dashboard de parceiros ganhou um CTA amplo e destacado para “Validar
+  código do membro”, responsivo para mobile e desktop.
+- O botão principal da página de validação passou a usar maior altura, peso e
+  contraste visual.
+
 ### 2026-09-16 — CSP para fontes do Google Maps
 
 - Autorizadas `fonts.googleapis.com` em `style-src` e `fonts.gstatic.com` em
