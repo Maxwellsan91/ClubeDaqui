@@ -173,36 +173,32 @@ function PartnerCarousel() {
         {/* Scrollable track */}
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto px-5 pb-4 sm:px-8"
+          className="flex gap-3 overflow-x-auto px-5 pb-4 sm:gap-4 sm:px-8"
           style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none" }}
         >
         {PARTNERS.map(({ name, type, place, image }) => (
           <Link
             key={name}
             href="/explorar"
-            className="group relative flex-none overflow-hidden rounded-2xl"
-            style={{ width: 300, scrollSnapAlign: "start", aspectRatio: "3/4" }}
+            className="group w-40 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white shadow-sm transition hover:shadow-md sm:w-64"
+            style={{ scrollSnapAlign: "start" }}
           >
             <div
-              className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-105"
+              className="h-[100px] overflow-hidden bg-cover bg-center transition duration-500 group-hover:scale-105 sm:h-[160px]"
               style={{ backgroundImage: `url(${image})` }}
+              aria-label={`Imagem de ${name}`}
             />
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(36,48,41,0.92) 0%, rgba(36,48,41,0.15) 55%, transparent 100%)",
-              }}
-            />
-            <div className="absolute bottom-0 left-0 right-0 p-5">
+            <div className="p-3 sm:p-4">
               <p
-                className="text-[9px] font-bold tracking-[0.22em] uppercase"
+                className="text-[9px] font-bold tracking-[0.2em] uppercase"
                 style={{ color: "#b58b4a" }}
               >
                 {type}
               </p>
-              <h3 className="font-display mt-2 text-xl leading-tight text-white">{name}</h3>
-              <p className="mt-1 text-xs text-white/55">{place}</p>
+              <h3 className="font-display mt-1 text-base leading-tight text-olive-900 group-hover:text-wine-700 transition-colors sm:mt-1.5 sm:text-lg">
+                {name}
+              </h3>
+              <p className="mt-0.5 text-[11px] text-olive-600">{place}</p>
             </div>
           </Link>
         ))}
@@ -334,7 +330,7 @@ export default function HomePage() {
             <div key={num} className="flex flex-col">
               <span
                 className="font-display select-none text-[4.5rem] leading-none"
-                style={{ color: "rgba(36,48,41,0.08)" }}
+                style={{ color: "rgba(181,139,74,0.35)" }}
               >
                 {num}
               </span>
