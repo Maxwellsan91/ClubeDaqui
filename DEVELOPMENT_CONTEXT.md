@@ -675,6 +675,12 @@ serena memories check
   `connect-src`.
 - Próximo passo: redeploy da aplicação e validação do mapa no domínio publicado.
 
+### 2026-09-16 — Cobertura dos lugares no mapa
+
+- Foram adicionadas coordenadas aos restantes lugares estáticos do catálogo,
+  para que todos os parceiros apresentados na lista tenham marcador na vista
+  de mapa.
+
 ### Modelo para entradas futuras
 
 ```text

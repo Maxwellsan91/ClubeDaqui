@@ -48,6 +48,7 @@ const staticPlaces: BusinessCardData[] = [
     city: "Almeirim",
     image:
       "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=80",
+    coordinates: [39.2086, -8.6267],
   },
   {
     slug: "casa-ribatejana",
@@ -57,6 +58,7 @@ const staticPlaces: BusinessCardData[] = [
     city: "Almeirim",
     image:
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+    coordinates: [39.2051, -8.6242],
   },
 ];
 
