@@ -76,13 +76,6 @@ const storageKey = "clube-ribatejo-savings";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const roleLabels: Record<string, string> = {
-  MEMBER: "Membro",
-  PARTNER: "Parceiro",
-  ADMIN: "Administrador",
-  INFLUENCER: "Influenciador",
-};
-
 function AccountPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -337,9 +330,6 @@ function AccountPageInner() {
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
         <p className="text-wine-700 text-xs font-semibold tracking-[0.28em] uppercase">
           Área de membros
-        </p>
-        <p className="mt-2 inline-flex rounded-full bg-olive-900/8 px-3 py-1 text-xs font-semibold text-olive-700">
-          Role: {roleLabels[serverSummary?.role ?? "MEMBER"] ?? "Membro"}
         </p>
         <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
           <div>

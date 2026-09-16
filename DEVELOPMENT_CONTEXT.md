@@ -736,6 +736,11 @@ serena memories check
 - Removido o balão do valor poupado sobre a barra; o valor da subscrição fica
   agora diretamente sobre a linha de equilíbrio.
 
+### 2026-09-16 — Remoção de informação interna da área de membro
+
+- Removido o texto `Role: Membro` da interface `/conta`; a role continua
+  disponível apenas para controlo interno de permissões e navegação.
+
 ### Modelo para entradas futuras
 
 ```text
