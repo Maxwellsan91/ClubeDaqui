@@ -1,4 +1,5 @@
 "use client";
+import { useRef } from "react";
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 
@@ -51,15 +52,60 @@ const CATEGORIES = [
 ];
 
 const PARTNERS = [
-  { name: "A Tasca do Bronze", type: "Restaurante", place: "Almeirim" },
-  { name: "A Adega", type: "Restaurante", place: "Fazendas de Almeirim" },
-  { name: "Adega Novo Conceito", type: "Adega", place: "Fazendas de Almeirim" },
-  { name: "Solar dos Presuntos", type: "Restaurante", place: "Almeirim" },
-  { name: "Quinta do Casal", type: "Enoturismo", place: "Santarém" },
-  { name: "Casa da Ribeira", type: "Alojamento", place: "Almeirim" },
-  { name: "Pastelaria Central", type: "Café", place: "Almeirim" },
-  { name: "Herdade do Vale", type: "Lazer", place: "Alpiarça" },
-  { name: "Taberna do Rio", type: "Restaurante", place: "Santarém" },
+  {
+    name: "A Tasca do Bronze",
+    type: "Restaurante",
+    place: "Almeirim",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "A Adega",
+    type: "Restaurante",
+    place: "Fazendas de Almeirim",
+    image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "Adega Novo Conceito",
+    type: "Adega",
+    place: "Fazendas de Almeirim",
+    image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "Solar dos Presuntos",
+    type: "Restaurante",
+    place: "Almeirim",
+    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "Quinta do Casal",
+    type: "Enoturismo",
+    place: "Santarém",
+    image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "Casa da Ribeira",
+    type: "Alojamento",
+    place: "Almeirim",
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "Pastelaria Central",
+    type: "Café",
+    place: "Almeirim",
+    image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "Herdade do Vale",
+    type: "Lazer",
+    place: "Alpiarça",
+    image: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "Taberna do Rio",
+    type: "Restaurante",
+    place: "Santarém",
+    image: "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=600&q=80",
+  },
 ];
 
 const TESTIMONIALS = [
@@ -79,6 +125,102 @@ const TESTIMONIALS = [
     text: "A melhor forma de explorar o Ribatejo e ainda poupar. O cartão já se pagou na primeira semana.",
   },
 ];
+
+function PartnerCarousel() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <section className="py-16 sm:py-24">
+      {/* Header inside max-w container */}
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="flex items-end justify-between">
+          <div>
+            <p
+              className="text-[11px] font-semibold tracking-[0.3em] uppercase"
+              style={{ color: "#743b40" }}
+            >
+              A nossa rede
+            </p>
+            <h2 className="font-display mt-3 text-3xl tracking-tight text-olive-900 sm:text-4xl">
+              Parceiros escolhidos a dedo.
+            </h2>
+          </div>
+          <Link
+            href="/explorar"
+            className="hidden text-sm font-semibold underline underline-offset-4 transition sm:block"
+            style={{ color: "#743b40", textDecorationColor: "rgba(116,59,64,0.3)" }}
+          >
+            Ver todos →
+          </Link>
+        </div>
+      </div>
+
+      {/* Full-bleed track with fade edges */}
+      <div className="relative mt-8">
+        {/* Left fade */}
+        <div
+          className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 sm:w-24"
+          style={{ background: "linear-gradient(to right, #fdfbf6 0%, transparent 100%)" }}
+          aria-hidden="true"
+        />
+        {/* Right fade */}
+        <div
+          className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 sm:w-24"
+          style={{ background: "linear-gradient(to left, #fdfbf6 0%, transparent 100%)" }}
+          aria-hidden="true"
+        />
+
+        {/* Scrollable track */}
+        <div
+          ref={scrollRef}
+          className="flex gap-4 overflow-x-auto px-5 pb-4 sm:px-8"
+          style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none" }}
+        >
+        {PARTNERS.map(({ name, type, place, image }) => (
+          <Link
+            key={name}
+            href="/explorar"
+            className="group relative flex-none overflow-hidden rounded-2xl"
+            style={{ width: 300, scrollSnapAlign: "start", aspectRatio: "3/4" }}
+          >
+            <div
+              className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-105"
+              style={{ backgroundImage: `url(${image})` }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(36,48,41,0.92) 0%, rgba(36,48,41,0.15) 55%, transparent 100%)",
+              }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 p-5">
+              <p
+                className="text-[9px] font-bold tracking-[0.22em] uppercase"
+                style={{ color: "#b58b4a" }}
+              >
+                {type}
+              </p>
+              <h3 className="font-display mt-2 text-xl leading-tight text-white">{name}</h3>
+              <p className="mt-1 text-xs text-white/55">{place}</p>
+            </div>
+          </Link>
+        ))}
+        </div>
+      </div>
+
+      <div className="mx-auto mt-4 max-w-7xl px-5 sm:hidden sm:px-8">
+        <Link
+          href="/explorar"
+          className="text-sm font-semibold underline underline-offset-4"
+          style={{ color: "#743b40" }}
+        >
+          Ver todos os parceiros →
+        </Link>
+      </div>
+    </section>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -247,51 +389,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── PARTNER NETWORK ── */}
-      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p
-              className="text-[11px] font-semibold tracking-[0.3em] uppercase"
-              style={{ color: "#743b40" }}
-            >
-              A nossa rede
-            </p>
-            <h2 className="font-display mt-3 text-3xl tracking-tight text-olive-900 sm:text-4xl">
-              Parceiros escolhidos a dedo.
-            </h2>
-          </div>
-          <Link
-            href="/explorar"
-            className="text-sm font-semibold underline underline-offset-4 transition"
-            style={{ color: "#743b40", textDecorationColor: "rgba(116,59,64,0.3)" }}
-          >
-            Ver todos os parceiros →
-          </Link>
-        </div>
-
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {PARTNERS.map(({ name, type, place }) => (
-            <div
-              key={name}
-              className="rounded-xl border p-4 transition"
-              style={{
-                borderColor: "rgba(36,48,41,0.1)",
-                background: "#f6f0e4",
-              }}
-            >
-              <p
-                className="text-[9px] font-bold tracking-[0.2em] uppercase"
-                style={{ color: "#b58b4a" }}
-              >
-                {type}
-              </p>
-              <p className="font-display mt-2 text-lg leading-tight text-olive-900">{name}</p>
-              <p className="mt-1 text-xs text-olive-600">{place}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ── PARTNER NETWORK — carousel ── */}
+      <PartnerCarousel />
 
       {/* ── CLUB CTA ── dark, with pricing */}
       <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 sm:pb-24">
