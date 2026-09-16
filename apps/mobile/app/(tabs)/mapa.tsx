@@ -50,7 +50,7 @@ export default function MapTab() {
       )}
       <MapView
         provider={PROVIDER_GOOGLE}
-        style={StyleSheet.absoluteFill}
+        style={StyleSheet.absoluteFillObject}
         region={region}
         onRegionChangeComplete={setRegion}
         showsUserLocation={permission === "ready"}

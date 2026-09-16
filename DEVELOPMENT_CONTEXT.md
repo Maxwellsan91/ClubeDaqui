@@ -796,6 +796,13 @@ serena memories check
   canais separados e distribuição interna para testes.
 - Adicionado `expo-dev-client` para testar mapas nativos fora do Expo Go.
 
+### 2026-09-16 — Config plugin nativo de Google Maps
+
+- O Expo Doctor detetou que `react-native-maps` não expõe config plugin próprio.
+- Criado `apps/mobile/plugins/withGoogleMaps.js` para injetar as chaves Android
+  e iOS no Manifest/Info.plist durante o build EAS.
+- `expo config --json` passou; as chaves continuam apenas no `.env`/EAS.
+
 ### Modelo para entradas futuras
 
 ```text
