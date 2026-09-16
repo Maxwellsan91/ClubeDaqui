@@ -741,6 +741,11 @@ serena memories check
 - Removido o texto `Role: Membro` da interface `/conta`; a role continua
   disponível apenas para controlo interno de permissões e navegação.
 
+### 2026-09-16 — Plano de migração mobile Expo
+
+- Criado `MOBILE_EXPO_MIGRATION_PLAN.md` com arquitetura, fases, segurança,
+  mapas, autenticação, testes e publicação iOS/Android.
+
 ### Modelo para entradas futuras
 
 ```text
