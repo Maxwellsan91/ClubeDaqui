@@ -136,12 +136,20 @@ export default async function BusinessPage({
 }) {
   const { slug } = await params;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const isAuthenticated = Boolean(user);
 
   let business: BusinessDetail | undefined = details[slug];
   let benefit: Benefit | undefined;
-  type ReviewItem = { id: string; rating: number; comment: string | null; publishedAt: string; reviewerName: string };
+  type ReviewItem = {
+    id: string;
+    rating: number;
+    comment: string | null;
+    publishedAt: string;
+    reviewerName: string;
+  };
   let reviews: ReviewItem[] = [];
   let avgRating: number | null = null;
 
@@ -187,9 +195,7 @@ export default async function BusinessPage({
               "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=85",
             businessLocationId: d.businessLocationId,
             coordinates:
-              d.latitude && d.longitude
-                ? [d.latitude, d.longitude]
-                : undefined,
+              d.latitude && d.longitude ? [d.latitude, d.longitude] : undefined,
             instagram: d.instagram,
             phone: d.phone,
             whatsapp: d.whatsapp,
@@ -207,13 +213,21 @@ export default async function BusinessPage({
     }
 
     try {
-      const reviewsRes = await fetch(`${apiUrl}/api/businesses/${slug}/reviews`, { cache: "no-store" });
+      const reviewsRes = await fetch(
+        `${apiUrl}/api/businesses/${slug}/reviews`,
+        { cache: "no-store" },
+      );
       if (reviewsRes.ok) {
-        const rp = (await reviewsRes.json()) as { data?: ReviewItem[]; avgRating?: number | null };
+        const rp = (await reviewsRes.json()) as {
+          data?: ReviewItem[];
+          avgRating?: number | null;
+        };
         reviews = rp.data ?? [];
         avgRating = rp.avgRating ?? null;
       }
-    } catch { /* silent */ }
+    } catch {
+      /* silent */
+    }
   }
 
   if (!business)
@@ -309,13 +323,18 @@ export default async function BusinessPage({
               <h1 className="font-display mt-1 text-2xl leading-tight tracking-tight text-olive-900 sm:text-4xl">
                 {business.name}
               </h1>
-              <p className="mt-0.5 text-xs text-olive-600">{business.address}</p>
+              <p className="mt-0.5 text-xs text-olive-600">
+                {business.address}
+              </p>
             </div>
           </div>
 
           {/* Rating row */}
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <RatingDisplay rating={avgRating} reviewCount={reviews.length || null} />
+            <RatingDisplay
+              rating={avgRating}
+              reviewCount={reviews.length || null}
+            />
             <a
               href={mapsUrl}
               target="_blank"
@@ -536,9 +555,22 @@ export default async function BusinessPage({
                         className="shrink-0 text-olive-700"
                         aria-hidden="true"
                       >
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <rect
+                          x="2"
+                          y="2"
+                          width="20"
+                          height="20"
+                          rx="5"
+                          ry="5"
+                        />
                         <circle cx="12" cy="12" r="4" />
-                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                        <circle
+                          cx="17.5"
+                          cy="6.5"
+                          r="1"
+                          fill="currentColor"
+                          stroke="none"
+                        />
                       </svg>
                       <div className="min-w-0 flex-1">
                         <p className="text-[11px] text-olive-500">Instagram</p>
@@ -702,10 +734,16 @@ export default async function BusinessPage({
                     title={`Mapa de ${business.name}`}
                     className="h-64 w-full sm:h-80"
                     loading="lazy"
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${business.coordinates[1] - 0.008}%2C${business.coordinates[0] - 0.005}%2C${business.coordinates[1] + 0.008}%2C${business.coordinates[0] + 0.005}&layer=mapnik&marker=${business.coordinates[0]}%2C${business.coordinates[1]}`}
+                    src={
+                      process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY
+                        ? `https://www.google.com/maps/embed/v1/view?key=${encodeURIComponent(process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY)}&center=${business.coordinates[0]},${business.coordinates[1]}&zoom=17`
+                        : `https://www.openstreetmap.org/export/embed.html?bbox=${business.coordinates[1] - 0.008}%2C${business.coordinates[0] - 0.005}%2C${business.coordinates[1] + 0.008}%2C${business.coordinates[0] + 0.005}&layer=mapnik&marker=${business.coordinates[0]}%2C${business.coordinates[1]}`
+                    }
                   />
                   <p className="px-4 py-2 text-xs text-olive-600">
-                    © OpenStreetMap contributors. Localização aproximada.
+                    {process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY
+                      ? "Google Maps. Localização aproximada."
+                      : "© OpenStreetMap contributors. Localização aproximada."}
                   </p>
                 </div>
               </section>
@@ -724,45 +762,71 @@ export default async function BusinessPage({
                 <div className="mt-5 space-y-4">
                   {/* Avg rating summary */}
                   {avgRating !== null && (
-                    <div className="flex items-center gap-3 rounded-xl border border-olive-900/10 bg-cream-50 px-4 py-3">
-                      <span className="font-display text-4xl font-bold text-olive-900">{avgRating.toFixed(1)}</span>
+                    <div className="bg-cream-50 flex items-center gap-3 rounded-xl border border-olive-900/10 px-4 py-3">
+                      <span className="font-display text-4xl font-bold text-olive-900">
+                        {avgRating.toFixed(1)}
+                      </span>
                       <div>
                         <div className="flex gap-0.5">
                           {[1, 2, 3, 4, 5].map((s) => (
-                            <span key={s} className={`text-lg ${Math.round(avgRating) >= s ? "text-gold-500" : "text-olive-900/15"}`}>★</span>
+                            <span
+                              key={s}
+                              className={`text-lg ${Math.round(avgRating) >= s ? "text-gold-500" : "text-olive-900/15"}`}
+                            >
+                              ★
+                            </span>
                           ))}
                         </div>
-                        <p className="text-xs text-olive-500">{reviews.length} avaliação{reviews.length !== 1 ? "ões" : ""}</p>
+                        <p className="text-xs text-olive-500">
+                          {reviews.length} avaliação
+                          {reviews.length !== 1 ? "ões" : ""}
+                        </p>
                       </div>
                     </div>
                   )}
 
                   {/* Review list */}
                   {reviews.map((r) => (
-                    <div key={r.id} className="rounded-xl border border-olive-900/8 bg-white p-4">
+                    <div
+                      key={r.id}
+                      className="rounded-xl border border-olive-900/8 bg-white p-4"
+                    >
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <p className="text-sm font-semibold text-olive-900">{r.reviewerName}</p>
+                          <p className="text-sm font-semibold text-olive-900">
+                            {r.reviewerName}
+                          </p>
                           <div className="mt-0.5 flex gap-0.5">
                             {[1, 2, 3, 4, 5].map((s) => (
-                              <span key={s} className={`text-sm ${Math.round(r.rating) >= s ? "text-gold-500" : "text-olive-900/15"}`}>★</span>
+                              <span
+                                key={s}
+                                className={`text-sm ${Math.round(r.rating) >= s ? "text-gold-500" : "text-olive-900/15"}`}
+                              >
+                                ★
+                              </span>
                             ))}
                           </div>
                         </div>
                         <p className="shrink-0 text-xs text-olive-400">
-                          {new Intl.DateTimeFormat("pt-PT", { month: "short", year: "numeric" }).format(new Date(r.publishedAt))}
+                          {new Intl.DateTimeFormat("pt-PT", {
+                            month: "short",
+                            year: "numeric",
+                          }).format(new Date(r.publishedAt))}
                         </p>
                       </div>
                       {r.comment && (
-                        <p className="mt-2 text-sm leading-5 text-olive-700">{r.comment}</p>
+                        <p className="mt-2 text-sm leading-5 text-olive-700">
+                          {r.comment}
+                        </p>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="mt-5 rounded-xl border border-olive-900/10 bg-cream-50 px-5 py-8 text-center">
+                <div className="bg-cream-50 mt-5 rounded-xl border border-olive-900/10 px-5 py-8 text-center">
                   <p className="text-sm text-olive-600">
-                    Ainda não há avaliações. Seja o primeiro a partilhar a sua experiência após usar um benefício do Clube.
+                    Ainda não há avaliações. Seja o primeiro a partilhar a sua
+                    experiência após usar um benefício do Clube.
                   </p>
                 </div>
               )}

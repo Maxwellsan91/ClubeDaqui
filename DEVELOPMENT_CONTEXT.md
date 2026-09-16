@@ -601,6 +601,17 @@ serena memories check
 - Próximo passo: testar resgate de membro/influencer e confirmação do parceiro
   no frontend publicado.
 
+### 2026-09-16 — Integração Google Maps Embed
+
+- As fichas de estabelecimento passaram a usar Google Maps Embed API quando
+  `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY` está configurada.
+- Mantido fallback OpenStreetMap para desenvolvimento ou ausência da chave.
+- CSP passou a permitir frames Google Maps; `.env.example` documenta a nova
+  variável pública.
+- Typecheck web, Prettier e `git diff --check` passaram.
+- A chave deve ser configurada na Vercel com restrição por websites e apenas à
+  Maps Embed API.
+
 ### Modelo para entradas futuras
 
 ```text
