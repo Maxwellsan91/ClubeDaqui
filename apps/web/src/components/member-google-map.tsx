@@ -8,20 +8,9 @@ declare global {
       maps: {
         Map: new (
           element: HTMLElement,
-          options: {
-            center: { lat: number; lng: number };
-            zoom: number;
-            mapId: string;
-            streetViewControl: boolean;
-            mapTypeControl: boolean;
-          },
+          options: Record<string, unknown>,
         ) => object;
-        Marker: new (options: {
-          map: object;
-          position: { lat: number; lng: number };
-          title: string;
-          label: string;
-        }) => object;
+        Marker: new (options: Record<string, unknown>) => object;
       };
     };
   }

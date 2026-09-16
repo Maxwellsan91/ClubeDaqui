@@ -618,6 +618,19 @@ serena memories check
   usa `NEXT_PUBLIC_GOOGLE_MAPS_BROWSER_KEY` e mantém fallback Embed/OSM.
 - CSP permite `maps.googleapis.com` para carregar o SDK.
 - Typecheck web e `git diff --check` passaram.
+
+### 2026-09-16 — Primeira vista de mapa semelhante à referência 06
+
+- `/explorar` ganhou modo de mapa com Google Maps JavaScript API, marcadores dos
+  parceiros com coordenadas e painel inferior/lista alternável.
+- Mantidos pesquisa, filtros e ordenação por proximidade; o mapa centra na
+  localização do utilizador quando disponível.
+- Criado `ExploreGoogleMap` com carregamento lazy do SDK e tema escuro.
+- Typecheck web, Prettier e `git diff --check` passaram.
+- O mapa centra na localização do utilizador quando disponível e apresenta o
+  marcador destacado “Você”.
+- Próximo passo: personalizar pins, bottom navigation e painel visual para
+  aproximar ainda mais o screenshot 06.
 - A chave browser deve ter `Maps JavaScript API` autorizada, além de restrição
   por referrer do domínio web.
 - A chave deve ser configurada na Vercel com restrição por websites e apenas à
@@ -646,6 +659,21 @@ serena memories check
 - Mantido fallback OpenStreetMap e centro de Almeirim quando a chave ou a
   permissão não estão disponíveis.
 - Typecheck web, Prettier e `git diff --check` passaram.
+
+### 2026-09-16 — Diagnóstico de mapa sem carregamento
+
+- O mapa de `/explorar` passou a expor estados de carregamento, chave ausente e
+  erro do SDK, evitando uma tela preta silenciosa quando a chave Google Maps ou
+  a restrição do domínio impede o carregamento.
+- Typecheck web, Prettier e `git diff --check` passaram.
+- Publicado no commit `86046f7` em `origin/main`.
+
+### 2026-09-16 — Correção da CSP do Google Maps JavaScript
+
+- A CSP bloqueava o SDK porque `maps.googleapis.com` não estava em
+  `script-src`; também foram autorizados os domínios de tiles em `img-src` e
+  `connect-src`.
+- Próximo passo: redeploy da aplicação e validação do mapa no domínio publicado.
 
 ### Modelo para entradas futuras
 

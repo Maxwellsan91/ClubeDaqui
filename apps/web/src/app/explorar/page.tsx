@@ -5,6 +5,7 @@ import Link from "next/link";
 import { type BusinessCardData } from "@/components/business-card";
 import { EmptyState } from "@/components/empty-state";
 import { AppHeader } from "@/components/app-header";
+import { ExploreGoogleMap } from "@/components/explore-google-map";
 
 const staticPlaces: BusinessCardData[] = [
   {
@@ -109,6 +110,7 @@ export default function ExplorePage() {
     "idle" | "loading" | "ready" | "denied"
   >("idle");
   const [watchId, setWatchId] = useState<number>();
+  const [mapMode, setMapMode] = useState(false);
 
   // Load favorites from localStorage
   useEffect(() => {
@@ -369,100 +371,143 @@ export default function ExplorePage() {
             : `${visible.length} ${visible.length === 1 ? "lugar encontrado" : "lugares encontrados"}`}
         </p>
 
-        {/* List */}
-        {loading ? (
-          <div className="mt-4 space-y-px">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex h-[76px] animate-pulse items-center gap-4 bg-olive-900/5 px-4 first:rounded-t-2xl last:rounded-b-2xl"
-              />
-            ))}
-          </div>
-        ) : error ? (
-          <EmptyState
-            title="Não foi possível carregar os lugares"
-            description="Tente novamente dentro de instantes."
-          />
-        ) : displayed.length === 0 ? (
-          <div className="mt-4">
-            {showFavorites && favorites.size === 0 ? (
-              <div className="rounded-2xl border border-dashed border-olive-900/20 p-8 text-center">
-                <p className="font-display text-xl text-olive-900">
-                  Ainda sem favoritos
-                </p>
-                <p className="mt-2 text-sm leading-6 text-olive-600">
-                  Toque no coração ao lado de um lugar para o guardar aqui.
-                </p>
-              </div>
-            ) : (
-              <EmptyState
-                title="Não encontrámos lugares"
-                description="Experimente outro termo ou remova os filtros."
-              />
-            )}
-          </div>
-        ) : (
-          <div className="mt-4 overflow-hidden rounded-2xl border border-olive-900/10">
-            {displayed.map((place, idx) => (
-              <div
-                key={place.slug}
-                className={`flex items-center gap-3 bg-white px-4 py-3.5 ${
-                  idx < displayed.length - 1
-                    ? "border-b border-olive-900/8"
-                    : ""
-                }`}
-              >
-                {/* Thumbnail */}
-                <Link
-                  href={`/explorar/${place.slug}`}
-                  className="flex flex-1 items-center gap-3 transition hover:opacity-90"
-                >
-                  <div
-                    className="h-14 w-14 flex-none rounded-xl bg-cover bg-center"
-                    style={{ backgroundImage: `url(${place.image})` }}
-                    aria-hidden="true"
-                  />
-                  {/* Info */}
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold text-olive-900">
+        <button
+          type="button"
+          onClick={() => setMapMode((value) => !value)}
+          className="mt-4 min-h-[42px] rounded-full bg-olive-900 px-5 py-2.5 text-sm font-semibold text-white"
+        >
+          {mapMode ? "Ver lista" : "Ver mapa"}
+        </button>
+
+        {/* Map-first exploration */}
+        {mapMode && (
+          <section className="relative mt-4 h-[70vh] min-h-[30rem] overflow-hidden rounded-3xl bg-[#202124] shadow-lg">
+            <ExploreGoogleMap
+              places={visible}
+              center={userPosition ?? [39.2028, -8.6281]}
+              userPosition={userPosition}
+            />
+            <div className="absolute right-4 bottom-4 left-4 max-h-44 overflow-x-auto rounded-2xl bg-[#111111]/95 p-3 text-white shadow-xl backdrop-blur sm:left-auto sm:w-80">
+              <p className="mb-2 px-1 text-xs font-semibold text-white/60">
+                {visible.length} parceiros próximos
+              </p>
+              <div className="flex gap-2 sm:block sm:space-y-2">
+                {visible.slice(0, 8).map((place) => (
+                  <Link
+                    key={place.slug}
+                    href={`/explorar/${place.slug}`}
+                    className="block min-w-44 rounded-xl bg-white/10 px-3 py-2 transition hover:bg-white/20 sm:min-w-0"
+                  >
+                    <p className="truncate text-sm font-semibold">
                       {place.name}
                     </p>
-                    <p className="mt-0.5 text-xs text-olive-600">
+                    <p className="text-[11px] text-white/60">
                       {place.kind} · {place.city}
                     </p>
-                    <p className="mt-0.5 text-xs text-olive-500">
-                      1 oferta disponível
-                    </p>
-                    {userPosition && place.coordinates && (
-                      <p className="mt-0.5 text-xs font-semibold text-olive-700">
-                        {distanceKm(userPosition, place.coordinates).toFixed(1)}{" "}
-                        km de si
-                      </p>
-                    )}
-                  </div>
-                </Link>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
-                {/* Favorite button */}
-                <button
-                  onClick={(e) => toggleFavorite(place.slug, e)}
-                  aria-label={
-                    favorites.has(place.slug)
-                      ? `Remover ${place.name} dos favoritos`
-                      : `Adicionar ${place.name} aos favoritos`
-                  }
-                  className={`shrink-0 p-1 transition-transform active:scale-90 ${
-                    favorites.has(place.slug)
-                      ? "text-wine-700"
-                      : "text-olive-900/20 hover:text-olive-900/40"
+        {/* List */}
+        {!mapMode &&
+          (loading ? (
+            <div className="mt-4 space-y-px">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex h-[76px] animate-pulse items-center gap-4 bg-olive-900/5 px-4 first:rounded-t-2xl last:rounded-b-2xl"
+                />
+              ))}
+            </div>
+          ) : error ? (
+            <EmptyState
+              title="Não foi possível carregar os lugares"
+              description="Tente novamente dentro de instantes."
+            />
+          ) : displayed.length === 0 ? (
+            <div className="mt-4">
+              {showFavorites && favorites.size === 0 ? (
+                <div className="rounded-2xl border border-dashed border-olive-900/20 p-8 text-center">
+                  <p className="font-display text-xl text-olive-900">
+                    Ainda sem favoritos
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-olive-600">
+                    Toque no coração ao lado de um lugar para o guardar aqui.
+                  </p>
+                </div>
+              ) : (
+                <EmptyState
+                  title="Não encontrámos lugares"
+                  description="Experimente outro termo ou remova os filtros."
+                />
+              )}
+            </div>
+          ) : (
+            <div className="mt-4 overflow-hidden rounded-2xl border border-olive-900/10">
+              {displayed.map((place, idx) => (
+                <div
+                  key={place.slug}
+                  className={`flex items-center gap-3 bg-white px-4 py-3.5 ${
+                    idx < displayed.length - 1
+                      ? "border-b border-olive-900/8"
+                      : ""
                   }`}
                 >
-                  <HeartIcon filled={favorites.has(place.slug)} />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+                  {/* Thumbnail */}
+                  <Link
+                    href={`/explorar/${place.slug}`}
+                    className="flex flex-1 items-center gap-3 transition hover:opacity-90"
+                  >
+                    <div
+                      className="h-14 w-14 flex-none rounded-xl bg-cover bg-center"
+                      style={{ backgroundImage: `url(${place.image})` }}
+                      aria-hidden="true"
+                    />
+                    {/* Info */}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold text-olive-900">
+                        {place.name}
+                      </p>
+                      <p className="mt-0.5 text-xs text-olive-600">
+                        {place.kind} · {place.city}
+                      </p>
+                      <p className="mt-0.5 text-xs text-olive-500">
+                        1 oferta disponível
+                      </p>
+                      {userPosition && place.coordinates && (
+                        <p className="mt-0.5 text-xs font-semibold text-olive-700">
+                          {distanceKm(userPosition, place.coordinates).toFixed(
+                            1,
+                          )}{" "}
+                          km de si
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+
+                  {/* Favorite button */}
+                  <button
+                    onClick={(e) => toggleFavorite(place.slug, e)}
+                    aria-label={
+                      favorites.has(place.slug)
+                        ? `Remover ${place.name} dos favoritos`
+                        : `Adicionar ${place.name} aos favoritos`
+                    }
+                    className={`shrink-0 p-1 transition-transform active:scale-90 ${
+                      favorites.has(place.slug)
+                        ? "text-wine-700"
+                        : "text-olive-900/20 hover:text-olive-900/40"
+                    }`}
+                  >
+                    <HeartIcon filled={favorites.has(place.slug)} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ))}
 
         {displayed.length < visible.length && (
           <div className="mt-8 text-center">

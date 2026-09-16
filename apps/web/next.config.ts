@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "default-src 'self'; img-src 'self' https://images.unsplash.com data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://*.supabase.co https://*.vercel.app https://maps.googleapis.com; frame-src https://www.google.com https://www.openstreetmap.org; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+              "default-src 'self'; img-src 'self' https://images.unsplash.com https://*.googleapis.com https://*.gstatic.com data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com; connect-src 'self' https://*.supabase.co https://*.vercel.app https://maps.googleapis.com https://maps.gstatic.com; frame-src https://www.google.com https://www.openstreetmap.org; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
           },
         ],
       },
