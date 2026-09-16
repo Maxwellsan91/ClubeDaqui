@@ -790,6 +790,12 @@ serena memories check
   recolher os respetivos certificados SHA-1 Android e restringir
   `GOOGLE_MAPS_ANDROID_KEY` ao package `pt.cluberibatejo.app`.
 
+### 2026-09-16 — Perfis EAS para builds mobile
+
+- Criado `apps/mobile/eas.json` com perfis development, preview e production,
+  canais separados e distribuição interna para testes.
+- Adicionado `expo-dev-client` para testar mapas nativos fora do Expo Go.
+
 ### Modelo para entradas futuras
 
 ```text
