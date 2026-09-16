@@ -18,6 +18,7 @@ const staticPlaces: BusinessCardData[] = [
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80",
     cuisine: "Tradicional portuguesa",
     coordinates: [39.2028305, -8.6281241],
+    priceRange: "12 € – 35 €",
   },
   {
     slug: "a-adega",
@@ -29,6 +30,7 @@ const staticPlaces: BusinessCardData[] = [
       "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80",
     cuisine: "Cozinha portuguesa",
     coordinates: [39.1767872, -8.5833777],
+    priceRange: "15 € – 40 €",
   },
   {
     slug: "adega-novo-conceito",
@@ -39,6 +41,7 @@ const staticPlaces: BusinessCardData[] = [
     image:
       "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
     coordinates: [39.1791369, -8.5922863],
+    priceRange: "15 € – 40 €",
   },
   {
     slug: "experiências-do-tejo",
@@ -150,6 +153,7 @@ export default function ExplorePage() {
                 latitude?: number;
                 longitude?: number;
                 imageUrl?: string;
+                priceRange?: string | null;
               }) => ({
                 slug: item.slug,
                 name: item.name,
@@ -166,6 +170,7 @@ export default function ExplorePage() {
                     ? [item.latitude, item.longitude]
                     : staticPlaces.find((p) => p.name === item.name)
                         ?.coordinates,
+                priceRange: item.priceRange ?? null,
               }),
             ),
           );

@@ -688,6 +688,14 @@ serena memories check
 - O botão “Abrir no Google Maps” usa coordenadas para abrir diretamente a rota
   no Google Maps/GPS.
 
+### 2026-09-16 — Faixa de preço persistida por parceiro
+
+- Criada migration `20260916120000_business_price_ranges` com valores mínimo,
+  máximo, moeda e origem manual, evitando consultas recorrentes ao Google.
+- API e frontend passam a apresentar a faixa em euros no catálogo e no detalhe;
+  a integração Places poderá ser usada apenas para preenchimento administrativo.
+- Typechecks web/API, Prettier e `git diff --check` passaram.
+
 ### Modelo para entradas futuras
 
 ```text

@@ -59,6 +59,7 @@ type BusinessDetail = {
   phone?: string;
   whatsapp?: string;
   website?: string;
+  priceRange?: string | null;
 };
 
 type Benefit = {
@@ -79,6 +80,7 @@ const details: Record<string, BusinessDetail> = {
     city: "Almeirim",
     address: "Rua de Coruche, 141, 2080-094 Almeirim",
     coordinates: [39.2028305, -8.6281241],
+    priceRange: "12 € – 35 €",
     description:
       "Uma descoberta do nosso roteiro local, selecionada para conhecer melhor os sabores do Ribatejo.",
     image:
@@ -90,6 +92,7 @@ const details: Record<string, BusinessDetail> = {
     city: "Fazendas de Almeirim",
     address: "2080-562 Fazendas de Almeirim",
     coordinates: [39.1767872, -8.5833777],
+    priceRange: "15 € – 40 €",
     description:
       "Uma morada para descobrir a cozinha portuguesa e a hospitalidade ribatejana.",
     image:
@@ -101,6 +104,7 @@ const details: Record<string, BusinessDetail> = {
     city: "Fazendas de Almeirim",
     address: "Rua João de Deus, 80, 2080-576 Fazendas de Almeirim",
     coordinates: [39.1791369, -8.5922863],
+    priceRange: "15 € – 40 €",
     description:
       "Produtos e ambiente com identidade local, no coração do nosso território piloto.",
     image:
@@ -175,6 +179,7 @@ export default async function BusinessPage({
             businessLocationId?: string;
             latitude?: number;
             longitude?: number;
+            priceRange?: string | null;
           };
         };
         if (payload.data) {
@@ -203,6 +208,7 @@ export default async function BusinessPage({
             phone: d.phone,
             whatsapp: d.whatsapp,
             website: d.website,
+            priceRange: d.priceRange,
           };
           const benefitsRes = await fetch(
             `${apiUrl}/api/businesses/${(payload.data as { id?: string }).id}/benefits`,
@@ -346,6 +352,11 @@ export default async function BusinessPage({
             >
               Como chegar
             </a>
+            {business.priceRange && (
+              <span className="rounded-full bg-olive-900/8 px-4 py-2 text-sm font-semibold text-olive-700">
+                {business.priceRange} por pessoa
+              </span>
+            )}
           </div>
         </div>
 

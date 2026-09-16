@@ -18,6 +18,7 @@ const businesses = [
     source: "almeirim.city + OpenStreetMap",
     latitude: 39.2028305,
     longitude: -8.6281241,
+    priceRange: "12 € – 35 €",
   },
   {
     id: "fazendas-a-adega",
@@ -29,6 +30,7 @@ const businesses = [
     source: "almeirim.city",
     latitude: 39.1767872,
     longitude: -8.5833777,
+    priceRange: "15 € – 40 €",
   },
   {
     id: "fazendas-novo-conceito",
@@ -40,6 +42,7 @@ const businesses = [
     source: "almeirim.city + OpenStreetMap",
     latitude: 39.1791369,
     longitude: -8.5922863,
+    priceRange: "15 € – 40 €",
   },
   {
     id: "almeirim-tejo",
@@ -69,6 +72,9 @@ type BusinessRecord = {
   website_url: string | null;
   instagram: string | null;
   image_url: string | null;
+  price_min: number | null;
+  price_max: number | null;
+  price_currency: string | null;
   business_locations: Array<{
     id?: string;
     address_line_1: string;
@@ -91,7 +97,7 @@ export class BusinessesController {
         .createPublicClient()
         .from("businesses")
         .select(
-          "id,name,slug,description,phone,website_url,instagram,image_url,business_locations(id,address_line_1,postal_code,locality,phone,latitude,longitude),business_categories(categories(name))",
+          "id,name,slug,description,phone,website_url,instagram,image_url,price_min,price_max,price_currency,business_locations(id,address_line_1,postal_code,locality,phone,latitude,longitude),business_categories(categories(name))",
         )
         .eq("is_active", true)
         .order("name");
@@ -139,6 +145,10 @@ export class BusinessesController {
       website: item.website_url ?? null,
       instagram: item.instagram ?? null,
       imageUrl: item.image_url ?? null,
+      priceRange:
+        item.price_min !== null && item.price_max !== null
+          ? `${item.price_min} € – ${item.price_max} €`
+          : null,
     };
   }
 
@@ -152,12 +162,17 @@ export class BusinessesController {
       .maybeSingle();
 
     type BizRow = { business_locations: { id: string }[] };
-    const locationIds = ((biz as unknown as BizRow | null)?.business_locations ?? []).map((l) => l.id);
-    if (!locationIds.length) return { data: [], avgRating: null, totalCount: 0 };
+    const locationIds = (
+      (biz as unknown as BizRow | null)?.business_locations ?? []
+    ).map((l) => l.id);
+    if (!locationIds.length)
+      return { data: [], avgRating: null, totalCount: 0 };
 
     const { data: rows } = await client
       .from("reviews")
-      .select("id,food_rating,service_rating,ambience_rating,value_rating,comment,published_at,profiles(full_name)")
+      .select(
+        "id,food_rating,service_rating,ambience_rating,value_rating,comment,published_at,profiles(full_name)",
+      )
       .in("business_location_id", locationIds)
       .eq("status", "published")
       .order("published_at", { ascending: false })
@@ -179,7 +194,11 @@ export class BusinessesController {
         ? reviews.reduce(
             (sum, r) =>
               sum +
-              (r.food_rating + r.service_rating + r.ambience_rating + r.value_rating) / 4,
+              (r.food_rating +
+                r.service_rating +
+                r.ambience_rating +
+                r.value_rating) /
+                4,
             0,
           ) / reviews.length
         : null;
@@ -187,7 +206,15 @@ export class BusinessesController {
     return {
       data: reviews.map((r) => ({
         id: r.id,
-        rating: Math.round(((r.food_rating + r.service_rating + r.ambience_rating + r.value_rating) / 4) * 10) / 10,
+        rating:
+          Math.round(
+            ((r.food_rating +
+              r.service_rating +
+              r.ambience_rating +
+              r.value_rating) /
+              4) *
+              10,
+          ) / 10,
         comment: r.comment,
         publishedAt: r.published_at,
         reviewerName: r.profiles?.full_name ?? "Membro do Clube",
@@ -204,7 +231,7 @@ export class BusinessesController {
         .createPublicClient()
         .from("businesses")
         .select(
-          "id,name,slug,description,phone,website_url,instagram,image_url,business_locations(id,address_line_1,postal_code,locality,phone,latitude,longitude),business_categories(categories(name))",
+          "id,name,slug,description,phone,website_url,instagram,image_url,price_min,price_max,price_currency,business_locations(id,address_line_1,postal_code,locality,phone,latitude,longitude),business_categories(categories(name))",
         )
         .eq("is_active", true)
         .eq("slug", id)
