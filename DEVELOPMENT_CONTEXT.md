@@ -587,6 +587,20 @@ serena memories check
   HTTP 200 com `service: clube-ribatejo-api`.
 - Próximo passo: testar novamente as áreas membro, parceiro e admin no frontend.
 
+### 2026-09-16 — Correção do resgate com erro de timezone
+
+- Diagnóstico confirmou que `20260914220000_influencer_membership` referenciava
+  campos inexistentes em `benefit_rules` (`timezone`, `valid_days`,
+  `time_start/time_end`).
+- Criada e aplicada no Supabase a migration
+  `20260916100000_fix_influencer_redemption_rules`, alinhando a função com
+  `allowed_weekdays`, `starts_at`, `ends_at` e as datas do benefício.
+- Query remota confirmou que a função publicada já não contém as referências
+  inválidas.
+- Migration committed e enviada para GitHub no commit `faee346`.
+- Próximo passo: testar resgate de membro/influencer e confirmação do parceiro
+  no frontend publicado.
+
 ### Modelo para entradas futuras
 
 ```text
