@@ -802,6 +802,9 @@ serena memories check
 - Criado `apps/mobile/plugins/withGoogleMaps.js` para injetar as chaves Android
   e iOS no Manifest/Info.plist durante o build EAS.
 - `expo config --json` passou; as chaves continuam apenas no `.env`/EAS.
+- Projeto EAS ligado manualmente no `app.config.js` com o project ID
+  `60279e41-ac9e-4098-bbef-d799f680e64d`, porque o CLI não pode editar uma
+  configuração dinâmica automaticamente.
 
 ### Modelo para entradas futuras
 
