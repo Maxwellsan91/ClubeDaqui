@@ -746,6 +746,14 @@ serena memories check
 - Criado `MOBILE_EXPO_MIGRATION_PLAN.md` com arquitetura, fases, segurança,
   mapas, autenticação, testes e publicação iOS/Android.
 
+### 2026-09-16 — Fundação do workspace mobile
+
+- Criado `apps/mobile` como workspace React Native + Expo Router.
+- Configurados `app.json`, TypeScript, EAS-ready bundle IDs e clientes base
+  para Supabase SecureStore e API NestJS.
+- Primeiro ecrã Expo e rota `/explorar` criados como ponto de partida.
+- Typecheck mobile passou.
+
 ### Modelo para entradas futuras
 
 ```text
