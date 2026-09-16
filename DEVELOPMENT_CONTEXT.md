@@ -754,6 +754,24 @@ serena memories check
 - Primeiro ecrã Expo e rota `/explorar` criados como ponto de partida.
 - Typecheck mobile passou.
 
+### 2026-09-16 — Primeira navegação mobile em desenvolvimento
+
+- Adicionados AuthProvider com sessão Supabase, login e proteção das tabs.
+- Criado shell Expo Router com Início, Explorar e Conta.
+- Explorar já consulta `/api/businesses` e mantém fallback local, com links para
+  detalhes de parceiros.
+- Typecheck mobile passou.
+- Ainda não foi criado commit: aguardamos uma versão mobile utilizável conforme
+  decisão do utilizador.
+
+### 2026-09-16 — Primeiro MVP mobile utilizável
+
+- Implementados login, registo com confirmação de email e proteção de tabs.
+- Explorar consulta a API com fallback; detalhe real do parceiro mostra
+  benefício e abre navegação Google Maps.
+- Conta mostra sessão, poupança acumulada e valor da subscrição.
+- Typecheck mobile passou; esta versão está pronta para validação em Expo Go.
+
 ### Modelo para entradas futuras
 
 ```text

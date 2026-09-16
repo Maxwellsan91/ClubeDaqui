@@ -1,17 +1,16 @@
 import { Link } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function HomeScreen() {
+export default function MemberHomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.eyebrow}>CLUBE RIBATEJO</Text>
-      <Text style={styles.title}>Descubra o que é nosso.</Text>
+      <Text style={styles.eyebrow}>ÁREA DE MEMBRO</Text>
+      <Text style={styles.title}>Descubra o próximo lugar.</Text>
       <Text style={styles.body}>
-        A app mobile está pronta para receber a experiência de descoberta,
-        benefícios e poupanças do Clube.
+        Explore parceiros locais e acompanhe as suas poupanças.
       </Text>
-      <Link href="/explorar" style={styles.button}>
-        Começar a explorar
+      <Link href="/(tabs)/explorar" style={styles.button}>
+        Explorar parceiros
       </Link>
     </View>
   );
@@ -30,17 +29,11 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 2,
   },
-  title: {
-    marginTop: 14,
-    color: "#243029",
-    fontSize: 38,
-    fontWeight: "700",
-    lineHeight: 44,
-  },
-  body: { marginTop: 16, color: "#5a6e5c", fontSize: 16, lineHeight: 24 },
+  title: { marginTop: 14, color: "#243029", fontSize: 36, fontWeight: "700" },
+  body: { marginTop: 14, color: "#5a6e5c", fontSize: 16, lineHeight: 24 },
   button: {
     alignSelf: "flex-start",
-    marginTop: 28,
+    marginTop: 26,
     borderRadius: 24,
     backgroundColor: "#b58b4a",
     paddingHorizontal: 22,

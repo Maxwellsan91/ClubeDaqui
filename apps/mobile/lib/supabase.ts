@@ -1,12 +1,12 @@
-import 'react-native-url-polyfill/auto';
-import * as SecureStore from 'expo-secure-store';
-import { createClient } from '@supabase/supabase-js';
+import "react-native-url-polyfill/auto";
+import * as SecureStore from "expo-secure-store";
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase mobile environment is not configured.');
+  console.warn("Supabase mobile environment is not configured.");
 }
 
 const storage = {
@@ -16,8 +16,8 @@ const storage = {
 };
 
 export const supabase = createClient(
-  supabaseUrl ?? 'https://invalid.supabase.co',
-  supabaseAnonKey ?? 'missing-anon-key',
+  supabaseUrl ?? "https://invalid.supabase.co",
+  supabaseAnonKey ?? "missing-anon-key",
   {
     auth: {
       storage,
