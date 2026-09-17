@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 type Influencer = {
@@ -47,10 +48,16 @@ function CodeBadge({ code }: { code: string }) {
     <button
       onClick={copy}
       title="Copiar código"
-      className="inline-flex items-center gap-1.5 rounded-lg bg-olive-900/8 px-2.5 py-1 font-mono text-xs font-semibold text-olive-900 hover:bg-olive-900/15 transition-colors"
+      className="inline-flex items-center gap-1.5 rounded-lg bg-olive-900/8 px-2.5 py-1 font-mono text-xs font-semibold text-olive-900 transition-colors hover:bg-olive-900/15"
     >
       {code}
-      <svg className="h-3 w-3 text-olive-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="h-3 w-3 text-olive-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         {copied ? (
           <polyline points="20 6 9 17 4 12" />
         ) : (
@@ -102,6 +109,7 @@ export default function AdminInfluencers() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, []);
 
@@ -177,8 +185,14 @@ export default function AdminInfluencers() {
 
   const active = influencers.filter((i) => i.isActive).length;
   const totalReferrals = influencers.reduce((s, i) => s + i.referrals.total, 0);
-  const totalPendingComm = influencers.reduce((s, i) => s + i.referrals.pendingCommission, 0);
-  const totalValidatedComm = influencers.reduce((s, i) => s + i.commissionDue, 0);
+  const totalPendingComm = influencers.reduce(
+    (s, i) => s + i.referrals.pendingCommission,
+    0,
+  );
+  const totalValidatedComm = influencers.reduce(
+    (s, i) => s + i.commissionDue,
+    0,
+  );
 
   return (
     <div>
@@ -191,9 +205,15 @@ export default function AdminInfluencers() {
         </div>
         <button
           onClick={openAdd}
-          className="flex items-center gap-2 rounded-xl bg-olive-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 transition-colors"
+          className="flex items-center gap-2 rounded-xl bg-olive-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-olive-900/90"
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -207,11 +227,17 @@ export default function AdminInfluencers() {
           { label: "Influencers", value: influencers.length },
           { label: "Ativos", value: active },
           { label: "Referências totais", value: totalReferrals },
-          { label: "Comissão em carência", value: `${totalPendingComm.toFixed(2)} €` },
-          { label: "Comissão validada", value: `${totalValidatedComm.toFixed(2)} €` },
+          {
+            label: "Comissão em carência",
+            value: `${totalPendingComm.toFixed(2)} €`,
+          },
+          {
+            label: "Comissão validada",
+            value: `${totalValidatedComm.toFixed(2)} €`,
+          },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl bg-white p-5 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">
+            <p className="text-xs font-semibold tracking-wide text-olive-400 uppercase">
               {s.label}
             </p>
             <p className="mt-1 text-2xl font-bold text-olive-900">{s.value}</p>
@@ -221,7 +247,7 @@ export default function AdminInfluencers() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <h2 className="mb-5 text-lg font-bold text-olive-900">
               {editing ? "Editar influencer" : "Novo influencer"}
@@ -234,7 +260,9 @@ export default function AdminInfluencers() {
                 <input
                   required
                   value={form.name}
-                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, name: e.target.value }))
+                  }
                   placeholder="João Silva"
                   className="w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10"
                 />
@@ -247,7 +275,9 @@ export default function AdminInfluencers() {
                   required
                   type="email"
                   value={form.email}
-                  onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, email: e.target.value }))
+                  }
                   placeholder="joao@exemplo.pt"
                   className="w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10"
                 />
@@ -283,7 +313,7 @@ export default function AdminInfluencers() {
                     }
                     placeholder={editing ? editing.uniqueCode : "Auto"}
                     disabled={!!editing}
-                    className="w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 font-mono text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10 disabled:bg-cream-50 disabled:text-olive-400"
+                    className="disabled:bg-cream-50 w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 font-mono text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10 disabled:text-olive-400"
                   />
                 </div>
               </div>
@@ -294,24 +324,26 @@ export default function AdminInfluencers() {
                 <textarea
                   rows={2}
                   value={form.notes}
-                  onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, notes: e.target.value }))
+                  }
                   placeholder="Plataforma, acordo, etc."
                   className="w-full resize-none rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10"
                 />
               </div>
-              {error && <p className="text-sm text-wine-700">{error}</p>}
+              {error && <p className="text-wine-700 text-sm">{error}</p>}
               <div className="flex gap-3 pt-1">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50 transition-colors"
+                  className="hover:bg-cream-50 flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 rounded-xl bg-olive-900 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 transition-colors disabled:opacity-60"
+                  className="flex-1 rounded-xl bg-olive-900 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-olive-900/90 disabled:opacity-60"
                 >
                   {saving ? "A guardar…" : "Guardar"}
                 </button>
@@ -326,7 +358,10 @@ export default function AdminInfluencers() {
         {loading ? (
           <div className="space-y-px p-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-14 animate-pulse rounded-xl bg-cream-100/60" />
+              <div
+                key={i}
+                className="bg-cream-100/60 h-14 animate-pulse rounded-xl"
+              />
             ))}
           </div>
         ) : influencers.length === 0 ? (
@@ -336,8 +371,8 @@ export default function AdminInfluencers() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[680px] text-sm">
-              <thead className="border-b border-cream-100">
-                <tr className="text-left text-xs font-semibold uppercase tracking-wide text-olive-400">
+              <thead className="border-cream-100 border-b">
+                <tr className="text-left text-xs font-semibold tracking-wide text-olive-400 uppercase">
                   <th className="px-5 py-3.5">Nome</th>
                   <th className="px-4 py-3.5">Email</th>
                   <th className="px-4 py-3.5">Código</th>
@@ -349,13 +384,16 @@ export default function AdminInfluencers() {
                   <th className="px-4 py-3.5" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-cream-100">
+              <tbody className="divide-cream-100 divide-y">
                 {influencers.map((inf) => (
-                  <tr key={inf.id} className="hover:bg-cream-50/50 transition-colors">
+                  <tr
+                    key={inf.id}
+                    className="hover:bg-cream-50/50 transition-colors"
+                  >
                     <td className="px-5 py-4">
                       <p className="font-semibold text-olive-900">{inf.name}</p>
                       {inf.notes && (
-                        <p className="mt-0.5 text-xs text-olive-400 truncate max-w-[180px]">
+                        <p className="mt-0.5 max-w-[180px] truncate text-xs text-olive-400">
                           {inf.notes}
                         </p>
                       )}
@@ -382,13 +420,15 @@ export default function AdminInfluencers() {
                               </span>
                             )}
                             {inf.referrals.validated > 0 && (
-                              <span className="text-olive-600 font-medium">
-                                {inf.referrals.validated} validada{inf.referrals.validated !== 1 ? "s" : ""}
+                              <span className="font-medium text-olive-600">
+                                {inf.referrals.validated} validada
+                                {inf.referrals.validated !== 1 ? "s" : ""}
                               </span>
                             )}
                             {inf.referrals.cancelled > 0 && (
                               <span className="text-wine-700/60 font-medium">
-                                {inf.referrals.cancelled} cancelada{inf.referrals.cancelled !== 1 ? "s" : ""}
+                                {inf.referrals.cancelled} cancelada
+                                {inf.referrals.cancelled !== 1 ? "s" : ""}
                               </span>
                             )}
                           </div>
@@ -406,15 +446,19 @@ export default function AdminInfluencers() {
                           </span>
                           {inf.referrals.pendingCommission > 0 && (
                             <span className="text-[10px] text-olive-400">
-                              + {inf.referrals.pendingCommission.toFixed(2)} € em carência
+                              + {inf.referrals.pendingCommission.toFixed(2)} €
+                              em carência
                             </span>
                           )}
                         </div>
                       ) : inf.referrals.pendingCommission > 0 ? (
                         <div className="flex flex-col items-end gap-0.5">
-                          <span className="font-semibold text-olive-400">0,00 €</span>
+                          <span className="font-semibold text-olive-400">
+                            0,00 €
+                          </span>
                           <span className="text-[10px] text-olive-400">
-                            + {inf.referrals.pendingCommission.toFixed(2)} € em carência
+                            + {inf.referrals.pendingCommission.toFixed(2)} € em
+                            carência
                           </span>
                         </div>
                       ) : (
@@ -426,7 +470,7 @@ export default function AdminInfluencers() {
                         onClick={() => void toggleActive(inf)}
                         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${
                           inf.isActive
-                            ? "bg-olive-900/10 text-olive-700 hover:bg-wine-700/10 hover:text-wine-700"
+                            ? "hover:bg-wine-700/10 hover:text-wine-700 bg-olive-900/10 text-olive-700"
                             : "bg-cream-100 text-olive-400 hover:bg-olive-900/10 hover:text-olive-700"
                         }`}
                       >
@@ -438,15 +482,15 @@ export default function AdminInfluencers() {
                     </td>
                     <td className="px-4 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <a
+                        <Link
                           href={`/admin/influencers/${inf.id}`}
-                          className="rounded-lg border border-olive-900/15 px-3 py-1.5 text-xs font-semibold text-olive-700 hover:bg-cream-50 transition-colors"
+                          className="hover:bg-cream-50 rounded-lg border border-olive-900/15 px-3 py-1.5 text-xs font-semibold text-olive-700 transition-colors"
                         >
                           Ver detalhe
-                        </a>
+                        </Link>
                         <button
                           onClick={() => openEdit(inf)}
-                          className="rounded-lg bg-olive-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-olive-900/90 transition-colors"
+                          className="rounded-lg bg-olive-900 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-olive-900/90"
                         >
                           Editar
                         </button>
@@ -458,7 +502,7 @@ export default function AdminInfluencers() {
             </table>
           </div>
         )}
-        <div className="border-t border-cream-100 px-5 py-3">
+        <div className="border-cream-100 border-t px-5 py-3">
           <p className="text-xs text-olive-400">
             {influencers.length} influencer{influencers.length !== 1 ? "s" : ""}
           </p>

@@ -15,9 +15,7 @@ export async function GET(request: Request) {
   const supabase = await createClient();
 
   function destination(resolvedType: string | null) {
-    return resolvedType === "recovery"
-      ? "/conta/atualizar-senha"
-      : safeNext;
+    return resolvedType === "recovery" ? "/conta/atualizar-senha" : safeNext;
   }
 
   if (code) {

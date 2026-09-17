@@ -4,3 +4,8 @@
 node_modules
 package-lock.json
 .serena
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/.expo/
+.claude/
+supabase/.temp/

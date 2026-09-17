@@ -111,9 +111,11 @@ function ChangeRoleModal({
   ] as const;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 p-4 backdrop-blur-sm">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-        <h2 className="mb-1 text-base font-bold text-olive-900">Alterar role</h2>
+        <h2 className="mb-1 text-base font-bold text-olive-900">
+          Alterar role
+        </h2>
         <p className="mb-5 text-sm text-olive-600">{user.fullName}</p>
         <div className="space-y-2">
           {roles.map((r) => (
@@ -123,26 +125,30 @@ function ChangeRoleModal({
               className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors ${
                 role === r.key
                   ? "border-olive-700 bg-olive-900/5"
-                  : "border-transparent hover:bg-cream-50"
+                  : "hover:bg-cream-50 border-transparent"
               }`}
             >
               <span
                 className={`h-4 w-4 flex-none rounded-full border-2 ${
-                  role === r.key ? "border-olive-700 bg-olive-700" : "border-olive-300"
+                  role === r.key
+                    ? "border-olive-700 bg-olive-700"
+                    : "border-olive-300"
                 }`}
               />
               <div>
-                <p className="text-sm font-semibold text-olive-900">{ROLE_LABELS[r.key]}</p>
+                <p className="text-sm font-semibold text-olive-900">
+                  {ROLE_LABELS[r.key]}
+                </p>
                 <p className="text-xs text-olive-500">{r.desc}</p>
               </div>
             </button>
           ))}
         </div>
-        {error && <p className="mt-3 text-sm text-wine-700">{error}</p>}
+        {error && <p className="text-wine-700 mt-3 text-sm">{error}</p>}
         <div className="mt-5 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50"
+            className="hover:bg-cream-50 flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700"
           >
             Cancelar
           </button>
@@ -203,13 +209,17 @@ function PromoteInfluencerModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 p-4 backdrop-blur-sm">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-        <h2 className="mb-1 text-base font-bold text-olive-900">Promover a influencer</h2>
+        <h2 className="mb-1 text-base font-bold text-olive-900">
+          Promover a influencer
+        </h2>
         <p className="mb-5 text-sm text-olive-600">{user.fullName}</p>
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-olive-900">Comissão (%)</label>
+            <label className="mb-1.5 block text-xs font-semibold text-olive-900">
+              Comissão (%)
+            </label>
             <input
               type="number"
               min="0"
@@ -223,7 +233,9 @@ function PromoteInfluencerModal({
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-olive-900">
               Código único{" "}
-              <span className="font-normal text-olive-400">(opcional — gerado automaticamente)</span>
+              <span className="font-normal text-olive-400">
+                (opcional — gerado automaticamente)
+              </span>
             </label>
             <input
               value={customCode}
@@ -233,14 +245,15 @@ function PromoteInfluencerModal({
             />
           </div>
           <div className="rounded-xl bg-olive-900/5 px-4 py-3 text-xs text-olive-600">
-            O utilizador receberá uma adesão gratuita de 12 meses caso não tenha uma activa.
+            O utilizador receberá uma adesão gratuita de 12 meses caso não tenha
+            uma activa.
           </div>
         </div>
-        {error && <p className="mt-3 text-sm text-wine-700">{error}</p>}
+        {error && <p className="text-wine-700 mt-3 text-sm">{error}</p>}
         <div className="mt-5 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50"
+            className="hover:bg-cream-50 flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700"
           >
             Cancelar
           </button>
@@ -279,6 +292,7 @@ export default function AdminUtilizadores() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, []);
 
@@ -297,10 +311,22 @@ export default function AdminUtilizadores() {
 
   const tabs = [
     { key: "ALL", label: `Todos (${users.length})` },
-    { key: "MEMBER", label: `Membros (${users.filter((u) => effectiveRole(u) === "MEMBER").length})` },
-    { key: "INFLUENCER", label: `Influencers (${users.filter((u) => effectiveRole(u) === "INFLUENCER").length})` },
-    { key: "PARTNER", label: `Parceiros (${users.filter((u) => effectiveRole(u) === "PARTNER").length})` },
-    { key: "ADMIN", label: `Admin (${users.filter((u) => effectiveRole(u) === "ADMIN").length})` },
+    {
+      key: "MEMBER",
+      label: `Membros (${users.filter((u) => effectiveRole(u) === "MEMBER").length})`,
+    },
+    {
+      key: "INFLUENCER",
+      label: `Influencers (${users.filter((u) => effectiveRole(u) === "INFLUENCER").length})`,
+    },
+    {
+      key: "PARTNER",
+      label: `Parceiros (${users.filter((u) => effectiveRole(u) === "PARTNER").length})`,
+    },
+    {
+      key: "ADMIN",
+      label: `Admin (${users.filter((u) => effectiveRole(u) === "ADMIN").length})`,
+    },
   ];
 
   return (
@@ -322,7 +348,9 @@ export default function AdminUtilizadores() {
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-olive-900">Utilizadores</h1>
-        <p className="mt-1 text-sm text-olive-600">Membros, parceiros e administradores</p>
+        <p className="mt-1 text-sm text-olive-600">
+          Membros, parceiros e administradores
+        </p>
       </div>
 
       <div className="mb-4 flex gap-1 overflow-x-auto rounded-xl bg-white p-1 shadow-sm">
@@ -331,7 +359,9 @@ export default function AdminUtilizadores() {
             key={t.key}
             onClick={() => setFilter(t.key)}
             className={`flex-none rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-              filter === t.key ? "bg-olive-900 text-white" : "text-olive-600 hover:bg-cream-50"
+              filter === t.key
+                ? "bg-olive-900 text-white"
+                : "hover:bg-cream-50 text-olive-600"
             }`}
           >
             {t.label}
@@ -343,7 +373,10 @@ export default function AdminUtilizadores() {
         {loading ? (
           <div className="space-y-px p-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-14 animate-pulse rounded-xl bg-cream-100/60" />
+              <div
+                key={i}
+                className="bg-cream-100/60 h-14 animate-pulse rounded-xl"
+              />
             ))}
           </div>
         ) : filtered.length === 0 ? (
@@ -353,8 +386,8 @@ export default function AdminUtilizadores() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[680px] text-sm">
-              <thead className="border-b border-cream-100">
-                <tr className="text-left text-xs font-semibold uppercase tracking-wide text-olive-400">
+              <thead className="border-cream-100 border-b">
+                <tr className="text-left text-xs font-semibold tracking-wide text-olive-400 uppercase">
                   <th className="px-5 py-3.5">Utilizador</th>
                   <th className="px-4 py-3.5">Role / Estado</th>
                   <th className="px-4 py-3.5">Adesão</th>
@@ -363,18 +396,25 @@ export default function AdminUtilizadores() {
                   <th className="px-4 py-3.5" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-cream-100">
+              <tbody className="divide-cream-100 divide-y">
                 {filtered.map((u) => (
-                  <tr key={u.id} className="hover:bg-cream-50/50 transition-colors">
+                  <tr
+                    key={u.id}
+                    className="hover:bg-cream-50/50 transition-colors"
+                  >
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-olive-900">{u.fullName}</p>
+                      <p className="font-semibold text-olive-900">
+                        {u.fullName}
+                      </p>
                       <p className="text-xs text-olive-500">{u.email}</p>
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <RoleBadge role={u.isInfluencer ? "INFLUENCER" : u.role} />
+                        <RoleBadge
+                          role={u.isInfluencer ? "INFLUENCER" : u.role}
+                        />
                         {!u.isActive && (
-                          <span className="inline-block rounded-full bg-wine-700/10 px-2 py-0.5 text-[10px] font-bold text-wine-700">
+                          <span className="bg-wine-700/10 text-wine-700 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold">
                             Inativo
                           </span>
                         )}
@@ -387,29 +427,33 @@ export default function AdminUtilizadores() {
                         <span className="text-xs text-olive-400">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-4 text-olive-600">{fmtDate(u.createdAt)}</td>
+                    <td className="px-4 py-4 text-olive-600">
+                      {fmtDate(u.createdAt)}
+                    </td>
                     <td className="px-4 py-4 text-center font-semibold text-olive-900">
                       {u.redemptionsCount}
                     </td>
                     <td className="px-4 py-4 text-right">
                       <div className="flex items-center justify-end gap-3">
-                        {!u.isInfluencer && u.role !== "ADMIN" && u.role !== "PARTNER" && (
-                          <button
-                            onClick={() => setPromoteUser(u)}
-                            className="text-xs font-medium text-gold-600 hover:text-olive-900 underline underline-offset-2"
-                          >
-                            Influencer
-                          </button>
-                        )}
+                        {!u.isInfluencer &&
+                          u.role !== "ADMIN" &&
+                          u.role !== "PARTNER" && (
+                            <button
+                              onClick={() => setPromoteUser(u)}
+                              className="text-gold-600 text-xs font-medium underline underline-offset-2 hover:text-olive-900"
+                            >
+                              Influencer
+                            </button>
+                          )}
                         <button
                           onClick={() => setEditUser(u)}
-                          className="text-xs font-medium text-olive-600 hover:text-olive-900 underline underline-offset-2"
+                          className="text-xs font-medium text-olive-600 underline underline-offset-2 hover:text-olive-900"
                         >
                           Role
                         </button>
                         <Link
                           href={`/admin/utilizadores/${u.id}`}
-                          className="text-xs font-medium text-olive-900 hover:text-wine-700 underline underline-offset-2"
+                          className="hover:text-wine-700 text-xs font-medium text-olive-900 underline underline-offset-2"
                         >
                           Ver
                         </Link>
@@ -421,10 +465,12 @@ export default function AdminUtilizadores() {
             </table>
           </div>
         )}
-        <div className="border-t border-cream-100 px-5 py-3">
+        <div className="border-cream-100 border-t px-5 py-3">
           <p className="text-xs text-olive-400">
             {filtered.length} utilizador{filtered.length !== 1 ? "es" : ""}
-            {filter !== "ALL" ? ` com role ${ROLE_LABELS[filter] ?? filter}` : ""}
+            {filter !== "ALL"
+              ? ` com role ${ROLE_LABELS[filter] ?? filter}`
+              : ""}
           </p>
         </div>
       </div>

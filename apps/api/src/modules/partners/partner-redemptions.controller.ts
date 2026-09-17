@@ -9,9 +9,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
-import {
-  type AuthenticatedRequest,
-} from "../members/member-auth.guard.js";
+import { type AuthenticatedRequest } from "../members/member-auth.guard.js";
 import { PartnerAuthGuard } from "./partner-auth.guard.js";
 
 /* Supabase's untyped RPC result is normalized into the response contracts below. */

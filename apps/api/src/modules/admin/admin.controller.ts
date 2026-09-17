@@ -15,8 +15,6 @@ import type { AuthenticatedRequest } from "../members/member-auth.guard.js";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 import { AdminAuthGuard } from "./admin-auth.guard.js";
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 const MEMBERSHIP_PRICE_EUR = 24;
 
 @Controller("admin")
@@ -90,16 +88,33 @@ export class AdminController {
     const now = new Date().toISOString();
     const [profiles, counts, authUsers, influencerRows, membershipRows] =
       await Promise.all([
-        this.db.from("profiles").select("id,full_name,role,is_active,created_at").order("created_at", { ascending: false }),
-        this.db.from("redemptions").select("member_id").eq("status", "CONFIRMED"),
+        this.db
+          .from("profiles")
+          .select("id,full_name,role,is_active,created_at")
+          .order("created_at", { ascending: false }),
+        this.db
+          .from("redemptions")
+          .select("member_id")
+          .eq("status", "CONFIRMED"),
         this.db.auth.admin.listUsers({ perPage: 1000 }),
         this.db.from("influencers").select("email").eq("is_active", true),
         this.db.from("memberships").select("profile_id,source,status,ends_at"),
       ]);
     if (profiles.error) return { data: [], total: 0 };
 
-    type PRow = { id: string; full_name: string | null; role: string; is_active: boolean; created_at: string };
-    type MRow = { profile_id: string; source: string; status: string; ends_at: string | null };
+    type PRow = {
+      id: string;
+      full_name: string | null;
+      role: string;
+      is_active: boolean;
+      created_at: string;
+    };
+    type MRow = {
+      profile_id: string;
+      source: string;
+      status: string;
+      ends_at: string | null;
+    };
 
     const countMap = new Map<string, number>();
     for (const r of (counts.data ?? []) as { member_id: string }[]) {
@@ -111,7 +126,9 @@ export class AdminController {
     );
 
     const influencerEmailSet = new Set(
-      ((influencerRows.data ?? []) as { email: string }[]).map((i) => i.email.toLowerCase()),
+      ((influencerRows.data ?? []) as { email: string }[]).map((i) =>
+        i.email.toLowerCase(),
+      ),
     );
 
     // Best active membership per profile
@@ -119,7 +136,8 @@ export class AdminController {
     for (const m of (membershipRows.data ?? []) as unknown as MRow[]) {
       if (m.status === "active" && (m.ends_at ?? "") >= now) {
         const ex = activeMem.get(m.profile_id);
-        if (!ex || (m.ends_at ?? "") > (ex.ends_at ?? "")) activeMem.set(m.profile_id, m);
+        if (!ex || (m.ends_at ?? "") > (ex.ends_at ?? ""))
+          activeMem.set(m.profile_id, m);
       }
     }
 
@@ -278,16 +296,18 @@ export class AdminController {
       business_categories: Array<{ categories: { name: string } | null }>;
     };
 
-    const presented = ((businesses ?? []) as unknown as BusinessRow[]).map((b) => ({
-      id: b.id,
-      name: b.name,
-      slug: b.slug,
-      isActive: b.is_active,
-      city: b.business_locations?.[0]?.locality ?? "—",
-      category: b.business_categories?.[0]?.categories?.name ?? "—",
-      activeBenefits: benefitMap.get(b.id) ?? 0,
-      redemptionsCount: redemptionMap.get(b.id) ?? 0,
-    }));
+    const presented = ((businesses ?? []) as unknown as BusinessRow[]).map(
+      (b) => ({
+        id: b.id,
+        name: b.name,
+        slug: b.slug,
+        isActive: b.is_active,
+        city: b.business_locations?.[0]?.locality ?? "—",
+        category: b.business_categories?.[0]?.categories?.name ?? "—",
+        activeBenefits: benefitMap.get(b.id) ?? 0,
+        redemptionsCount: redemptionMap.get(b.id) ?? 0,
+      }),
+    );
 
     return { data: presented, total: presented.length };
   }
@@ -565,7 +585,8 @@ export class AdminController {
 
       const locPatch: Record<string, unknown> = {};
       const l = body.location;
-      if (l.addressLine1 !== undefined) locPatch.address_line_1 = l.addressLine1;
+      if (l.addressLine1 !== undefined)
+        locPatch.address_line_1 = l.addressLine1;
       if (l.postalCode !== undefined) locPatch.postal_code = l.postalCode;
       if (l.locality !== undefined) locPatch.locality = l.locality;
       if (l.municipality !== undefined) locPatch.municipality = l.municipality;
@@ -667,7 +688,9 @@ export class AdminController {
     ] = await Promise.all([
       this.db
         .from("influencers")
-        .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+        .select(
+          "id,name,email,unique_code,commission_rate,is_active,notes,created_at",
+        )
         .order("created_at", { ascending: false }),
       this.db
         .from("redemptions")
@@ -708,7 +731,10 @@ export class AdminController {
     for (const f of (financialRows ?? []) as FinancialRow[]) {
       finMap.set(f.redemption_id, f.discount_amount ?? 0);
     }
-    const redemptionStats = new Map<string, { count: number; economy: number }>();
+    const redemptionStats = new Map<
+      string,
+      { count: number; economy: number }
+    >();
     for (const r of (redemptionRows ?? []) as RedemptionRow[]) {
       const code = r.influencer_code;
       const prev = redemptionStats.get(code) ?? { count: 0, economy: 0 };
@@ -753,8 +779,7 @@ export class AdminController {
       const pendingCommission =
         Math.round(rf.pending * MEMBERSHIP_PRICE_EUR * rate) / 100;
       // Commission from benefit redemptions = rate% × economy generated
-      const redemptionCommission =
-        Math.round(rd.economy * rate) / 100;
+      const redemptionCommission = Math.round(rd.economy * rate) / 100;
 
       return {
         id: i.id,
@@ -792,18 +817,30 @@ export class AdminController {
   async influencerDetail(@Param("id") id: string) {
     const { data: influencer } = await this.db
       .from("influencers")
-      .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+      .select(
+        "id,name,email,unique_code,commission_rate,is_active,notes,created_at",
+      )
       .eq("id", id)
       .maybeSingle();
     if (!influencer) return { error: "Não encontrado" };
 
     type InfRow = {
-      id: string; name: string; email: string; unique_code: string;
-      commission_rate: number; is_active: boolean; notes: string | null; created_at: string;
+      id: string;
+      name: string;
+      email: string;
+      unique_code: string;
+      commission_rate: number;
+      is_active: boolean;
+      notes: string | null;
+      created_at: string;
     };
     type RefRow = {
-      id: string; member_id: string; status: string;
-      created_at: string; validates_at: string; cancelled_at: string | null;
+      id: string;
+      member_id: string;
+      status: string;
+      created_at: string;
+      validates_at: string;
+      cancelled_at: string | null;
       profiles: { full_name: string | null } | null;
     };
 
@@ -813,7 +850,9 @@ export class AdminController {
 
     const { data: referrals } = await this.db
       .from("referrals")
-      .select("id,member_id,status,created_at,validates_at,cancelled_at,profiles(full_name)")
+      .select(
+        "id,member_id,status,created_at,validates_at,cancelled_at,profiles(full_name)",
+      )
       .eq("influencer_code", inf.unique_code)
       .order("created_at", { ascending: false });
 
@@ -834,19 +873,30 @@ export class AdminController {
         createdAt: r.created_at,
         validatesAt: r.validates_at,
         cancelledAt: r.cancelled_at,
-        commission: effectiveStatus === "VALIDATED" ? Math.round(PRICE * rate) / 100 : 0,
-        pendingCommission: effectiveStatus === "PENDING" ? Math.round(PRICE * rate) / 100 : 0,
+        commission:
+          effectiveStatus === "VALIDATED" ? Math.round(PRICE * rate) / 100 : 0,
+        pendingCommission:
+          effectiveStatus === "PENDING" ? Math.round(PRICE * rate) / 100 : 0,
       };
     });
 
     // Monthly breakdown grouped by validates_at month
-    const monthMap = new Map<string, { pending: number; validated: number; cancelled: number }>();
+    const monthMap = new Map<
+      string,
+      { pending: number; validated: number; cancelled: number }
+    >();
     for (const r of processed) {
       const d = new Date(r.validatesAt);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-      const prev = monthMap.get(key) ?? { pending: 0, validated: 0, cancelled: 0 };
-      if (r.status === "CANCELLED") monthMap.set(key, { ...prev, cancelled: prev.cancelled + 1 });
-      else if (r.status === "VALIDATED") monthMap.set(key, { ...prev, validated: prev.validated + 1 });
+      const prev = monthMap.get(key) ?? {
+        pending: 0,
+        validated: 0,
+        cancelled: 0,
+      };
+      if (r.status === "CANCELLED")
+        monthMap.set(key, { ...prev, cancelled: prev.cancelled + 1 });
+      else if (r.status === "VALIDATED")
+        monthMap.set(key, { ...prev, validated: prev.validated + 1 });
       else monthMap.set(key, { ...prev, pending: prev.pending + 1 });
     }
 
@@ -872,10 +922,17 @@ export class AdminController {
 
     return {
       data: {
-        id: inf.id, name: inf.name, email: inf.email,
-        uniqueCode: inf.unique_code, commissionRate: rate,
-        isActive: inf.is_active, notes: inf.notes, createdAt: inf.created_at,
-        totals, monthly, referrals: processed,
+        id: inf.id,
+        name: inf.name,
+        email: inf.email,
+        uniqueCode: inf.unique_code,
+        commissionRate: rate,
+        isActive: inf.is_active,
+        notes: inf.notes,
+        createdAt: inf.created_at,
+        totals,
+        monthly,
+        referrals: processed,
       },
     };
   }
@@ -890,7 +947,8 @@ export class AdminController {
       return { error: "Status inválido" };
     }
     const patch: Record<string, unknown> = { status: body.status };
-    if (body.status === "CANCELLED") patch.cancelled_at = new Date().toISOString();
+    if (body.status === "CANCELLED")
+      patch.cancelled_at = new Date().toISOString();
     const { data, error } = await this.db
       .from("referrals")
       .update(patch)
@@ -937,7 +995,9 @@ export class AdminController {
         notes: notes ?? null,
         is_active: true,
       })
-      .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+      .select(
+        "id,name,email,unique_code,commission_rate,is_active,notes,created_at",
+      )
       .single();
     if (error) return { error: error.message };
     return { data };
@@ -958,7 +1018,8 @@ export class AdminController {
     const patch: Record<string, unknown> = {};
     if (body.name !== undefined) patch.name = body.name;
     if (body.email !== undefined) patch.email = body.email;
-    if (body.commissionRate !== undefined) patch.commission_rate = body.commissionRate;
+    if (body.commissionRate !== undefined)
+      patch.commission_rate = body.commissionRate;
     if (body.isActive !== undefined) patch.is_active = body.isActive;
     if (body.notes !== undefined) patch.notes = body.notes;
 
@@ -966,7 +1027,9 @@ export class AdminController {
       .from("influencers")
       .update(patch)
       .eq("id", id)
-      .select("id,name,email,unique_code,commission_rate,is_active,notes,created_at")
+      .select(
+        "id,name,email,unique_code,commission_rate,is_active,notes,created_at",
+      )
       .single();
     if (error) return { error: error.message };
     return { data };
@@ -976,33 +1039,84 @@ export class AdminController {
 
   @Get("users/:id")
   async userDetail(@Param("id") id: string) {
-    type ProfileRow = { id: string; full_name: string | null; phone: string | null; nif: string | null; role: string; is_active: boolean; created_at: string };
-    type MembershipRow = { id: string; status: string; source: string; ends_at: string | null; created_at: string };
-    type LogRow = { id: string; previous_active: boolean; new_active: boolean; reason: string; changed_by_name: string; created_at: string };
+    type ProfileRow = {
+      id: string;
+      full_name: string | null;
+      phone: string | null;
+      nif: string | null;
+      role: string;
+      is_active: boolean;
+      created_at: string;
+    };
+    type MembershipRow = {
+      id: string;
+      status: string;
+      source: string;
+      ends_at: string | null;
+      created_at: string;
+    };
+    type LogRow = {
+      id: string;
+      previous_active: boolean;
+      new_active: boolean;
+      reason: string;
+      changed_by_name: string;
+      created_at: string;
+    };
 
     // Phase 1: independent queries
-    const [profileRes, authRes, membershipsRes, statusLogsRes] = await Promise.all([
-      this.db.from("profiles").select("id,full_name,phone,nif,role,is_active,created_at").eq("id", id).maybeSingle(),
-      this.db.auth.admin.getUserById(id),
-      this.db.from("memberships").select("id,status,source,ends_at,created_at").eq("profile_id", id).order("created_at", { ascending: false }),
-      this.db.from("profile_status_logs").select("id,previous_active,new_active,reason,changed_by_name,created_at").eq("profile_id", id).order("created_at", { ascending: false }),
-    ]);
+    const [profileRes, authRes, membershipsRes, statusLogsRes] =
+      await Promise.all([
+        this.db
+          .from("profiles")
+          .select("id,full_name,phone,nif,role,is_active,created_at")
+          .eq("id", id)
+          .maybeSingle(),
+        this.db.auth.admin.getUserById(id),
+        this.db
+          .from("memberships")
+          .select("id,status,source,ends_at,created_at")
+          .eq("profile_id", id)
+          .order("created_at", { ascending: false }),
+        this.db
+          .from("profile_status_logs")
+          .select(
+            "id,previous_active,new_active,reason,changed_by_name,created_at",
+          )
+          .eq("profile_id", id)
+          .order("created_at", { ascending: false }),
+      ]);
 
     const p = profileRes.data as unknown as ProfileRow | null;
     if (!p) return { error: "Utilizador não encontrado" };
 
     const email = authRes.data?.user?.email ?? "";
-    const membershipIds = ((membershipsRes.data ?? []) as MembershipRow[]).map((m) => m.id);
+    const membershipIds = ((membershipsRes.data ?? []) as MembershipRow[]).map(
+      (m) => m.id,
+    );
 
     // Phase 2: queries that need email or membershipIds
     const [influencerRes, redemptionRes] = await Promise.all([
-      this.db.from("influencers").select("id,unique_code,commission_rate").eq("email", email).maybeSingle(),
+      this.db
+        .from("influencers")
+        .select("id,unique_code,commission_rate")
+        .eq("email", email)
+        .maybeSingle(),
       membershipIds.length
-        ? this.db.from("redemptions").select("id,redeemed_at,status,benefits(title,businesses(name))").in("membership_id", membershipIds).order("redeemed_at", { ascending: false }).limit(20)
+        ? this.db
+            .from("redemptions")
+            .select("id,redeemed_at,status,benefits(title,businesses(name))")
+            .in("membership_id", membershipIds)
+            .order("redeemed_at", { ascending: false })
+            .limit(20)
         : Promise.resolve({ data: [] as unknown[] }),
     ]);
 
-    const inf = influencerRes.data as unknown as { id: string; unique_code: string; commission_rate: number } | null;
+    const inf = influencerRes.data as unknown as {
+      id: string;
+      unique_code: string;
+      commission_rate: number;
+    } | null;
 
     return {
       data: {
@@ -1014,23 +1128,33 @@ export class AdminController {
         role: p.role,
         isActive: p.is_active,
         createdAt: p.created_at,
-        memberships: ((membershipsRes.data ?? []) as MembershipRow[]).map((m) => ({
-          id: m.id,
-          status: m.status,
-          source: m.source ?? "PAID",
-          endsAt: m.ends_at,
-          createdAt: m.created_at,
-        })),
+        memberships: ((membershipsRes.data ?? []) as MembershipRow[]).map(
+          (m) => ({
+            id: m.id,
+            status: m.status,
+            source: m.source ?? "PAID",
+            endsAt: m.ends_at,
+            createdAt: m.created_at,
+          }),
+        ),
         recentRedemptions: (redemptionRes.data ?? []).slice(0, 10),
-        influencer: inf ? { id: inf.id, uniqueCode: inf.unique_code, commissionRate: Number(inf.commission_rate) } : null,
-        statusLogs: ((statusLogsRes.data ?? []) as unknown as LogRow[]).map((l) => ({
-          id: l.id,
-          previousActive: l.previous_active,
-          newActive: l.new_active,
-          reason: l.reason,
-          changedByName: l.changed_by_name,
-          createdAt: l.created_at,
-        })),
+        influencer: inf
+          ? {
+              id: inf.id,
+              uniqueCode: inf.unique_code,
+              commissionRate: Number(inf.commission_rate),
+            }
+          : null,
+        statusLogs: ((statusLogsRes.data ?? []) as unknown as LogRow[]).map(
+          (l) => ({
+            id: l.id,
+            previousActive: l.previous_active,
+            newActive: l.new_active,
+            reason: l.reason,
+            changedByName: l.changed_by_name,
+            createdAt: l.created_at,
+          }),
+        ),
       },
     };
   }
@@ -1042,7 +1166,8 @@ export class AdminController {
     @Headers("authorization") auth: string,
   ) {
     if (body.isActive === undefined) return { error: "isActive é obrigatório" };
-    if (!body.reason?.trim()) return { error: "É obrigatório indicar o motivo da alteração" };
+    if (!body.reason?.trim())
+      return { error: "É obrigatório indicar o motivo da alteração" };
 
     // Get current status
     const { data: profile } = await this.db
@@ -1056,15 +1181,22 @@ export class AdminController {
 
     // Get admin identity from token
     const token = auth.replace("Bearer ", "");
-    const { data: { user: adminUser } } = await this.supabase.createUserClient(token).auth.getUser();
+    const {
+      data: { user: adminUser },
+    } = await this.supabase.createUserClient(token).auth.getUser();
     const { data: adminProfile } = await this.db
       .from("profiles")
       .select("full_name")
       .eq("id", adminUser?.id ?? "")
       .maybeSingle();
-    const adminName = (adminProfile as { full_name: string | null } | null)?.full_name ?? "Admin";
+    const adminName =
+      (adminProfile as { full_name: string | null } | null)?.full_name ??
+      "Admin";
 
-    await this.db.from("profiles").update({ is_active: body.isActive }).eq("id", id);
+    await this.db
+      .from("profiles")
+      .update({ is_active: body.isActive })
+      .eq("id", id);
     await this.db.from("profile_status_logs").insert({
       profile_id: id,
       changed_by_id: adminUser?.id ?? "",
@@ -1083,10 +1215,12 @@ export class AdminController {
     @Body() body: { fullName?: string; phone?: string; nif?: string },
   ) {
     const patch: Record<string, unknown> = {};
-    if (body.fullName !== undefined) patch.full_name = body.fullName.trim() || null;
+    if (body.fullName !== undefined)
+      patch.full_name = body.fullName.trim() || null;
     if (body.phone !== undefined) patch.phone = body.phone.trim() || null;
     if (body.nif !== undefined) {
-      if (body.nif && !/^\d{9}$/.test(body.nif)) return { error: "NIF inválido — deve ter 9 dígitos" };
+      if (body.nif && !/^\d{9}$/.test(body.nif))
+        return { error: "NIF inválido — deve ter 9 dígitos" };
       patch.nif = body.nif || null;
     }
     if (Object.keys(patch).length === 0) return { data: {} };
@@ -1096,7 +1230,8 @@ export class AdminController {
       .eq("id", id)
       .select("full_name,phone,nif")
       .single();
-    if (error?.code === "23505") return { error: "Este NIF já está registado noutro utilizador" };
+    if (error?.code === "23505")
+      return { error: "Este NIF já está registado noutro utilizador" };
     if (error) return { error: error.message };
     return { data };
   }
@@ -1117,7 +1252,13 @@ export class AdminController {
     endsAt.setFullYear(endsAt.getFullYear() + 1);
     const { data, error } = await this.db
       .from("memberships")
-      .insert({ profile_id: id, status: "active", starts_at: new Date().toISOString(), ends_at: endsAt.toISOString(), source: "ADMIN_GRANT" })
+      .insert({
+        profile_id: id,
+        status: "active",
+        starts_at: new Date().toISOString(),
+        ends_at: endsAt.toISOString(),
+        source: "ADMIN_GRANT",
+      })
       .select("id,status,source,ends_at")
       .single();
     if (error) return { error: error.message };
@@ -1134,7 +1275,9 @@ export class AdminController {
   ) {
     const allowed = ["MEMBER", "PARTNER", "ADMIN", "INFLUENCER"];
     if (!body.role || !allowed.includes(body.role)) {
-      return { error: "Role inválido. Use: MEMBER, PARTNER, ADMIN ou INFLUENCER" };
+      return {
+        error: "Role inválido. Use: MEMBER, PARTNER, ADMIN ou INFLUENCER",
+      };
     }
     if (id === request.user.id) {
       throw new BadRequestException("Não pode alterar a sua própria role");

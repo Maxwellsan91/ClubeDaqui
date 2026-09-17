@@ -16,6 +16,8 @@ export default tseslint.config(
     },
     rules: {
       "@typescript-eslint/no-misused-promises": "error",
+      // Supabase query results use explicit type assertions for documentation clarity
+      "@typescript-eslint/no-unnecessary-type-assertion": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },

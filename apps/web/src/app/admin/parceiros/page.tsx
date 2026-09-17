@@ -25,7 +25,7 @@ function RoleBadge({ benefits }: { benefits: number }) {
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-cream-100 px-2.5 py-0.5 text-xs font-medium text-olive-400">
+    <span className="bg-cream-100 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium text-olive-400">
       Sem benefício
     </span>
   );
@@ -64,6 +64,7 @@ export default function AdminParceiros() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, []);
 
@@ -83,7 +84,10 @@ export default function AdminParceiros() {
         body: JSON.stringify(form),
       },
     );
-    const json = (await res.json()) as { error?: string; data?: { id: string } };
+    const json = (await res.json()) as {
+      error?: string;
+      data?: { id: string };
+    };
     if (json.error) {
       setError(json.error);
       setSaving(false);
@@ -119,9 +123,15 @@ export default function AdminParceiros() {
         </div>
         <button
           onClick={() => setAdding(true)}
-          className="flex items-center gap-2 rounded-xl bg-olive-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 transition-colors"
+          className="flex items-center gap-2 rounded-xl bg-olive-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-olive-900/90"
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -131,7 +141,7 @@ export default function AdminParceiros() {
 
       {/* Add form modal */}
       {adding && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <h2 className="mb-5 text-lg font-bold text-olive-900">
               Novo estabelecimento
@@ -163,7 +173,7 @@ export default function AdminParceiros() {
                     setForm((f) => ({ ...f, slug: e.target.value }))
                   }
                   placeholder="restaurante-o-solar"
-                  className="w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm font-mono text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10"
+                  className="w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 font-mono text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10"
                 />
               </div>
               <div>
@@ -193,24 +203,22 @@ export default function AdminParceiros() {
                     setForm((f) => ({ ...f, description: e.target.value }))
                   }
                   placeholder="Breve descrição do estabelecimento"
-                  className="w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10 resize-none"
+                  className="w-full resize-none rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10"
                 />
               </div>
-              {error && (
-                <p className="text-sm text-wine-700">{error}</p>
-              )}
+              {error && <p className="text-wine-700 text-sm">{error}</p>}
               <div className="flex gap-3 pt-1">
                 <button
                   type="button"
                   onClick={() => setAdding(false)}
-                  className="flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50 transition-colors"
+                  className="hover:bg-cream-50 flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 rounded-xl bg-olive-900 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 transition-colors disabled:opacity-60"
+                  className="flex-1 rounded-xl bg-olive-900 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-olive-900/90 disabled:opacity-60"
                 >
                   {saving ? "A guardar…" : "Adicionar"}
                 </button>
@@ -225,7 +233,10 @@ export default function AdminParceiros() {
         {loading ? (
           <div className="space-y-px p-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-14 animate-pulse rounded-xl bg-cream-100/60" />
+              <div
+                key={i}
+                className="bg-cream-100/60 h-14 animate-pulse rounded-xl"
+              />
             ))}
           </div>
         ) : businesses.length === 0 ? (
@@ -235,8 +246,8 @@ export default function AdminParceiros() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
-              <thead className="border-b border-cream-100">
-                <tr className="text-left text-xs font-semibold uppercase tracking-wide text-olive-400">
+              <thead className="border-cream-100 border-b">
+                <tr className="text-left text-xs font-semibold tracking-wide text-olive-400 uppercase">
                   <th className="px-5 py-3.5">Estabelecimento</th>
                   <th className="px-4 py-3.5">Categoria</th>
                   <th className="px-4 py-3.5">Cidade</th>
@@ -246,12 +257,17 @@ export default function AdminParceiros() {
                   <th className="px-4 py-3.5" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-cream-100">
+              <tbody className="divide-cream-100 divide-y">
                 {businesses.map((b) => (
-                  <tr key={b.id} className="hover:bg-cream-50/50 transition-colors">
+                  <tr
+                    key={b.id}
+                    className="hover:bg-cream-50/50 transition-colors"
+                  >
                     <td className="px-5 py-4">
                       <p className="font-semibold text-olive-900">{b.name}</p>
-                      <p className="text-xs text-olive-400 font-mono">{b.slug}</p>
+                      <p className="font-mono text-xs text-olive-400">
+                        {b.slug}
+                      </p>
                     </td>
                     <td className="px-4 py-4 text-olive-600">{b.category}</td>
                     <td className="px-4 py-4 text-olive-600">{b.city}</td>
@@ -270,13 +286,13 @@ export default function AdminParceiros() {
                           href={`/explorar/${b.slug}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-xs text-olive-400 hover:text-olive-600 underline underline-offset-2"
+                          className="text-xs text-olive-400 underline underline-offset-2 hover:text-olive-600"
                         >
                           Ver página
                         </a>
                         <a
                           href={`/admin/parceiros/${b.id}`}
-                          className="rounded-lg bg-olive-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-olive-900/90 transition-colors"
+                          className="rounded-lg bg-olive-900 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-olive-900/90"
                         >
                           Editar
                         </a>
@@ -288,9 +304,10 @@ export default function AdminParceiros() {
             </table>
           </div>
         )}
-        <div className="border-t border-cream-100 px-5 py-3">
+        <div className="border-cream-100 border-t px-5 py-3">
           <p className="text-xs text-olive-400">
-            {businesses.length} estabelecimento{businesses.length !== 1 ? "s" : ""}
+            {businesses.length} estabelecimento
+            {businesses.length !== 1 ? "s" : ""}
           </p>
         </div>
       </div>

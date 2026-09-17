@@ -10,7 +10,7 @@ export function SiteFooter() {
     <footer className="text-cream-50 bg-olive-900 px-5 py-8 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-7xl">
         {/* Desktop: 3-col grid. Mobile: brand + compact 2-col links */}
-        <div className="hidden sm:grid sm:gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="hidden sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <p className="font-display text-2xl">{t("brand")}</p>
             <p className="text-cream-100/60 mt-4 max-w-xs text-sm leading-6">
@@ -22,9 +22,24 @@ export function SiteFooter() {
               {t("explore")}
             </p>
             <nav className="mt-4 flex flex-col gap-3">
-              <Link href="/explorar" className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors">{t("places")}</Link>
-              <Link href="/clube" className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors">Clube</Link>
-              <Link href="/conta" className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors">{t("membersArea")}</Link>
+              <Link
+                href="/explorar"
+                className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors"
+              >
+                {t("places")}
+              </Link>
+              <Link
+                href="/clube"
+                className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors"
+              >
+                Clube
+              </Link>
+              <Link
+                href="/conta"
+                className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors"
+              >
+                {t("membersArea")}
+              </Link>
             </nav>
           </div>
           <div>
@@ -32,9 +47,24 @@ export function SiteFooter() {
               {t("join")}
             </p>
             <nav className="mt-4 flex flex-col gap-3">
-              <Link href="/parceiros" className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors">{t("partner")}</Link>
-              <Link href="/registar" className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors">{t("signUp")}</Link>
-              <Link href="/entrar" className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors">{t("signIn")}</Link>
+              <Link
+                href="/parceiros"
+                className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors"
+              >
+                {t("partner")}
+              </Link>
+              <Link
+                href="/registar"
+                className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors"
+              >
+                {t("signUp")}
+              </Link>
+              <Link
+                href="/entrar"
+                className="text-cream-100/70 hover:text-cream-50 text-sm transition-colors"
+              >
+                {t("signIn")}
+              </Link>
             </nav>
           </div>
         </div>
@@ -43,12 +73,24 @@ export function SiteFooter() {
         <div className="sm:hidden">
           <p className="font-display text-xl">{t("brand")}</p>
           <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2">
-            <Link href="/explorar" className="text-cream-100/65 text-sm py-1">{t("places")}</Link>
-            <Link href="/parceiros" className="text-cream-100/65 text-sm py-1">{t("partner")}</Link>
-            <Link href="/clube" className="text-cream-100/65 text-sm py-1">Clube</Link>
-            <Link href="/registar" className="text-cream-100/65 text-sm py-1">{t("signUp")}</Link>
-            <Link href="/conta" className="text-cream-100/65 text-sm py-1">{t("membersArea")}</Link>
-            <Link href="/entrar" className="text-cream-100/65 text-sm py-1">{t("signIn")}</Link>
+            <Link href="/explorar" className="text-cream-100/65 py-1 text-sm">
+              {t("places")}
+            </Link>
+            <Link href="/parceiros" className="text-cream-100/65 py-1 text-sm">
+              {t("partner")}
+            </Link>
+            <Link href="/clube" className="text-cream-100/65 py-1 text-sm">
+              Clube
+            </Link>
+            <Link href="/registar" className="text-cream-100/65 py-1 text-sm">
+              {t("signUp")}
+            </Link>
+            <Link href="/conta" className="text-cream-100/65 py-1 text-sm">
+              {t("membersArea")}
+            </Link>
+            <Link href="/entrar" className="text-cream-100/65 py-1 text-sm">
+              {t("signIn")}
+            </Link>
           </div>
         </div>
 

@@ -28,12 +28,18 @@ export function ClubBenefitCard({
       ) : null}
       {terms ? (
         <ul className="mt-3 space-y-1.5">
-          {terms.split("\n").filter(Boolean).map((line, i) => (
-            <li key={i} className="flex items-start gap-2 text-xs leading-5 text-olive-600">
-              <span className="mt-0.5 shrink-0 text-gold-500">—</span>
-              <span>{line.trim()}</span>
-            </li>
-          ))}
+          {terms
+            .split("\n")
+            .filter(Boolean)
+            .map((line, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-2 text-xs leading-5 text-olive-600"
+              >
+                <span className="text-gold-500 mt-0.5 shrink-0">—</span>
+                <span>{line.trim()}</span>
+              </li>
+            ))}
         </ul>
       ) : null}
       {!hideCta && (

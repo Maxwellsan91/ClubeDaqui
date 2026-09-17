@@ -72,8 +72,6 @@ const staticPlaces: BusinessCardData[] = [
   },
 ];
 
-const storageKey = "clube-ribatejo-savings";
-
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 function AccountPageInner() {

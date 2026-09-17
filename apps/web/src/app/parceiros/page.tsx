@@ -31,7 +31,7 @@ export default function PartnersPage() {
   const partnerNav = (
     <Link
       href="/entrar"
-      className="text-sm font-semibold text-olive-700 hover:text-olive-900 transition-colors"
+      className="text-sm font-semibold text-olive-700 transition-colors hover:text-olive-900"
     >
       Acesso parceiros
     </Link>

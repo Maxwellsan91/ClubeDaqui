@@ -1,8 +1,6 @@
 import { Controller, Get, Param } from "@nestjs/common";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 // PG extract(dow): 0=Sun,1=Mon,...,6=Sat → frontend: 0=Mon,...,6=Sun
 function pgDowToFrontend(dow: number): number {
   return (dow + 6) % 7;

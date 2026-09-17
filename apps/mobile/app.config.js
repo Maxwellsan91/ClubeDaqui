@@ -9,6 +9,16 @@ const config = {
   plugins: [
     "expo-router",
     "expo-secure-store",
+    "expo-status-bar",
+    [
+      "expo-build-properties",
+      {
+        ios: {
+          deploymentTarget: "16.4",
+          enableSceneSupport: true,
+        },
+      },
+    ],
     [
       "expo-location",
       {
@@ -26,6 +36,7 @@ const config = {
   ],
   ios: {
     supportsTablet: true,
+    deploymentTarget: "16.4",
     bundleIdentifier: "pt.cluberibatejo.app",
     infoPlist: { ITSAppUsesNonExemptEncryption: false },
   },

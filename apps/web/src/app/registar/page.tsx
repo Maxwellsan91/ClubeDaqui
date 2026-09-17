@@ -186,7 +186,7 @@ export default function SignUpPage() {
                     className="block text-sm font-semibold text-olive-900"
                   >
                     NIF{" "}
-                    <span className="font-normal text-olive-500 text-xs">
+                    <span className="text-xs font-normal text-olive-500">
                       — Número de Identificação Fiscal (9 dígitos)
                     </span>
                   </label>
@@ -196,12 +196,13 @@ export default function SignUpPage() {
                     inputMode="numeric"
                     maxLength={9}
                     autoComplete="off"
-                    className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 font-mono text-olive-900 tracking-widest transition-colors placeholder:font-sans placeholder:tracking-normal placeholder:text-olive-700/40 focus:outline-none"
+                    className="focus:border-wine-700 mt-2 block w-full rounded-xl border border-olive-900/12 bg-white px-4 py-3 font-mono tracking-widest text-olive-900 transition-colors placeholder:font-sans placeholder:tracking-normal placeholder:text-olive-700/40 focus:outline-none"
                     placeholder="123456789"
                     required
                   />
                   <p className="mt-1.5 text-xs text-olive-500">
-                    O NIF garante um acesso por pessoa e não pode ser alterado após o registo.
+                    O NIF garante um acesso por pessoa e não pode ser alterado
+                    após o registo.
                   </p>
                 </div>
 
@@ -249,7 +250,9 @@ export default function SignUpPage() {
                     className="block text-sm font-semibold text-olive-900"
                   >
                     Código de referência{" "}
-                    <span className="font-normal text-olive-500">(opcional)</span>
+                    <span className="font-normal text-olive-500">
+                      (opcional)
+                    </span>
                   </label>
                   <input
                     id="referralCode"

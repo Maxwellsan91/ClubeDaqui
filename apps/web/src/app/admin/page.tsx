@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 type Stats = {
@@ -81,7 +82,13 @@ export default function AdminDashboard() {
           sub: "contas com role MEMBER",
           accent: "olive" as const,
           icon: (
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
               <circle cx="9" cy="7" r="4" />
             </svg>
@@ -93,7 +100,13 @@ export default function AdminDashboard() {
           sub: "últimos 30 dias",
           accent: "gold" as const,
           icon: (
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
               <polyline points="17 6 23 6 23 12" />
             </svg>
@@ -105,7 +118,13 @@ export default function AdminDashboard() {
           sub: "na plataforma",
           accent: "olive" as const,
           icon: (
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             </svg>
           ),
@@ -116,7 +135,13 @@ export default function AdminDashboard() {
           sub: "benefícios utilizados",
           accent: "olive" as const,
           icon: (
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <polyline points="20 6 9 17 4 12" />
             </svg>
           ),
@@ -127,7 +152,13 @@ export default function AdminDashboard() {
           sub: "descontos registados pelos membros",
           accent: "wine" as const,
           icon: (
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <line x1="12" y1="1" x2="12" y2="23" />
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
             </svg>
@@ -139,7 +170,13 @@ export default function AdminDashboard() {
           sub: `${fmt(stats.totalMembers)} membros × 24€/ano`,
           accent: "gold" as const,
           icon: (
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
               <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
             </svg>
@@ -160,7 +197,10 @@ export default function AdminDashboard() {
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-36 animate-pulse rounded-2xl bg-white/60" />
+            <div
+              key={i}
+              className="h-36 animate-pulse rounded-2xl bg-white/60"
+            />
           ))}
         </div>
       ) : (
@@ -173,12 +213,18 @@ export default function AdminDashboard() {
 
       {/* Quick links */}
       <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <a
+        <Link
           href="/admin/parceiros"
-          className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm hover:shadow-md transition-shadow"
+          className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
         >
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-olive-900/10 text-olive-900">
-            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-6 w-6"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             </svg>
           </div>
@@ -188,17 +234,29 @@ export default function AdminDashboard() {
               Ver estabelecimentos e benefícios
             </p>
           </div>
-          <svg className="ml-auto h-5 w-5 text-olive-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="ml-auto h-5 w-5 text-olive-400"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <polyline points="9 18 15 12 9 6" />
           </svg>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href="/admin/utilizadores"
-          className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm hover:shadow-md transition-shadow"
+          className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gold-500/10 text-gold-500">
-            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="bg-gold-500/10 text-gold-500 flex h-12 w-12 items-center justify-center rounded-xl">
+            <svg
+              className="h-6 w-6"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
               <circle cx="9" cy="7" r="4" />
               <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -207,14 +265,18 @@ export default function AdminDashboard() {
           </div>
           <div>
             <p className="font-semibold text-olive-900">Gerir Utilizadores</p>
-            <p className="text-sm text-olive-600">
-              Membros, parceiros e roles
-            </p>
+            <p className="text-sm text-olive-600">Membros, parceiros e roles</p>
           </div>
-          <svg className="ml-auto h-5 w-5 text-olive-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="ml-auto h-5 w-5 text-olive-400"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <polyline points="9 18 15 12 9 6" />
           </svg>
-        </a>
+        </Link>
       </div>
     </div>
   );

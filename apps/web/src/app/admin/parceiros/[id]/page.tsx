@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -70,7 +70,7 @@ function Section({
 }) {
   return (
     <div className="rounded-2xl bg-white p-6 shadow-sm">
-      <h2 className="mb-5 text-sm font-semibold uppercase tracking-wide text-olive-400">
+      <h2 className="mb-5 text-sm font-semibold tracking-wide text-olive-400 uppercase">
         {title}
       </h2>
       <div className="space-y-4">{children}</div>
@@ -104,7 +104,6 @@ const textareaCls = inputCls + " resize-none";
 
 export default function EditPartnerPage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
   const [data, setData] = useState<BusinessDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -151,7 +150,10 @@ export default function EditPartnerPage() {
       `${process.env.NEXT_PUBLIC_API_URL}/api/admin/businesses/${id}/detail`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
-    if (!res.ok) { setLoading(false); return; }
+    if (!res.ok) {
+      setLoading(false);
+      return;
+    }
     const json = (await res.json()) as { data: BusinessDetail };
     const d = json.data;
     setData(d);
@@ -193,12 +195,19 @@ export default function EditPartnerPage() {
     setLoading(false);
   }, [id]);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load();
+  }, [load]);
 
   function toggleDay(pgDow: number) {
     setSelectedDays((prev) => {
       const next = new Set(prev);
-      next.has(pgDow) ? next.delete(pgDow) : next.add(pgDow);
+      if (next.has(pgDow)) {
+        next.delete(pgDow);
+      } else {
+        next.add(pgDow);
+      }
       return next;
     });
   }
@@ -275,7 +284,10 @@ export default function EditPartnerPage() {
     return (
       <div className="py-20 text-center">
         <p className="text-olive-600">Parceiro não encontrado.</p>
-        <Link href="/admin/parceiros" className="mt-4 inline-block text-sm underline text-olive-700">
+        <Link
+          href="/admin/parceiros"
+          className="mt-4 inline-block text-sm text-olive-700 underline"
+        >
           Voltar à lista
         </Link>
       </div>
@@ -288,21 +300,31 @@ export default function EditPartnerPage() {
       <div className="mb-8 flex items-start gap-4">
         <Link
           href="/admin/parceiros"
-          className="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white text-olive-600 shadow-sm hover:bg-cream-100 transition-colors"
+          className="hover:bg-cream-100 mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white text-olive-600 shadow-sm transition-colors"
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </Link>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-2xl font-bold text-olive-900">{data.name}</h1>
-          <p className="mt-0.5 font-mono text-xs text-olive-400">/explorar/{data.slug}</p>
+          <h1 className="truncate text-2xl font-bold text-olive-900">
+            {data.name}
+          </h1>
+          <p className="mt-0.5 font-mono text-xs text-olive-400">
+            /explorar/{data.slug}
+          </p>
         </div>
         <a
           href={`/explorar/${data.slug}`}
           target="_blank"
           rel="noreferrer"
-          className="flex-none rounded-xl border border-olive-900/12 bg-white px-3.5 py-2 text-xs font-medium text-olive-600 hover:bg-cream-50 transition-colors shadow-sm"
+          className="hover:bg-cream-50 flex-none rounded-xl border border-olive-900/12 bg-white px-3.5 py-2 text-xs font-medium text-olive-600 shadow-sm transition-colors"
         >
           Ver página →
         </a>
@@ -315,10 +337,18 @@ export default function EditPartnerPage() {
           <Section title="Informações básicas">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Nome do estabelecimento">
-                <input value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={inputCls}
+                />
               </Field>
               <Field label="Categoria">
-                <select value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)} className={inputCls}>
+                <select
+                  value={categorySlug}
+                  onChange={(e) => setCategorySlug(e.target.value)}
+                  className={inputCls}
+                >
                   <option value="comer">Comer</option>
                   <option value="dormir">Dormir</option>
                   <option value="lazer">Lazer</option>
@@ -334,7 +364,10 @@ export default function EditPartnerPage() {
                 placeholder="Breve descrição do estabelecimento…"
               />
             </Field>
-            <Field label="URL da imagem do card" hint="Paste uma URL de imagem (JPEG/PNG/WebP). Use serviços como Unsplash ou Cloudinary.">
+            <Field
+              label="URL da imagem do card"
+              hint="Paste uma URL de imagem (JPEG/PNG/WebP). Use serviços como Unsplash ou Cloudinary."
+            >
               <input
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
@@ -344,7 +377,12 @@ export default function EditPartnerPage() {
               {imageUrl && (
                 <div className="mt-3 overflow-hidden rounded-xl border border-olive-900/10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={imageUrl} alt="Preview" className="h-40 w-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
+                  <img
+                    src={imageUrl}
+                    alt="Preview"
+                    className="h-40 w-full object-cover"
+                    onError={(e) => (e.currentTarget.style.display = "none")}
+                  />
                 </div>
               )}
             </Field>
@@ -354,9 +392,13 @@ export default function EditPartnerPage() {
                 onClick={() => setIsActive((v) => !v)}
                 className={`relative h-6 w-11 flex-none rounded-full transition-colors ${isActive ? "bg-olive-700" : "bg-olive-900/20"}`}
               >
-                <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${isActive ? "translate-x-5" : "translate-x-0.5"}`} />
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${isActive ? "translate-x-5" : "translate-x-0.5"}`}
+                />
               </button>
-              <span className="text-sm text-olive-700">{isActive ? "Estabelecimento ativo" : "Estabelecimento inativo"}</span>
+              <span className="text-sm text-olive-700">
+                {isActive ? "Estabelecimento ativo" : "Estabelecimento inativo"}
+              </span>
             </div>
           </Section>
 
@@ -364,16 +406,33 @@ export default function EditPartnerPage() {
           <Section title="Contactos">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Telefone">
-                <input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} placeholder="+351 243 000 000" />
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className={inputCls}
+                  placeholder="+351 243 000 000"
+                />
               </Field>
               <Field label="Instagram (sem @)">
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-olive-400">@</span>
-                  <input value={instagram} onChange={(e) => setInstagram(e.target.value)} className={inputCls + " pl-8"} placeholder="handle" />
+                  <span className="absolute top-1/2 left-3.5 -translate-y-1/2 text-sm text-olive-400">
+                    @
+                  </span>
+                  <input
+                    value={instagram}
+                    onChange={(e) => setInstagram(e.target.value)}
+                    className={inputCls + " pl-8"}
+                    placeholder="handle"
+                  />
                 </div>
               </Field>
               <Field label="Website">
-                <input value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} className={inputCls} placeholder="https://…" />
+                <input
+                  value={websiteUrl}
+                  onChange={(e) => setWebsiteUrl(e.target.value)}
+                  className={inputCls}
+                  placeholder="https://…"
+                />
               </Field>
             </div>
           </Section>
@@ -381,25 +440,59 @@ export default function EditPartnerPage() {
           {/* Localização */}
           <Section title="Localização">
             <Field label="Morada">
-              <input value={addrLine1} onChange={(e) => setAddrLine1(e.target.value)} className={inputCls} placeholder="Rua, número…" />
+              <input
+                value={addrLine1}
+                onChange={(e) => setAddrLine1(e.target.value)}
+                className={inputCls}
+                placeholder="Rua, número…"
+              />
             </Field>
             <div className="grid gap-4 sm:grid-cols-3">
               <Field label="Código Postal">
-                <input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} className={inputCls} placeholder="0000-000" />
+                <input
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  className={inputCls}
+                  placeholder="0000-000"
+                />
               </Field>
               <Field label="Localidade">
-                <input value={locality} onChange={(e) => setLocality(e.target.value)} className={inputCls} placeholder="Almeirim" />
+                <input
+                  value={locality}
+                  onChange={(e) => setLocality(e.target.value)}
+                  className={inputCls}
+                  placeholder="Almeirim"
+                />
               </Field>
               <Field label="Município">
-                <input value={municipality} onChange={(e) => setMunicipality(e.target.value)} className={inputCls} placeholder="Almeirim" />
+                <input
+                  value={municipality}
+                  onChange={(e) => setMunicipality(e.target.value)}
+                  className={inputCls}
+                  placeholder="Almeirim"
+                />
               </Field>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Latitude">
-                <input value={latitude} onChange={(e) => setLatitude(e.target.value)} className={inputCls} placeholder="39.2028" type="number" step="any" />
+                <input
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
+                  className={inputCls}
+                  placeholder="39.2028"
+                  type="number"
+                  step="any"
+                />
               </Field>
               <Field label="Longitude">
-                <input value={longitude} onChange={(e) => setLongitude(e.target.value)} className={inputCls} placeholder="-8.6281" type="number" step="any" />
+                <input
+                  value={longitude}
+                  onChange={(e) => setLongitude(e.target.value)}
+                  className={inputCls}
+                  placeholder="-8.6281"
+                  type="number"
+                  step="any"
+                />
               </Field>
             </div>
           </Section>
@@ -410,17 +503,34 @@ export default function EditPartnerPage() {
           {/* Benefício */}
           <Section title="Benefício">
             <Field label="Tipo de benefício">
-              <select value={benefitType} onChange={(e) => setBenefitType(e.target.value)} className={inputCls}>
+              <select
+                value={benefitType}
+                onChange={(e) => setBenefitType(e.target.value)}
+                className={inputCls}
+              >
                 {BENEFIT_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
+                  <option key={t.value} value={t.value}>
+                    {t.label}
+                  </option>
                 ))}
               </select>
             </Field>
             <Field label="Título (aparece no card)">
-              <input value={benefitTitle} onChange={(e) => setBenefitTitle(e.target.value)} className={inputCls} placeholder="Na compra de 1 prato, o 2º é grátis" />
+              <input
+                value={benefitTitle}
+                onChange={(e) => setBenefitTitle(e.target.value)}
+                className={inputCls}
+                placeholder="Na compra de 1 prato, o 2º é grátis"
+              />
             </Field>
             <Field label="Descrição curta">
-              <textarea value={benefitDesc} onChange={(e) => setBenefitDesc(e.target.value)} rows={2} className={textareaCls} placeholder="Ao pedir dois pratos…" />
+              <textarea
+                value={benefitDesc}
+                onChange={(e) => setBenefitDesc(e.target.value)}
+                rows={2}
+                className={textareaCls}
+                placeholder="Ao pedir dois pratos…"
+              />
             </Field>
           </Section>
 
@@ -444,9 +554,13 @@ export default function EditPartnerPage() {
                 onClick={() => setReservationRequired((v) => !v)}
                 className={`relative h-6 w-11 flex-none rounded-full transition-colors ${reservationRequired ? "bg-olive-700" : "bg-olive-900/20"}`}
               >
-                <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${reservationRequired ? "translate-x-5" : "translate-x-0.5"}`} />
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${reservationRequired ? "translate-x-5" : "translate-x-0.5"}`}
+                />
               </button>
-              <span className="text-sm text-olive-700">Reserva obrigatória</span>
+              <span className="text-sm text-olive-700">
+                Reserva obrigatória
+              </span>
             </div>
             <Field label="Limite de utilizações por período">
               <input
@@ -472,7 +586,7 @@ export default function EditPartnerPage() {
                     className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
                       selectedDays.has(d.pgDow)
                         ? "bg-olive-900 text-white"
-                        : "bg-cream-100 text-olive-600 hover:bg-cream-200"
+                        : "bg-cream-100 hover:bg-cream-200 text-olive-600"
                     }`}
                   >
                     {d.label}
@@ -482,10 +596,20 @@ export default function EditPartnerPage() {
             </Field>
             <div className="grid grid-cols-2 gap-4">
               <Field label="Hora de abertura">
-                <input type="time" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} className={inputCls} />
+                <input
+                  type="time"
+                  value={startsAt}
+                  onChange={(e) => setStartsAt(e.target.value)}
+                  className={inputCls}
+                />
               </Field>
               <Field label="Hora de fecho">
-                <input type="time" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} className={inputCls} />
+                <input
+                  type="time"
+                  value={endsAt}
+                  onChange={(e) => setEndsAt(e.target.value)}
+                  className={inputCls}
+                />
               </Field>
             </div>
           </Section>
@@ -502,14 +626,14 @@ export default function EditPartnerPage() {
           <div className="flex gap-3">
             <Link
               href="/admin/parceiros"
-              className="rounded-xl border border-olive-900/15 px-5 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50 transition-colors"
+              className="hover:bg-cream-50 rounded-xl border border-olive-900/15 px-5 py-2.5 text-sm font-medium text-olive-700 transition-colors"
             >
               Cancelar
             </Link>
             <button
               onClick={() => void save()}
               disabled={saving}
-              className="rounded-xl bg-olive-900 px-6 py-2.5 text-sm font-semibold text-white hover:bg-olive-900/90 transition-colors disabled:opacity-60"
+              className="rounded-xl bg-olive-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-olive-900/90 disabled:opacity-60"
             >
               {saving ? "A guardar…" : "Guardar alterações"}
             </button>

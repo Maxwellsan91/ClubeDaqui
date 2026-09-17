@@ -53,7 +53,9 @@ function EditProfileModal({
   onClose: () => void;
   onSaved: (updated: { fullName: string; phone: string; nif: string }) => void;
 }) {
-  const [fullName, setFullName] = useState(user.fullName === "—" ? "" : user.fullName);
+  const [fullName, setFullName] = useState(
+    user.fullName === "—" ? "" : user.fullName,
+  );
   const [phone, setPhone] = useState("");
   const [nif, setNif] = useState("");
   const [saving, setSaving] = useState(false);
@@ -72,7 +74,10 @@ function EditProfileModal({
       `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${user.id}/profile`,
       {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       },
     );
@@ -86,30 +91,52 @@ function EditProfileModal({
     }
   }
 
-  const inputClass = "w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10";
+  const inputClass =
+    "w-full rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 p-4 backdrop-blur-sm">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-        <h2 className="mb-1 text-base font-bold text-olive-900">Editar perfil</h2>
+        <h2 className="mb-1 text-base font-bold text-olive-900">
+          Editar perfil
+        </h2>
         <p className="mb-5 text-sm text-olive-600">{user.fullName}</p>
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-olive-900">Nome completo</label>
-            <input value={fullName} onChange={(e) => setFullName(e.target.value)} className={inputClass} placeholder={user.fullName} />
+            <label className="mb-1.5 block text-xs font-semibold text-olive-900">
+              Nome completo
+            </label>
+            <input
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className={inputClass}
+              placeholder={user.fullName}
+            />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-olive-900">Telefone</label>
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputClass} placeholder="+351 9XX XXX XXX" inputMode="tel" />
+            <label className="mb-1.5 block text-xs font-semibold text-olive-900">
+              Telefone
+            </label>
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className={inputClass}
+              placeholder="+351 9XX XXX XXX"
+              inputMode="tel"
+            />
           </div>
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-olive-900">
               NIF{" "}
-              <span className="font-normal text-olive-400">(substitui o actual se preenchido)</span>
+              <span className="font-normal text-olive-400">
+                (substitui o actual se preenchido)
+              </span>
             </label>
             <input
               value={nif}
-              onChange={(e) => setNif(e.target.value.replace(/\D/g, "").slice(0, 9))}
+              onChange={(e) =>
+                setNif(e.target.value.replace(/\D/g, "").slice(0, 9))
+              }
               inputMode="numeric"
               maxLength={9}
               className={`${inputClass} font-mono tracking-widest`}
@@ -117,9 +144,12 @@ function EditProfileModal({
             />
           </div>
         </div>
-        {error && <p className="mt-3 text-sm text-wine-700">{error}</p>}
+        {error && <p className="text-wine-700 mt-3 text-sm">{error}</p>}
         <div className="mt-5 flex gap-3">
-          <button onClick={onClose} className="flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50">
+          <button
+            onClick={onClose}
+            className="hover:bg-cream-50 flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700"
+          >
             Cancelar
           </button>
           <button
@@ -217,7 +247,7 @@ function StatusToggleModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 p-4 backdrop-blur-sm">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
         <h2 className="mb-1 text-base font-bold text-olive-900">
           {newActive ? "Ativar utilizador" : "Desativar utilizador"}
@@ -246,11 +276,11 @@ function StatusToggleModal({
             className="w-full resize-none rounded-xl border border-olive-900/15 px-3.5 py-2.5 text-sm text-olive-900 outline-none focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10"
           />
         </div>
-        {error && <p className="mt-2 text-sm text-wine-700">{error}</p>}
+        {error && <p className="text-wine-700 mt-2 text-sm">{error}</p>}
         <div className="mt-5 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50"
+            className="hover:bg-cream-50 flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700"
           >
             Cancelar
           </button>
@@ -258,7 +288,9 @@ function StatusToggleModal({
             onClick={() => void save()}
             disabled={saving}
             className={`flex-1 rounded-xl py-2.5 text-sm font-semibold text-white disabled:opacity-60 ${
-              newActive ? "bg-olive-900 hover:bg-olive-900/90" : "bg-wine-700 hover:bg-wine-700/90"
+              newActive
+                ? "bg-olive-900 hover:bg-olive-900/90"
+                : "bg-wine-700 hover:bg-wine-700/90"
             }`}
           >
             {saving ? "A guardar…" : newActive ? "Ativar" : "Desativar"}
@@ -290,7 +322,10 @@ function GrantMembershipModal({
       `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${userId}/grant-membership`,
       {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ source: "ADMIN_GRANT" }),
       },
     );
@@ -305,18 +340,20 @@ function GrantMembershipModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-900/40 p-4 backdrop-blur-sm">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-        <h2 className="mb-1 text-base font-bold text-olive-900">Conceder cortesia</h2>
+        <h2 className="mb-1 text-base font-bold text-olive-900">
+          Conceder cortesia
+        </h2>
         <p className="mb-4 text-sm text-olive-600">
-          Uma adesão gratuita de 12 meses será atribuída a este utilizador, identificada como
-          &ldquo;Cortesia&rdquo;.
+          Uma adesão gratuita de 12 meses será atribuída a este utilizador,
+          identificada como &ldquo;Cortesia&rdquo;.
         </p>
-        {error && <p className="mb-3 text-sm text-wine-700">{error}</p>}
+        {error && <p className="text-wine-700 mb-3 text-sm">{error}</p>}
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700 hover:bg-cream-50"
+            className="hover:bg-cream-50 flex-1 rounded-xl border border-olive-900/15 py-2.5 text-sm font-medium text-olive-700"
           >
             Cancelar
           </button>
@@ -357,7 +394,9 @@ export default function UserDetailPage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   if (loading) {
@@ -373,7 +412,10 @@ export default function UserDetailPage() {
     return (
       <div className="rounded-2xl bg-white p-8 text-center">
         <p className="text-sm text-olive-500">Utilizador não encontrado.</p>
-        <button onClick={() => router.back()} className="mt-4 text-sm text-olive-700 underline">
+        <button
+          onClick={() => router.back()}
+          className="mt-4 text-sm text-olive-700 underline"
+        >
           Voltar
         </button>
       </div>
@@ -408,7 +450,7 @@ export default function UserDetailPage() {
           user={user}
           onClose={() => setShowEditModal(false)}
           onSaved={(updated) => {
-            setUser((u) => u ? { ...u, fullName: updated.fullName } : u);
+            setUser((u) => (u ? { ...u, fullName: updated.fullName } : u));
             void load();
           }}
         />
@@ -418,7 +460,7 @@ export default function UserDetailPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/admin/utilizadores"
-          className="flex h-9 w-9 flex-none items-center justify-center rounded-xl border border-olive-900/15 text-olive-600 hover:bg-cream-50"
+          className="hover:bg-cream-50 flex h-9 w-9 flex-none items-center justify-center rounded-xl border border-olive-900/15 text-olive-600"
         >
           ←
         </Link>
@@ -433,49 +475,67 @@ export default function UserDetailPage() {
         {/* Info grid */}
         <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm sm:grid-cols-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Role</p>
-            <p className="mt-1 font-semibold text-olive-900">{ROLE_LABELS[user.role] ?? user.role}</p>
+            <p className="text-xs font-semibold tracking-wide text-olive-400 uppercase">
+              Role
+            </p>
+            <p className="mt-1 font-semibold text-olive-900">
+              {ROLE_LABELS[user.role] ?? user.role}
+            </p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Estado conta</p>
-            <p className={`mt-1 font-semibold ${user.isActive ? "text-olive-700" : "text-wine-700"}`}>
+            <p className="text-xs font-semibold tracking-wide text-olive-400 uppercase">
+              Estado conta
+            </p>
+            <p
+              className={`mt-1 font-semibold ${user.isActive ? "text-olive-700" : "text-wine-700"}`}
+            >
               {user.isActive ? "Ativo" : "Inativo"}
             </p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Membro desde</p>
+            <p className="text-xs font-semibold tracking-wide text-olive-400 uppercase">
+              Membro desde
+            </p>
             <p className="mt-1 text-olive-700">{fmtDate(user.createdAt)}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">NIF</p>
+            <p className="text-xs font-semibold tracking-wide text-olive-400 uppercase">
+              NIF
+            </p>
             <p className="mt-1 font-mono text-olive-900">{user.nif ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Telefone</p>
+            <p className="text-xs font-semibold tracking-wide text-olive-400 uppercase">
+              Telefone
+            </p>
             <p className="mt-1 text-olive-700">{user.phone ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-olive-400">Adesão activa</p>
+            <p className="text-xs font-semibold tracking-wide text-olive-400 uppercase">
+              Adesão activa
+            </p>
             <p className="mt-1 text-olive-700">
-              {activeMembership
-                ? `${SOURCE_LABELS[activeMembership.source] ?? activeMembership.source} · até ${fmtDate(activeMembership.endsAt!)}`
-                : <span className="text-wine-700 font-semibold">Sem adesão</span>}
+              {activeMembership ? (
+                `${SOURCE_LABELS[activeMembership.source] ?? activeMembership.source} · até ${fmtDate(activeMembership.endsAt!)}`
+              ) : (
+                <span className="text-wine-700 font-semibold">Sem adesão</span>
+              )}
             </p>
           </div>
         </div>
 
         {/* Action buttons — always visible below the grid */}
-        <div className="mt-6 flex flex-wrap gap-3 border-t border-cream-100 pt-5">
+        <div className="border-cream-100 mt-6 flex flex-wrap gap-3 border-t pt-5">
           <button
             onClick={() => setShowEditModal(true)}
-            className="rounded-xl border border-olive-900/15 px-4 py-2 text-sm font-medium text-olive-700 hover:bg-cream-50"
+            className="hover:bg-cream-50 rounded-xl border border-olive-900/15 px-4 py-2 text-sm font-medium text-olive-700"
           >
             Editar perfil
           </button>
           {!activeMembership && (
             <button
               onClick={() => setShowGrantModal(true)}
-              className="rounded-xl border border-olive-900/15 px-4 py-2 text-sm font-medium text-olive-700 hover:bg-cream-50"
+              className="hover:bg-cream-50 rounded-xl border border-olive-900/15 px-4 py-2 text-sm font-medium text-olive-700"
             >
               Conceder cortesia
             </button>
@@ -484,7 +544,7 @@ export default function UserDetailPage() {
             onClick={() => setShowStatusModal(true)}
             className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
               user.isActive
-                ? "border border-wine-700/30 bg-wine-700/5 text-wine-700 hover:bg-wine-700/10"
+                ? "border-wine-700/30 bg-wine-700/5 text-wine-700 hover:bg-wine-700/10 border"
                 : "bg-olive-900 text-white hover:bg-olive-900/90"
             }`}
           >
@@ -493,9 +553,13 @@ export default function UserDetailPage() {
         </div>
 
         {user.influencer && (
-          <div className="mt-5 flex items-center gap-3 rounded-xl bg-gold-500/10 px-4 py-3">
-            <span className="text-xs font-bold uppercase tracking-wide text-olive-700">Influencer</span>
-            <span className="font-mono text-sm font-semibold text-olive-900">{user.influencer.uniqueCode}</span>
+          <div className="bg-gold-500/10 mt-5 flex items-center gap-3 rounded-xl px-4 py-3">
+            <span className="text-xs font-bold tracking-wide text-olive-700 uppercase">
+              Influencer
+            </span>
+            <span className="font-mono text-sm font-semibold text-olive-900">
+              {user.influencer.uniqueCode}
+            </span>
             <span className="ml-auto text-xs text-olive-600">
               Comissão: {user.influencer.commissionRate}%
             </span>
@@ -511,31 +575,38 @@ export default function UserDetailPage() {
 
       {/* Memberships */}
       <div className="rounded-2xl bg-white shadow-sm">
-        <div className="border-b border-cream-100 px-6 py-4">
+        <div className="border-cream-100 border-b px-6 py-4">
           <h2 className="text-sm font-bold text-olive-900">Adesões</h2>
         </div>
         {user.memberships.length === 0 ? (
-          <p className="px-6 py-8 text-center text-sm text-olive-400">Nenhuma adesão registada.</p>
+          <p className="px-6 py-8 text-center text-sm text-olive-400">
+            Nenhuma adesão registada.
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-sm">
-              <thead className="border-b border-cream-100">
-                <tr className="text-left text-xs font-semibold uppercase tracking-wide text-olive-400">
+              <thead className="border-cream-100 border-b">
+                <tr className="text-left text-xs font-semibold tracking-wide text-olive-400 uppercase">
                   <th className="px-6 py-3">Tipo</th>
                   <th className="px-4 py-3">Origem</th>
                   <th className="px-4 py-3">Início</th>
                   <th className="px-4 py-3">Validade</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-cream-100">
+              <tbody className="divide-cream-100 divide-y">
                 {user.memberships.map((m) => {
-                  const isActive = m.status === "active" && m.endsAt && new Date(m.endsAt) > new Date();
+                  const isActive =
+                    m.status === "active" &&
+                    m.endsAt &&
+                    new Date(m.endsAt) > new Date();
                   return (
                     <tr key={m.id}>
                       <td className="px-6 py-3">
                         <span
                           className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                            isActive ? "bg-olive-900/8 text-olive-700" : "bg-cream-100 text-olive-400"
+                            isActive
+                              ? "bg-olive-900/8 text-olive-700"
+                              : "bg-cream-100 text-olive-400"
                           }`}
                         >
                           {isActive ? "Ativa" : "Expirada"}
@@ -548,7 +619,9 @@ export default function UserDetailPage() {
                           {SOURCE_LABELS[m.source] ?? m.source}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-olive-600">{fmtDate(m.createdAt)}</td>
+                      <td className="px-4 py-3 text-olive-600">
+                        {fmtDate(m.createdAt)}
+                      </td>
                       <td className="px-4 py-3 text-olive-600">
                         {m.endsAt ? fmtDate(m.endsAt) : "—"}
                       </td>
@@ -564,21 +637,21 @@ export default function UserDetailPage() {
       {/* Recent redemptions */}
       {user.recentRedemptions.length > 0 && (
         <div className="rounded-2xl bg-white shadow-sm">
-          <div className="border-b border-cream-100 px-6 py-4">
+          <div className="border-cream-100 border-b px-6 py-4">
             <h2 className="text-sm font-bold text-olive-900">
               Resgates recentes
             </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[420px] text-sm">
-              <thead className="border-b border-cream-100">
-                <tr className="text-left text-xs font-semibold uppercase tracking-wide text-olive-400">
+              <thead className="border-cream-100 border-b">
+                <tr className="text-left text-xs font-semibold tracking-wide text-olive-400 uppercase">
                   <th className="px-6 py-3">Benefício</th>
                   <th className="px-4 py-3">Parceiro</th>
                   <th className="px-4 py-3">Data</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-cream-100">
+              <tbody className="divide-cream-100 divide-y">
                 {user.recentRedemptions.map((r) => (
                   <tr key={r.id}>
                     <td className="px-6 py-3 font-medium text-olive-900">
@@ -600,15 +673,17 @@ export default function UserDetailPage() {
 
       {/* Status audit log */}
       <div className="rounded-2xl bg-white shadow-sm">
-        <div className="border-b border-cream-100 px-6 py-4">
-          <h2 className="text-sm font-bold text-olive-900">Histórico de estado</h2>
+        <div className="border-cream-100 border-b px-6 py-4">
+          <h2 className="text-sm font-bold text-olive-900">
+            Histórico de estado
+          </h2>
         </div>
         {user.statusLogs.length === 0 ? (
           <p className="px-6 py-8 text-center text-sm text-olive-400">
             Sem alterações de estado registadas.
           </p>
         ) : (
-          <div className="divide-y divide-cream-100">
+          <div className="divide-cream-100 divide-y">
             {user.statusLogs.map((log) => (
               <div key={log.id} className="flex items-start gap-4 px-6 py-4">
                 <div

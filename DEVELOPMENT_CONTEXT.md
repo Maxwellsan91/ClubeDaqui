@@ -199,6 +199,7 @@ serena memories check
 ## Próximas ações
 
 ### Produto / Homepage
+
 1. Substituir imagens de placeholder (Unsplash) no carrossel de parceiros por
    fotografias reais dos estabelecimentos.
 2. Ligar os dados do carrossel à API `/api/businesses` (actualmente estáticos).
@@ -206,6 +207,7 @@ serena memories check
    design anterior e foi removida na redesign).
 
 ### Mobile (Expo)
+
 4. Executar `pod install` localmente e compilar o development build iOS para
    testar mapas nativos e fluxo de resgate no simulador.
 5. Configurar variáveis de ambiente no EAS (`preview` e `production`) e obter
@@ -213,6 +215,7 @@ serena memories check
 6. Commit das alterações mobile pendentes (ver git status).
 
 ### Infra / Segurança
+
 7. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
    ativa e um utilizador parceiro de teste no ambiente publicado.
 8. Ativar proteção contra palavras-passe expostas no Supabase Auth.
@@ -220,6 +223,7 @@ serena memories check
    auditoria.
 
 ### Inventário / Dados
+
 10. Rever manualmente as 115 correspondências OSM pendentes.
 11. Decidir modelo de proveniência para `businesses`/`business_locations` e
     criar a migration de importação validada.

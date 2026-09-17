@@ -9,18 +9,26 @@ interface ReviewFormProps {
   onDone?: () => void;
 }
 
-export default function ReviewForm({ redemptionId, businessName, onDone }: ReviewFormProps) {
+export default function ReviewForm({
+  redemptionId,
+  businessName,
+  onDone,
+}: ReviewFormProps) {
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState("");
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
+    "idle",
+  );
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (rating === 0 || status === "saving") return;
     setStatus("saving");
     const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     const token = session?.access_token;
     try {
       const res = await fetch(
@@ -31,12 +39,19 @@ export default function ReviewForm({ redemptionId, businessName, onDone }: Revie
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          body: JSON.stringify({ rating, comment: comment.trim() || undefined }),
+          body: JSON.stringify({
+            rating,
+            comment: comment.trim() || undefined,
+          }),
         },
       );
       if (!res.ok) {
         const json = (await res.json()) as { message?: string };
-        if (res.status === 409) { setStatus("saved"); onDone?.(); return; }
+        if (res.status === 409) {
+          setStatus("saved");
+          onDone?.();
+          return;
+        }
         throw new Error(json.message);
       }
       setStatus("saved");
@@ -50,18 +65,30 @@ export default function ReviewForm({ redemptionId, businessName, onDone }: Revie
     return (
       <div className="flex flex-col items-center gap-2 py-8 text-center">
         <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-olive-700/10">
-          <svg className="h-5 w-5 text-olive-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+          <svg
+            className="h-5 w-5 text-olive-700"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            aria-hidden="true"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
         <p className="font-semibold text-olive-900">Obrigado pela avaliação!</p>
-        <p className="text-sm text-olive-600">A sua opinião ajuda outros membros a escolher melhor.</p>
+        <p className="text-sm text-olive-600">
+          A sua opinião ajuda outros membros a escolher melhor.
+        </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={(e) => void handleSubmit(e)} className="flex flex-col gap-4">
+    <form
+      onSubmit={(e) => void handleSubmit(e)}
+      className="flex flex-col gap-4"
+    >
       <p className="text-sm font-medium text-olive-700">
         A sua avaliação de <span className="font-semibold">{businessName}</span>
       </p>
@@ -91,7 +118,9 @@ export default function ReviewForm({ redemptionId, businessName, onDone }: Revie
         className="bg-cream-50 focus:border-wine-700 w-full resize-none rounded-xl border border-olive-900/20 px-4 py-3 text-sm text-olive-900 placeholder:text-olive-600/60 focus:outline-none"
       />
       {status === "error" && (
-        <p className="text-wine-700 text-sm">Não foi possível guardar. Tente novamente.</p>
+        <p className="text-wine-700 text-sm">
+          Não foi possível guardar. Tente novamente.
+        </p>
       )}
       <button
         type="submit"

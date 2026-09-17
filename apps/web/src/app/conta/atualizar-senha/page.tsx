@@ -44,7 +44,7 @@ export default function UpdatePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="bg-cream-50 min-h-screen">
       <AppHeader />
 
       <main className="mx-auto max-w-lg px-5 py-10 sm:py-16">
@@ -86,7 +86,7 @@ export default function UpdatePasswordPage() {
                 minLength={8}
                 required
                 placeholder="Mínimo 8 caracteres"
-                className="mt-2 block w-full rounded-xl border border-olive-900/12 bg-cream-50 px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:border-olive-700 focus:bg-white focus:outline-none"
+                className="bg-cream-50 mt-2 block w-full rounded-xl border border-olive-900/12 px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:border-olive-700 focus:bg-white focus:outline-none"
               />
             </div>
 
@@ -105,14 +105,14 @@ export default function UpdatePasswordPage() {
                 autoComplete="new-password"
                 required
                 placeholder="Repita a senha"
-                className="mt-2 block w-full rounded-xl border border-olive-900/12 bg-cream-50 px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:border-olive-700 focus:bg-white focus:outline-none"
+                className="bg-cream-50 mt-2 block w-full rounded-xl border border-olive-900/12 px-4 py-3 text-olive-900 transition-colors placeholder:text-olive-700/40 focus:border-olive-700 focus:bg-white focus:outline-none"
               />
             </div>
 
             {error && (
               <p
                 role="alert"
-                className="rounded-xl bg-wine-700/8 px-4 py-3 text-sm text-wine-700"
+                className="bg-wine-700/8 text-wine-700 rounded-xl px-4 py-3 text-sm"
               >
                 {error}
               </p>
@@ -121,7 +121,7 @@ export default function UpdatePasswordPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="bg-olive-900 hover:bg-olive-900/90 block min-h-[48px] w-full rounded-full px-6 py-3 text-sm font-semibold text-white transition disabled:opacity-60"
+              className="block min-h-[48px] w-full rounded-full bg-olive-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-olive-900/90 disabled:opacity-60"
             >
               {submitting ? "A guardar…" : "Guardar nova senha"}
             </button>

@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignInPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -34,7 +32,9 @@ export default function SignInPage() {
     setError("");
     setSubmitting(true);
     try {
-      const requestedPath = new URLSearchParams(window.location.search).get("redirectTo");
+      const requestedPath = new URLSearchParams(window.location.search).get(
+        "redirectTo",
+      );
       const supabase = createClient();
       const { data, error: authError } = await supabase.auth.signInWithPassword(
         { email: email.trim(), password },
@@ -57,18 +57,21 @@ export default function SignInPage() {
       const role = (profile as { role?: string } | null)?.role;
       let next = "/conta";
       if (role === "PARTNER") {
-        next = requestedPath?.startsWith("/parceiros") ? requestedPath : "/parceiros/dashboard";
+        next = requestedPath?.startsWith("/parceiros")
+          ? requestedPath
+          : "/parceiros/dashboard";
       } else if (role === "ADMIN") {
         next = requestedPath?.startsWith("/admin") ? requestedPath : "/admin";
       } else {
         next =
-          requestedPath?.startsWith("/") && !requestedPath.startsWith("//") && !requestedPath.startsWith("/parceiros")
+          requestedPath?.startsWith("/") &&
+          !requestedPath.startsWith("//") &&
+          !requestedPath.startsWith("/parceiros")
             ? requestedPath
             : "/conta";
       }
 
-      router.refresh();
-      router.replace(next);
+      window.location.href = next;
     } catch {
       setError("Não foi possível contactar o serviço. Tente novamente.");
       setSubmitting(false);
@@ -147,7 +150,7 @@ export default function SignInPage() {
                   type="button"
                   onClick={() => void sendReset()}
                   disabled={resetSending}
-                  className="text-xs text-olive-500 hover:text-wine-700 underline underline-offset-2 transition-colors disabled:opacity-60"
+                  className="hover:text-wine-700 text-xs text-olive-500 underline underline-offset-2 transition-colors disabled:opacity-60"
                 >
                   {resetSending ? "A enviar…" : "Esqueceu a senha?"}
                 </button>

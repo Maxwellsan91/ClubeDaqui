@@ -121,6 +121,7 @@ export default function ExplorePage() {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(FAVORITES_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (stored) setFavorites(new Set(JSON.parse(stored) as string[]));
     } catch {
       /* ignore parse errors */
