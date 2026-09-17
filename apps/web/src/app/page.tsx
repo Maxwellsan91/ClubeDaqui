@@ -64,7 +64,7 @@ const CATEGORIES = [
   },
   {
     label: "Lazer",
-    detail: "Experiências para viver o Ribatejo",
+    detail: "Experiências para viver daqui",
     href: "/explorar?categoria=Lazer",
     image:
       "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=80",
@@ -420,17 +420,14 @@ export default function HomePage() {
             className="font-display mt-4 leading-[0.93] tracking-tight text-white"
             style={{ fontSize: "clamp(3rem, 8vw, 6.5rem)" }}
           >
-            Descubra o que
-            <br />
-            torna o{" "}
+            Descobre
+            <br />o melhor{" "}
             <em
               className="font-display"
               style={{ color: "#b58b4a", fontStyle: "italic" }}
             >
-              Ribatejo
+              daqui.
             </em>
-            <br />
-            especial.
           </h1>
           <p className="mt-6 max-w-lg text-base leading-7 text-white/65 sm:text-lg sm:leading-8">
             Um clube de benefícios para quem quer viver e apoiar o melhor que a
@@ -595,7 +592,7 @@ export default function HomePage() {
                 className="text-[11px] font-semibold tracking-[0.25em] uppercase"
                 style={{ color: "#b58b4a" }}
               >
-                O Clube Ribatejo
+                O Clube Daqui
               </p>
               <h2
                 className="font-display mt-4 leading-tight tracking-tight text-white"
@@ -704,7 +701,7 @@ export default function HomePage() {
             </h2>
             <p className="mt-2 max-w-sm text-sm leading-6 text-olive-700">
               Apresente o seu espaço a membros ativos que valorizam o que o
-              Ribatejo tem de melhor.
+              daqui tem de melhor.
             </p>
           </div>
           <Link

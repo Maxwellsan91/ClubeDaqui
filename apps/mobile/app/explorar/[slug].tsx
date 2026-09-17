@@ -97,7 +97,7 @@ export default function BusinessDetailScreen() {
       <Text style={styles.title}>{detail.name}</Text>
       <Text style={styles.address}>{detail.address}</Text>
       <Text style={styles.body}>
-        {detail.description ?? "Descubra este parceiro do Clube Ribatejo."}
+        {detail.description ?? "Descubra este parceiro do Clube Daqui."}
       </Text>
       <Pressable
         onPress={() => void Linking.openURL(mapsUrl)}

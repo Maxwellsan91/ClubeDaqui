@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.eyebrow}>CLUBE RIBATEJO</Text>
+      <Text style={styles.eyebrow}>CLUBE DAQUI</Text>
       <Text style={styles.title}>Descubra o que é nosso.</Text>
       <Text style={styles.body}>
         A app mobile está pronta para receber a experiência de descoberta,

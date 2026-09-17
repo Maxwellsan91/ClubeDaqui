@@ -190,7 +190,7 @@ export default function AdminDashboard() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-olive-900">Dashboard</h1>
         <p className="mt-1 text-sm text-olive-600">
-          Visão geral do Clube Ribatejo
+          Visão geral do Clube Daqui
         </p>
       </div>
 

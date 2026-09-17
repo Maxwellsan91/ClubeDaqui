@@ -6,7 +6,7 @@ export class HealthController {
   getHealth() {
     return {
       status: "ok" as const,
-      service: "clube-ribatejo-api",
+      service: "clube-daqui-api",
       timestamp: new Date().toISOString(),
     };
   }

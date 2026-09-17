@@ -45,7 +45,7 @@ export default function ExploreTab() {
   return (
     <View style={styles.container}>
       <Text style={styles.eyebrow}>EXPLORAR</Text>
-      <Text style={styles.title}>Lugares do Ribatejo</Text>
+      <Text style={styles.title}>Lugares Daqui</Text>
       {loading && <ActivityIndicator color="#743b40" style={styles.loader} />}
       <FlatList
         data={places}

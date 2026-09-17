@@ -31,7 +31,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.eyebrow}>CLUBE RIBATEJO</Text>
+      <Text style={styles.eyebrow}>CLUBE DAQUI</Text>
       <Text style={styles.title}>Entrar na sua conta</Text>
       <Text style={styles.body}>Aceda aos seus benefícios e poupanças.</Text>
       <TextInput

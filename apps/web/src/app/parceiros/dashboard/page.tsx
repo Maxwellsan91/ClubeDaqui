@@ -146,7 +146,7 @@ export default function PartnerDashboardPage() {
             </div>
             <div>
               <p className="text-[10px] font-bold tracking-[0.2em] text-olive-500 uppercase">
-                Clube Ribatejo
+                Clube Daqui
               </p>
               <p className="text-xs font-semibold text-olive-900">
                 {stats?.businessName ?? "Área de parceiros"}

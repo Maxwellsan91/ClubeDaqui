@@ -47,7 +47,7 @@ export function AppHeader({ rightSlot, mobileRight }: AppHeaderProps) {
           href="/"
           className="font-display text-[1.35rem] leading-none font-semibold tracking-tight text-olive-900"
         >
-          Clube Ribatejo
+          Clube Daqui
         </Link>
 
         {/* Mobile right slot */}

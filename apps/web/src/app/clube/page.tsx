@@ -9,7 +9,7 @@ export default function ClubPage() {
 
       <div className="mx-auto max-w-5xl px-5 py-12 sm:px-8 sm:py-20">
         <p className="text-wine-700 text-[11px] font-semibold tracking-[0.28em] uppercase">
-          O Clube Ribatejo
+          O Clube Daqui
         </p>
         <h1 className="font-display mt-4 max-w-2xl text-[2.6rem] leading-tight tracking-tight text-olive-900 sm:text-6xl lg:text-7xl">
           Descubra mais. Aproveite melhor.

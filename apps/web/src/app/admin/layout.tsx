@@ -76,7 +76,7 @@ export default async function AdminLayout({
             <p className="text-gold-500 text-[11px] font-semibold tracking-widest uppercase">
               Admin
             </p>
-            <p className="text-cream-50/50 text-xs">Clube Ribatejo</p>
+            <p className="text-cream-50/50 text-xs">Clube Daqui</p>
           </div>
         </div>
 

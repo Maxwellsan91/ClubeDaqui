@@ -4,7 +4,7 @@ export function GET() {
   return Response.json(
     {
       status: "ok",
-      service: "clube-ribatejo-web",
+      service: "clube-daqui-web",
       timestamp: new Date().toISOString(),
     },
     {

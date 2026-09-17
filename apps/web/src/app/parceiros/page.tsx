@@ -46,7 +46,7 @@ export default function PartnersPage() {
             Para estabelecimentos locais
           </p>
           <h1 className="font-display mt-6 text-5xl tracking-tight text-olive-900 sm:text-7xl">
-            Faça parte do próximo capítulo do Ribatejo.
+            Faça parte do melhor que há daqui.
           </h1>
           <p className="mt-8 max-w-xl text-lg leading-8 text-olive-700">
             Estamos a reunir os primeiros parceiros de Almeirim para criar

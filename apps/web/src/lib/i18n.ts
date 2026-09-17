@@ -2,7 +2,7 @@ export type Locale = "pt-PT" | "en";
 
 export const translations = {
   "pt-PT": {
-    brand: "Clube Ribatejo",
+    brand: "Clube Daqui",
     offers: "Ofertas",
     account: "Minha conta",
     partner: "Quero ser parceiro",
@@ -15,10 +15,10 @@ export const translations = {
     signIn: "Entrar",
     signUp: "Criar conta",
     footerDescription:
-      "Descubra lugares, experiências e benefícios que aproximam o Ribatejo.",
+      "Descobre lugares, experiências e benefícios. O melhor daqui.",
     localContent: "Conteúdo local. Experiências reais.",
     homeEyebrow: "Almeirim · Santarém",
-    homeTitle: "Descubra o que torna o Ribatejo especial.",
+    homeTitle: "Descobre o melhor daqui.",
     homeDescription:
       "Um guia local para encontrar lugares bons, experiências autênticas e benefícios exclusivos perto de si.",
     homeSearch: "O que procura em Almeirim?",
@@ -27,7 +27,7 @@ export const translations = {
     sleep: "Dormir",
     sleepDetail: "Alojamentos para ficar e descansar",
     leisure: "Lazer",
-    leisureDetail: "Experiências para viver o Ribatejo",
+    leisureDetail: "Experiências para viver daqui",
     seeSelection: "Ver seleção →",
     howItWorks: "Como funciona",
     howTitle: "Descobrir, escolher e aproveitar.",
@@ -36,12 +36,12 @@ export const translations = {
     placesToStart: "Lugares para começar",
     seeProfile: "Ver ficha",
     ourVision: "A nossa visão",
-    visionTitle: "Um clube de benefícios feito para o Ribatejo.",
+    visionTitle: "Um clube de benefícios feito por quem é daqui.",
     visionText:
       "Estamos a criar uma experiência própria para Portugal: mais próxima, local e ligada aos estabelecimentos da nossa região.",
   },
   en: {
-    brand: "Ribatejo Club",
+    brand: "Clube Daqui",
     offers: "Offers",
     account: "My account",
     partner: "Become a partner",
@@ -54,10 +54,10 @@ export const translations = {
     signIn: "Sign in",
     signUp: "Create account",
     footerDescription:
-      "Discover places, experiences and benefits that bring Ribatejo closer.",
+      "Discover places, experiences and benefits. The best of here.",
     localContent: "Local content. Real experiences.",
     homeEyebrow: "Almeirim · Santarém",
-    homeTitle: "Discover what makes Ribatejo special.",
+    homeTitle: "Discover the best of here.",
     homeDescription:
       "A local guide to find great places, authentic experiences and exclusive benefits near you.",
     homeSearch: "What are you looking for in Almeirim?",
@@ -66,7 +66,7 @@ export const translations = {
     sleep: "Stay",
     sleepDetail: "Places to stay and unwind",
     leisure: "Leisure",
-    leisureDetail: "Experiences to live Ribatejo",
+    leisureDetail: "Experiences to live here",
     seeSelection: "View selection →",
     howItWorks: "How it works",
     howTitle: "Discover, choose and enjoy.",
@@ -75,7 +75,7 @@ export const translations = {
     placesToStart: "Places to start",
     seeProfile: "View details",
     ourVision: "Our vision",
-    visionTitle: "A benefits club made for Ribatejo.",
+    visionTitle: "A benefits club made by locals, for locals.",
     visionText:
       "We are creating an experience made for Portugal: closer, local and connected to the establishments in our region.",
   },

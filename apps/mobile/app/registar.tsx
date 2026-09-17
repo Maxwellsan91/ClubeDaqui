@@ -35,7 +35,7 @@ export default function RegisterScreen() {
   }
   return (
     <View style={styles.container}>
-      <Text style={styles.eyebrow}>CLUBE RIBATEJO</Text>
+      <Text style={styles.eyebrow}>CLUBE DAQUI</Text>
       <Text style={styles.title}>Criar conta</Text>
       <Text style={styles.body}>
         Junte-se ao Clube e descubra benefícios locais.

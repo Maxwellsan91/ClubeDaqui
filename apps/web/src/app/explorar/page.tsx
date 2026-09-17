@@ -65,7 +65,7 @@ const staticPlaces: BusinessCardData[] = [
   },
 ];
 
-const FAVORITES_KEY = "clube-ribatejo-favorites";
+const FAVORITES_KEY = "clube-daqui-favorites";
 const categoryFilters = ["Todos", "Comer", "Dormir", "Lazer"];
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 

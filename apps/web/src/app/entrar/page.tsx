@@ -86,7 +86,7 @@ export default function SignInPage() {
           href="/"
           className="font-display text-[1.2rem] font-semibold tracking-tight text-olive-900"
         >
-          Clube Ribatejo
+          Clube Daqui
         </Link>
         <Link
           href="/registar"

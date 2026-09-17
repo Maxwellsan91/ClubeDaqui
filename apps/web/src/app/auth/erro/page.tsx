@@ -8,7 +8,7 @@ export default function AuthErrorPage() {
           href="/"
           className="font-display text-xl font-semibold text-olive-900"
         >
-          Clube Ribatejo
+          Clube Daqui
         </Link>
       </header>
       <section className="mx-auto max-w-xl py-24">

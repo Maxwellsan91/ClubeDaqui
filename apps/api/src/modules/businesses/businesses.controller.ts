@@ -55,7 +55,7 @@ const businesses = [
     kind: "Experiência",
     city: "Almeirim",
     address: "Almeirim, Santarém",
-    source: "Clube Ribatejo (demo)",
+    source: "Clube Daqui (demo)",
   },
   {
     id: "almeirim-casa-ribatejana",
@@ -65,7 +65,7 @@ const businesses = [
     kind: "Alojamento",
     city: "Almeirim",
     address: "Almeirim, Santarém",
-    source: "Clube Ribatejo (demo)",
+    source: "Clube Daqui (demo)",
   },
 ];
 type BusinessRecord = {

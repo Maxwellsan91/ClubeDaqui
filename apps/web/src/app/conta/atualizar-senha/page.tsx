@@ -52,7 +52,7 @@ export default function UpdatePasswordPage() {
           Definir nova senha
         </h1>
         <p className="mt-2 text-sm text-olive-600">
-          Escolha uma nova senha para a sua conta do Clube Ribatejo.
+          Escolha uma nova senha para a sua conta do Clube Daqui.
         </p>
 
         {done ? (

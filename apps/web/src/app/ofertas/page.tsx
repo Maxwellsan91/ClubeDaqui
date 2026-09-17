@@ -6,7 +6,7 @@ const fallback = [
   {
     id: "demo",
     title: "10% de desconto para membros",
-    description: "Uma vantagem exclusiva para membros Clube Ribatejo.",
+    description: "Uma vantagem exclusiva para membros Clube Daqui.",
     type: "Desconto",
     business: { name: "A Tasca do Bronze", slug: "a-tasca-do-bronze" },
   },
@@ -53,7 +53,7 @@ export default function OffersPage() {
           href="/"
           className="font-display text-xl font-semibold text-olive-900"
         >
-          Clube Ribatejo
+          Clube Daqui
         </Link>
         <Link href="/conta" className="text-wine-700 text-sm font-semibold">
           Minha conta

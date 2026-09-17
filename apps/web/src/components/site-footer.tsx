@@ -96,7 +96,7 @@ export function SiteFooter() {
 
         <div className="border-cream-50/10 mt-6 flex items-center justify-between border-t pt-5 sm:mt-10 sm:pt-6">
           <p className="text-cream-100/40 text-xs">
-            © {new Date().getFullYear()} Clube Ribatejo
+            © {new Date().getFullYear()} Clube Daqui
           </p>
           <div className="flex items-center gap-3">
             <LanguageToggle />

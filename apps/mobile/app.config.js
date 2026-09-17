@@ -1,11 +1,11 @@
 /** @type {import('expo/config').ExpoConfig} */
 const config = {
-  name: "Clube Ribatejo",
-  slug: "clube-ribatejo",
+  name: "Clube Daqui",
+  slug: "clube-daqui",
   version: "0.1.0",
   orientation: "portrait",
   userInterfaceStyle: "automatic",
-  scheme: "cluberibatejo",
+  scheme: "clubedaqui",
   plugins: [
     "expo-router",
     "expo-secure-store",
@@ -23,7 +23,7 @@ const config = {
       "expo-location",
       {
         locationWhenInUsePermission:
-          "Permita ao Clube Ribatejo mostrar parceiros perto de si.",
+          "Permita ao Clube Daqui mostrar parceiros perto de si.",
       },
     ],
     [
@@ -37,10 +37,10 @@ const config = {
   ios: {
     supportsTablet: true,
     deploymentTarget: "16.4",
-    bundleIdentifier: "pt.cluberibatejo.app",
+    bundleIdentifier: "pt.clubedaqui.app",
     infoPlist: { ITSAppUsesNonExemptEncryption: false },
   },
-  android: { package: "pt.cluberibatejo.app" },
+  android: { package: "pt.clubedaqui.app" },
   experiments: { typedRoutes: true },
   extra: {
     eas: { projectId: "60279e41-ac9e-4098-bbef-d799f680e64d" },

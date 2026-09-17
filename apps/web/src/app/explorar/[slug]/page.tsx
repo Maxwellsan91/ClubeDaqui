@@ -501,7 +501,7 @@ export default async function BusinessPage({
                   {
                     step: "1",
                     title: "Visite o estabelecimento",
-                    body: "Dirija-se ao local e informe que é membro do Clube Ribatejo.",
+                    body: "Dirija-se ao local e informe que é membro do Clube Daqui.",
                   },
                   {
                     step: "2",

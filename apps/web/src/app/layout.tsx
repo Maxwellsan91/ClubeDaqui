@@ -26,11 +26,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Clube Ribatejo",
-    template: "%s | Clube Ribatejo",
+    default: "Clube Daqui",
+    template: "%s | Clube Daqui",
   },
   description:
-    "Descubra restaurantes, experiências e benefícios exclusivos no Ribatejo.",
+    "Descobre restaurantes, experiências e benefícios exclusivos. O melhor daqui.",
 };
 
 export default function RootLayout({

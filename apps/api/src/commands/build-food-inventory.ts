@@ -158,7 +158,7 @@ async function fetchText(url: string): Promise<string> {
   const response = await fetch(url, {
     headers: {
       Accept: "text/html,application/xhtml+xml",
-      "User-Agent": "ClubeRibatejo/0.1 public-directory-inventory",
+      "User-Agent": "ClubeDaqui/0.1 public-directory-inventory",
     },
     signal: AbortSignal.timeout(30_000),
   });
@@ -416,7 +416,7 @@ async function fetchOsmPlaces(
     headers: {
       Accept: "application/json",
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-      "User-Agent": "ClubeRibatejo/0.1 public-directory-inventory",
+      "User-Agent": "ClubeDaqui/0.1 public-directory-inventory",
     },
     method: "POST",
     signal: AbortSignal.timeout(90_000),
@@ -683,7 +683,7 @@ async function main(): Promise<void> {
         "external review counts",
         "external review text",
       ],
-      reviewsSource: "Clube Ribatejo customers only",
+      reviewsSource: "Clube Daqui customers only",
     },
     source: {
       extracted: sourcePlaces.length,
