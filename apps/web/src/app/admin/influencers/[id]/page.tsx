@@ -3,9 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 type Referral = {
   id: string;
@@ -49,11 +46,6 @@ type InfluencerDetail = {
   monthly: MonthRow[];
   referrals: Referral[];
 };
-
-async function getToken() {
-  const { data } = await createClient().auth.getSession();
-  return data.session?.access_token ?? "";
-}
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; className: string }> = {
@@ -112,10 +104,7 @@ export default function InfluencerDetailPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   async function load() {
-    const token = await getToken();
-    const res = await fetch(`${apiUrl}/api/admin/influencers/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await fetch(`/api/admin/influencers/${id}`);
     if (res.ok) {
       const json = (await res.json()) as {
         data?: InfluencerDetail;
@@ -144,13 +133,9 @@ export default function InfluencerDetailPage() {
     if (!data) return;
     setSaving(true);
     setSaveError(null);
-    const token = await getToken();
-    const res = await fetch(`${apiUrl}/api/admin/influencers/${id}`, {
+    const res = await fetch(`/api/admin/influencers/${id}`, {
       method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         commissionRate: Number(form.commissionRate),
         notes: form.notes || undefined,
@@ -168,26 +153,18 @@ export default function InfluencerDetailPage() {
 
   async function toggleActive() {
     if (!data) return;
-    const token = await getToken();
-    await fetch(`${apiUrl}/api/admin/influencers/${id}`, {
+    await fetch(`/api/admin/influencers/${id}`, {
       method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isActive: !data.isActive }),
     });
     void load();
   }
 
   async function cancelReferral(referralId: string) {
-    const token = await getToken();
-    await fetch(`${apiUrl}/api/admin/referrals/${referralId}`, {
+    await fetch(`/api/admin/referrals/${referralId}`, {
       method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: "CANCELLED" }),
     });
     void load();

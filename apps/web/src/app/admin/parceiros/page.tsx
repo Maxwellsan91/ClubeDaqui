@@ -45,17 +45,8 @@ export default function AdminParceiros() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function getToken() {
-    const { data } = await createClient().auth.getSession();
-    return data.session?.access_token ?? "";
-  }
-
   async function load() {
-    const token = await getToken();
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/businesses`,
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
+    const res = await fetch(`/api/admin/businesses`);
     if (res.ok) {
       const json = (await res.json()) as { data: Business[] };
       setBusinesses(json.data);
@@ -72,18 +63,11 @@ export default function AdminParceiros() {
     e.preventDefault();
     setSaving(true);
     setError(null);
-    const token = await getToken();
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/businesses`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      },
-    );
+    const res = await fetch(`/api/admin/businesses`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
     const json = (await res.json()) as {
       error?: string;
       data?: { id: string };

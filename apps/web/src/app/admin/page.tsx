@@ -58,13 +58,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     async function load() {
-      const { data: session } = await createClient().auth.getSession();
-      const token = session.session?.access_token;
-      if (!token) return;
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/stats`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const res = await fetch(`/api/admin/stats`);
       if (res.ok) {
         const json = (await res.json()) as { data: Stats };
         setStats(json.data);

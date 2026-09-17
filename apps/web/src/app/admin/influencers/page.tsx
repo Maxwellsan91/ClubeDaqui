@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 
 type Influencer = {
   id: string;
@@ -28,13 +27,6 @@ type Influencer = {
   };
   commissionDue: number;
 };
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-async function getToken() {
-  const { data } = await createClient().auth.getSession();
-  return data.session?.access_token ?? "";
-}
 
 function CodeBadge({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -97,10 +89,7 @@ export default function AdminInfluencers() {
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
-    const token = await getToken();
-    const res = await fetch(`${apiUrl}/api/admin/influencers`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await fetch(`/api/admin/influencers`);
     if (res.ok) {
       const json = (await res.json()) as { data: Influencer[] };
       setInfluencers(json.data);
@@ -137,7 +126,6 @@ export default function AdminInfluencers() {
     e.preventDefault();
     setSaving(true);
     setError(null);
-    const token = await getToken();
     const payload = {
       name: form.name,
       email: form.email,
@@ -147,16 +135,13 @@ export default function AdminInfluencers() {
     };
 
     const url = editing
-      ? `${apiUrl}/api/admin/influencers/${editing.id}`
-      : `${apiUrl}/api/admin/influencers`;
+      ? `/api/admin/influencers/${editing.id}`
+      : `/api/admin/influencers`;
     const method = editing ? "PATCH" : "POST";
 
     const res = await fetch(url, {
       method,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
     const json = (await res.json()) as { error?: string };
@@ -171,13 +156,9 @@ export default function AdminInfluencers() {
   }
 
   async function toggleActive(inf: Influencer) {
-    const token = await getToken();
-    await fetch(`${apiUrl}/api/admin/influencers/${inf.id}`, {
+    await fetch(`/api/admin/influencers/${inf.id}`, {
       method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isActive: !inf.isActive }),
     });
     void load();

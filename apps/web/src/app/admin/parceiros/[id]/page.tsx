@@ -139,17 +139,8 @@ export default function EditPartnerPage() {
   const [reservationRequired, setReservationRequired] = useState(false);
   const [cycleLimit, setCycleLimit] = useState(1);
 
-  async function getToken() {
-    const { data: session } = await createClient().auth.getSession();
-    return session.session?.access_token ?? "";
-  }
-
   const load = useCallback(async () => {
-    const token = await getToken();
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/businesses/${id}/detail`,
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
+    const res = await fetch(`/api/admin/businesses/${id}/detail`);
     if (!res.ok) {
       setLoading(false);
       return;
@@ -216,7 +207,6 @@ export default function EditPartnerPage() {
     setSaving(true);
     setError(null);
     setSaved(false);
-    const token = await getToken();
     const body = {
       name,
       description: description || null,
@@ -249,17 +239,11 @@ export default function EditPartnerPage() {
         cycleLimit,
       },
     };
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/businesses/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      },
-    );
+    const res = await fetch(`/api/admin/businesses/${id}/detail`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
     const json = (await res.json()) as { success?: boolean; error?: string };
     if (json.error) {
       setError(json.error);

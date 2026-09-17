@@ -100,8 +100,6 @@ function DeltaBadge({
   );
 }
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 export default function PartnerDashboardPage() {
   const router = useRouter();
   const [stats, setStats] = useState<Stats | null>(null);
@@ -113,12 +111,7 @@ export default function PartnerDashboardPage() {
   useEffect(() => {
     void (async () => {
       try {
-        const { data: session } = await createClient().auth.getSession();
-        const token = session.session?.access_token;
-        if (!token || !apiUrl) throw new Error();
-        const res = await fetch(`${apiUrl}/api/partner/redemptions/stats`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(`/api/partner/redemptions/stats`);
         if (!res.ok) throw new Error();
         const payload = (await res.json()) as { data?: Stats };
         setStats(payload.data ?? null);

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 
 type Membership = {
   id: string;
@@ -64,23 +63,15 @@ function EditProfileModal({
   async function save() {
     setSaving(true);
     setError(null);
-    const { data: session } = await createClient().auth.getSession();
-    const token = session.session?.access_token ?? "";
     const body: Record<string, string> = {};
     if (fullName) body.fullName = fullName;
     if (phone) body.phone = phone;
     if (nif) body.nif = nif;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${user.id}/profile`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      },
-    );
+    const res = await fetch(`/api/admin/users/${user.id}/profile`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
     const json = (await res.json()) as { error?: string };
     if (json.error) {
       setError(json.error);
@@ -223,19 +214,11 @@ function StatusToggleModal({
     }
     setSaving(true);
     setError(null);
-    const { data: session } = await createClient().auth.getSession();
-    const token = session.session?.access_token ?? "";
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${user.id}/status`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ isActive: newActive, reason: reason.trim() }),
-      },
-    );
+    const res = await fetch(`/api/admin/users/${user.id}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isActive: newActive, reason: reason.trim() }),
+    });
     const json = (await res.json()) as { error?: string };
     if (json.error) {
       setError(json.error);
@@ -316,19 +299,11 @@ function GrantMembershipModal({
   async function save() {
     setSaving(true);
     setError(null);
-    const { data: session } = await createClient().auth.getSession();
-    const token = session.session?.access_token ?? "";
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${userId}/grant-membership`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ source: "ADMIN_GRANT" }),
-      },
-    );
+    const res = await fetch(`/api/admin/users/${userId}/grant-membership`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: "ADMIN_GRANT" }),
+    });
     const json = (await res.json()) as { error?: string };
     if (json.error) {
       setError(json.error);
@@ -380,12 +355,7 @@ export default function UserDetailPage() {
   const [showEditModal, setShowEditModal] = useState(false);
 
   async function load() {
-    const { data: session } = await createClient().auth.getSession();
-    const token = session.session?.access_token ?? "";
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${params.id}`,
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
+    const res = await fetch(`/api/admin/users/${params.id}`);
     if (res.ok) {
       const json = (await res.json()) as { data: UserDetail; error?: string };
       if (json.data) setUser(json.data);
