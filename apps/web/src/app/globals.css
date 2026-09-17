@@ -114,6 +114,13 @@ html.dark textarea::placeholder {
   color: rgba(168, 187, 168, 0.45);
 }
 
+/* Footer: scoped token override so opacity variants (text-cream-100/70, /65, /40)
+   resolve to near-white rather than the near-black dark-mode cream values. */
+html.dark footer {
+  --color-cream-50: #e4eae4;
+  --color-cream-100: #e4eae4;
+}
+
 /* Scrollbar (optional, webkit) */
 html.dark ::-webkit-scrollbar-thumb {
   background: #2e4032;

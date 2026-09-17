@@ -529,10 +529,7 @@ export default function HomePage() {
       </section>
 
       {/* ── CATEGORIES ── */}
-      <section
-        className="px-5 py-16 sm:px-8 sm:py-20"
-        style={{ background: "#f6f0e4" }}
-      >
+      <section className="bg-cream-100 px-5 py-16 sm:px-8 sm:py-20">
         <div ref={catsRef} className="mx-auto max-w-7xl">
           <p
             className="text-[11px] font-semibold tracking-[0.25em] uppercase"
@@ -635,10 +632,7 @@ export default function HomePage() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section
-        className="px-5 py-16 sm:px-8 sm:py-24"
-        style={{ background: "#f6f0e4" }}
-      >
+      <section className="bg-cream-100 px-5 py-16 sm:px-8 sm:py-24">
         <div ref={testsRef} className="mx-auto max-w-7xl">
           <div style={fu(testsVisible, 0)}>
             <p
