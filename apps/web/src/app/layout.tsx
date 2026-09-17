@@ -31,6 +31,20 @@ export const metadata: Metadata = {
   },
   description:
     "Descobre restaurantes, experiências e benefícios exclusivos. O melhor daqui.",
+  openGraph: {
+    title: "Clube Daqui",
+    description: "Descobre o melhor daqui.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    siteName: "Clube Daqui",
+    locale: "pt_PT",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Clube Daqui",
+    description: "Descobre o melhor daqui.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({

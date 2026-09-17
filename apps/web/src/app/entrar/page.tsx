@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -82,11 +83,25 @@ export default function SignInPage() {
     <main className="bg-cream-50 flex min-h-screen flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-5 py-4 sm:px-8">
-        <Link
-          href="/"
-          className="font-display text-[1.2rem] font-semibold tracking-tight text-olive-900"
-        >
-          Clube Daqui
+        <Link href="/" aria-label="Clube Daqui — página inicial">
+          <Image
+            src="/logo-light.png"
+            alt="Clube Daqui"
+            width={130}
+            height={36}
+            priority
+            className="dark:hidden"
+            style={{ height: "32px", width: "auto" }}
+          />
+          <Image
+            src="/logo-dark.png"
+            alt="Clube Daqui"
+            width={130}
+            height={36}
+            priority
+            className="hidden dark:block"
+            style={{ height: "32px", width: "auto" }}
+          />
         </Link>
         <Link
           href="/registar"

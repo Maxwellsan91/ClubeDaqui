@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface AppHeaderProps {
@@ -45,9 +46,27 @@ export function AppHeader({ rightSlot, mobileRight }: AppHeaderProps) {
       <div className="mx-auto flex h-[60px] max-w-7xl items-center justify-between px-5 sm:px-8">
         <Link
           href="/"
-          className="font-display text-[1.35rem] leading-none font-semibold tracking-tight text-olive-900"
+          className="flex-none"
+          aria-label="Clube Daqui — página inicial"
         >
-          Clube Daqui
+          <Image
+            src="/logo-light.png"
+            alt="Clube Daqui"
+            width={140}
+            height={38}
+            priority
+            className="dark:hidden"
+            style={{ height: "34px", width: "auto" }}
+          />
+          <Image
+            src="/logo-dark.png"
+            alt="Clube Daqui"
+            width={140}
+            height={38}
+            priority
+            className="hidden dark:block"
+            style={{ height: "34px", width: "auto" }}
+          />
         </Link>
 
         {/* Mobile right slot */}

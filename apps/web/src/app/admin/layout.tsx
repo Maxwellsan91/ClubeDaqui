@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { createClient } from "@/lib/supabase/server";
@@ -68,15 +69,28 @@ export default async function AdminLayout({
       {/* Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-40 flex w-16 flex-col bg-olive-900 lg:w-56">
         {/* Logo */}
-        <div className="border-cream-50/10 flex h-16 items-center gap-3 border-b px-4">
-          <div className="bg-gold-500 flex h-8 w-8 flex-none items-center justify-center rounded-lg text-xs font-bold text-olive-900">
-            CR
-          </div>
-          <div className="hidden lg:block">
-            <p className="text-gold-500 text-[11px] font-semibold tracking-widest uppercase">
+        <div className="border-cream-50/10 flex h-16 items-center gap-3 border-b px-3">
+          {/* Mobile: app icon */}
+          <Image
+            src="/logo-icon.png"
+            alt="Clube Daqui"
+            width={32}
+            height={32}
+            className="flex-none lg:hidden"
+            style={{ height: "32px", width: "32px", borderRadius: "6px" }}
+          />
+          {/* Desktop: horizontal dark logo + admin badge */}
+          <div className="hidden lg:flex lg:flex-col lg:gap-0.5">
+            <Image
+              src="/logo-dark.png"
+              alt="Clube Daqui"
+              width={120}
+              height={32}
+              style={{ height: "26px", width: "auto" }}
+            />
+            <p className="text-gold-500 text-[10px] font-semibold tracking-widest uppercase">
               Admin
             </p>
-            <p className="text-cream-50/50 text-xs">Clube Daqui</p>
           </div>
         </div>
 

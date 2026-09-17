@@ -4,8 +4,14 @@ const config = {
   slug: "clube-daqui",
   version: "0.1.0",
   orientation: "portrait",
+  icon: "./assets/icon.png",
   userInterfaceStyle: "automatic",
   scheme: "clubedaqui",
+  splash: {
+    image: "./assets/splash-icon.png",
+    resizeMode: "contain",
+    backgroundColor: "#243029",
+  },
   plugins: [
     "expo-router",
     "expo-secure-store",
@@ -40,7 +46,13 @@ const config = {
     bundleIdentifier: "pt.clubedaqui.app",
     infoPlist: { ITSAppUsesNonExemptEncryption: false },
   },
-  android: { package: "pt.clubedaqui.app" },
+  android: {
+    package: "pt.clubedaqui.app",
+    adaptiveIcon: {
+      foregroundImage: "./assets/adaptive-icon.png",
+      backgroundColor: "#243029",
+    },
+  },
   experiments: { typedRoutes: true },
   extra: {
     eas: { projectId: "60279e41-ac9e-4098-bbef-d799f680e64d" },

@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
 import { LanguageToggle } from "./language-toggle";
@@ -12,7 +13,13 @@ export function SiteFooter() {
         {/* Desktop: 3-col grid. Mobile: brand + compact 2-col links */}
         <div className="hidden sm:grid sm:grid-cols-2 sm:gap-10 lg:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <p className="font-display text-2xl">{t("brand")}</p>
+            <Image
+              src="/logo-dark.png"
+              alt="Clube Daqui"
+              width={150}
+              height={40}
+              style={{ height: "36px", width: "auto" }}
+            />
             <p className="text-cream-100/60 mt-4 max-w-xs text-sm leading-6">
               {t("footerDescription")}
             </p>
@@ -71,7 +78,13 @@ export function SiteFooter() {
 
         {/* Mobile compact layout */}
         <div className="sm:hidden">
-          <p className="font-display text-xl">{t("brand")}</p>
+          <Image
+            src="/logo-dark.png"
+            alt="Clube Daqui"
+            width={130}
+            height={36}
+            style={{ height: "30px", width: "auto" }}
+          />
           <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2">
             <Link href="/explorar" className="text-cream-100/65 py-1 text-sm">
               {t("places")}
