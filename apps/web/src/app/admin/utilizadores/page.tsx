@@ -80,11 +80,19 @@ function ChangeRoleModal({
 
   async function save() {
     setSaving(true);
-    const res = await fetch(`/api/admin/users/${user.id}/role`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ role }),
-    });
+    const { data: session } = await createClient().auth.getSession();
+    const token = session.session?.access_token ?? "";
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${user.id}/role`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role }),
+      },
+    );
     const json = (await res.json()) as { error?: string };
     if (json.error) {
       setError(json.error);
@@ -174,14 +182,22 @@ function PromoteInfluencerModal({
   async function save() {
     setSaving(true);
     setError(null);
-    const res = await fetch(`/api/admin/users/${user.id}/promote-influencer`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        commissionRate: Number(commissionRate),
-        customCode: customCode || undefined,
-      }),
-    });
+    const { data: session } = await createClient().auth.getSession();
+    const token = session.session?.access_token ?? "";
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${user.id}/promote-influencer`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          commissionRate: Number(commissionRate),
+          customCode: customCode || undefined,
+        }),
+      },
+    );
     const json = (await res.json()) as { error?: string };
     if (json.error) {
       setError(json.error);
@@ -262,7 +278,12 @@ export default function AdminUtilizadores() {
   const [promoteUser, setPromoteUser] = useState<User | null>(null);
 
   async function load() {
-    const res = await fetch(`/api/admin/users`);
+    const { data: session } = await createClient().auth.getSession();
+    const token = session.session?.access_token ?? "";
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/users`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
     if (res.ok) {
       const json = (await res.json()) as { data: User[] };
       setUsers(json.data);

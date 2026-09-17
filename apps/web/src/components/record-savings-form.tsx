@@ -41,11 +41,22 @@ export function RecordSavingsForm({
     setError("");
     setSaving(true);
     try {
+      const { data } = await (
+        await import("@/lib/supabase/client")
+      )
+        .createClient()
+        .auth.getSession();
+      const token = data.session?.access_token;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!token || !apiUrl) throw new Error("sem sessão");
       const response = await fetch(
-        `/api/me/redemptions/${redemptionId}/financials`,
+        `${apiUrl}/api/me/redemptions/${redemptionId}/financials`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             total_bill_amount: total,
             discount_amount: discount,

@@ -134,6 +134,8 @@ const details: Record<string, BusinessDetail> = {
   },
 };
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 export default async function BusinessPage({
   params,
 }: {
@@ -158,186 +160,83 @@ export default async function BusinessPage({
   let reviews: ReviewItem[] = [];
   let avgRating: number | null = null;
 
-  // Query Supabase directly — server component, no HTTP round-trip needed
-  try {
-    type BizRow = {
-      id: string;
-      name: string;
-      slug: string;
-      description: string | null;
-      phone: string | null;
-      website_url: string | null;
-      instagram: string | null;
-      image_url: string | null;
-      price_min: number | null;
-      price_max: number | null;
-      business_locations: Array<{
-        id?: string;
-        address_line_1: string;
-        locality: string;
-        phone: string | null;
-        latitude: number | null;
-        longitude: number | null;
-      }>;
-      business_categories: Array<{ categories: { name: string } | null }>;
-    };
-    const { data: bizData } = await supabase
-      .from("businesses")
-      .select(
-        "id,name,slug,description,phone,website_url,instagram,image_url,price_min,price_max,business_locations(id,address_line_1,locality,phone,latitude,longitude),business_categories(categories(name))",
-      )
-      .eq("is_active", true)
-      .eq("slug", slug)
-      .maybeSingle();
-
-    if (bizData) {
-      const d = bizData as unknown as BizRow;
-      const loc = d.business_locations?.[0];
-      const cat = d.business_categories?.[0]?.categories?.name ?? "Local";
-      business = {
-        name: d.name,
-        kind: cat,
-        city: loc?.locality ?? "",
-        address: loc?.address_line_1 ?? "",
-        description: d.description ?? "Uma descoberta do nosso roteiro local.",
-        image:
-          d.image_url ??
-          "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=85",
-        businessLocationId: loc?.id,
-        coordinates:
-          loc?.latitude && loc?.longitude
-            ? [loc.latitude, loc.longitude]
-            : undefined,
-        instagram: d.instagram ?? undefined,
-        phone: d.phone ?? loc?.phone ?? undefined,
-        website: d.website_url ?? undefined,
-        priceRange:
-          d.price_min !== null && d.price_max !== null
-            ? `${d.price_min} € – ${d.price_max} €`
-            : undefined,
-      };
-
-      // Fetch benefits for this business
-      try {
-        type BenRuleRow = {
-          allowed_weekdays: number[];
-          starts_at: string | null;
-          ends_at: string | null;
-          reservation_required: boolean;
-          membership_cycle_limit: number;
-        };
-        type BenRow = {
-          id: string;
-          title: string;
-          description: string | null;
-          terms: string | null;
-          type: string;
-          valid_from: string | null;
-          valid_until: string | null;
-          benefit_rules: BenRuleRow | null;
-        };
-        const { data: benefitsData } = await supabase
-          .from("benefits")
-          .select(
-            "id,title,description,terms,type,valid_from,valid_until,benefit_rules(allowed_weekdays,starts_at,ends_at,reservation_required,membership_cycle_limit)",
-          )
-          .eq("business_id", d.id)
-          .eq("is_active", true);
-        const firstBenefit = (benefitsData as unknown as BenRow[] | null)?.[0];
-        if (firstBenefit) {
-          const rules = firstBenefit.benefit_rules;
-          const pgDowToFrontend = (dow: number) => (dow + 6) % 7;
-          const schedule = rules?.allowed_weekdays
-            ? rules.allowed_weekdays
-                .map((pgDow) => ({
-                  day: pgDowToFrontend(pgDow),
-                  time:
-                    rules.starts_at && rules.ends_at
-                      ? `${rules.starts_at.slice(0, 5)}–${rules.ends_at.slice(0, 5)}`
-                      : "Consulte o estabelecimento",
-                }))
-                .sort((a, b) => a.day - b.day)
-            : [];
-          benefit = {
-            id: firstBenefit.id,
-            title: firstBenefit.title,
-            description: firstBenefit.description ?? "",
-            terms: firstBenefit.terms ?? "",
-            schedule,
-            validDays: rules?.allowed_weekdays
-              ? rules.allowed_weekdays.map(pgDowToFrontend).sort()
-              : [],
+  if (apiUrl) {
+    try {
+      const response = await fetch(`${apiUrl}/api/businesses/${slug}`, {
+        cache: "no-store",
+      });
+      if (response.ok) {
+        const payload = (await response.json()) as {
+          data?: {
+            name: string;
+            kind?: string;
+            category?: string;
+            city: string;
+            address: string;
+            description?: string;
+            image?: string;
+            imageUrl?: string;
+            businessLocationId?: string;
+            latitude?: number;
+            longitude?: number;
+            priceRange?: string | null;
           };
-        }
-      } catch {
-        /* keep no benefit */
-      }
-
-      // Fetch reviews
-      try {
-        const locationIds = d.business_locations
-          .map((l) => l.id)
-          .filter(Boolean) as string[];
-        if (locationIds.length) {
-          type RevRow = {
-            id: string;
-            food_rating: number;
-            service_rating: number;
-            ambience_rating: number;
-            value_rating: number;
-            comment: string | null;
-            published_at: string;
-            profiles: { full_name: string | null } | null;
+        };
+        if (payload.data) {
+          const d = payload.data as typeof payload.data & {
+            instagram?: string;
+            phone?: string;
+            whatsapp?: string;
+            website?: string;
+            imageUrl?: string;
           };
-          const { data: revData } = await supabase
-            .from("reviews")
-            .select(
-              "id,food_rating,service_rating,ambience_rating,value_rating,comment,published_at,profiles(full_name)",
-            )
-            .in("business_location_id", locationIds)
-            .eq("status", "published")
-            .order("published_at", { ascending: false })
-            .limit(20);
-          const revRows = (revData ?? []) as unknown as RevRow[];
-          reviews = revRows.map((r) => ({
-            id: r.id,
-            rating:
-              Math.round(
-                ((r.food_rating +
-                  r.service_rating +
-                  r.ambience_rating +
-                  r.value_rating) /
-                  4) *
-                  10,
-              ) / 10,
-            comment: r.comment,
-            publishedAt: r.published_at,
-            reviewerName: r.profiles?.full_name ?? "Membro do Clube",
-          }));
-          avgRating =
-            revRows.length > 0
-              ? Math.round(
-                  (revRows.reduce(
-                    (sum, r) =>
-                      sum +
-                      (r.food_rating +
-                        r.service_rating +
-                        r.ambience_rating +
-                        r.value_rating) /
-                        4,
-                    0,
-                  ) /
-                    revRows.length) *
-                    10,
-                ) / 10
-              : null;
+          business = {
+            name: d.name,
+            kind: d.kind ?? d.category ?? "Local",
+            city: d.city,
+            address: d.address,
+            description:
+              d.description ?? "Uma descoberta do nosso roteiro local.",
+            image:
+              d.imageUrl ??
+              d.image ??
+              "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=85",
+            businessLocationId: d.businessLocationId,
+            coordinates:
+              d.latitude && d.longitude ? [d.latitude, d.longitude] : undefined,
+            instagram: d.instagram,
+            phone: d.phone,
+            whatsapp: d.whatsapp,
+            website: d.website,
+            priceRange: d.priceRange,
+          };
+          const benefitsRes = await fetch(
+            `${apiUrl}/api/businesses/${(payload.data as { id?: string }).id}/benefits`,
+            { cache: "no-store" },
+          );
+          if (benefitsRes.ok) benefit = (await benefitsRes.json()).data?.[0];
         }
-      } catch {
-        /* silent */
       }
+    } catch {
+      /* keep demo fallback */
     }
-  } catch {
-    /* keep demo fallback */
+
+    try {
+      const reviewsRes = await fetch(
+        `${apiUrl}/api/businesses/${slug}/reviews`,
+        { cache: "no-store" },
+      );
+      if (reviewsRes.ok) {
+        const rp = (await reviewsRes.json()) as {
+          data?: ReviewItem[];
+          avgRating?: number | null;
+        };
+        reviews = rp.data ?? [];
+        avgRating = rp.avgRating ?? null;
+      }
+    } catch {
+      /* silent */
+    }
   }
 
   if (!business)

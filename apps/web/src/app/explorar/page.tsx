@@ -67,6 +67,7 @@ const staticPlaces: BusinessCardData[] = [
 
 const FAVORITES_KEY = "clube-daqui-favorites";
 const categoryFilters = ["Todos", "Comer", "Dormir", "Lazer"];
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 function distanceKm(from: [number, number], to: [number, number]) {
   const earthRadius = 6371;
@@ -106,7 +107,8 @@ export default function ExplorePage() {
   const [visibleCount, setVisibleCount] = useState(20);
   const [remotePlaces, setRemotePlaces] =
     useState<BusinessCardData[]>(staticPlaces);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(apiUrl));
+  const [error, setError] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [userPosition, setUserPosition] = useState<[number, number]>();
   const [locationState, setLocationState] = useState<
@@ -136,7 +138,8 @@ export default function ExplorePage() {
 
   // Fetch businesses from API
   useEffect(() => {
-    fetch("/api/businesses")
+    if (!apiUrl) return;
+    fetch(`${apiUrl}/api/businesses`)
       .then((r) => (r.ok ? r.json() : null))
       .then((payload) => {
         if (payload?.data) {
@@ -174,7 +177,7 @@ export default function ExplorePage() {
           );
         }
       })
-      .catch(() => {})
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -427,6 +430,11 @@ export default function ExplorePage() {
                 />
               ))}
             </div>
+          ) : error ? (
+            <EmptyState
+              title="Não foi possível carregar os lugares"
+              description="Tente novamente dentro de instantes."
+            />
           ) : displayed.length === 0 ? (
             <div className="mt-4">
               {showFavorites && favorites.size === 0 ? (

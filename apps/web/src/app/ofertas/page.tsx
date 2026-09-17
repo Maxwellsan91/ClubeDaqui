@@ -11,11 +11,13 @@ const fallback = [
     business: { name: "A Tasca do Bronze", slug: "a-tasca-do-bronze" },
   },
 ];
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export default function OffersPage() {
   const [offers, setOffers] = useState(fallback);
   const [filter, setFilter] = useState("Todos");
   useEffect(() => {
-    fetch("/api/benefits")
+    if (!apiUrl) return;
+    fetch(`${apiUrl}/api/benefits`)
       .then((r) => (r.ok ? r.json() : null))
       .then((p) => {
         if (p?.data?.length)

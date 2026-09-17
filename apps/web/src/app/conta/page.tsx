@@ -72,6 +72,8 @@ const staticPlaces: BusinessCardData[] = [
   },
 ];
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 function AccountPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -124,48 +126,59 @@ function AccountPageInner() {
         meta?.full_name || meta?.name || data.user?.email;
       setFirstName(name?.split(/[\s@]/)[0]);
     });
-    fetch("/api/businesses")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((payload) => {
-        if (payload?.data?.length) {
-          setPlaces(
-            payload.data.map(
-              (item: {
-                slug: string;
-                name: string;
-                category: string;
-                kind: string;
-                city: string;
-                imageUrl?: string;
-                latitude?: number;
-                longitude?: number;
-              }) => ({
-                slug: item.slug,
-                name: item.name,
-                category: item.category,
-                kind: item.kind,
-                city: item.city,
-                image:
-                  item.imageUrl ??
-                  staticPlaces.find((p) => p.name === item.name)?.image ??
-                  "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
-                coordinates:
-                  typeof item.latitude === "number" &&
-                  typeof item.longitude === "number"
-                    ? [item.latitude, item.longitude]
-                    : staticPlaces.find((p) => p.name === item.name)
-                        ?.coordinates,
-              }),
-            ),
-          );
-        }
-      })
-      .catch(() => {});
-    void (async () => {
+    if (apiUrl) {
+      fetch(`${apiUrl}/api/businesses`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((payload) => {
+          if (payload?.data?.length) {
+            setPlaces(
+              payload.data.map(
+                (item: {
+                  slug: string;
+                  name: string;
+                  category: string;
+                  kind: string;
+                  city: string;
+                  imageUrl?: string;
+                  latitude?: number;
+                  longitude?: number;
+                }) => ({
+                  slug: item.slug,
+                  name: item.name,
+                  category: item.category,
+                  kind: item.kind,
+                  city: item.city,
+                  image:
+                    item.imageUrl ??
+                    staticPlaces.find((p) => p.name === item.name)?.image ??
+                    "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80",
+                  coordinates:
+                    typeof item.latitude === "number" &&
+                    typeof item.longitude === "number"
+                      ? [item.latitude, item.longitude]
+                      : staticPlaces.find((p) => p.name === item.name)
+                          ?.coordinates,
+                }),
+              ),
+            );
+          }
+        })
+        .catch(() => {});
+    }
+    client.auth.getSession().then(async ({ data }) => {
+      const token = data.session?.access_token;
+      if (!token || !apiUrl) {
+        setApiStatus("fallback");
+        return;
+      }
       try {
+        const headers = { Authorization: `Bearer ${token}` };
         // Se for o primeiro login após registo, registar referral se existir
         if (searchParams.get("welcome") === "1") {
-          void fetch("/api/me/referral", { method: "POST" });
+          void fetch(`${apiUrl}/api/me/referral`, {
+            method: "POST",
+            headers,
+          });
         }
         const [
           summaryResponse,
@@ -173,10 +186,10 @@ function AccountPageInner() {
           redemptionsResponse,
           influencerResponse,
         ] = await Promise.all([
-          fetch("/api/me/summary"),
-          fetch("/api/me/savings"),
-          fetch("/api/me/redemptions"),
-          fetch("/api/me/influencer"),
+          fetch(`${apiUrl}/api/me/summary`, { headers }),
+          fetch(`${apiUrl}/api/me/savings`, { headers }),
+          fetch(`${apiUrl}/api/me/redemptions`, { headers }),
+          fetch(`${apiUrl}/api/me/influencer`, { headers }),
         ]);
         if (
           !summaryResponse.ok ||
@@ -220,7 +233,7 @@ function AccountPageInner() {
         // Mantém o fallback local da demo se a API estiver indisponível.
         setApiStatus("fallback");
       }
-    })();
+    });
   }, []);
 
   const byCategory = useMemo(() => {

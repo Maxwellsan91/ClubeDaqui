@@ -3,6 +3,8 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { AppHeader } from "@/components/app-header";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 export default function PartnersPage() {
   const [status, setStatus] = useState("idle");
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -10,7 +12,7 @@ export default function PartnersPage() {
     setStatus("sending");
     const form = new FormData(event.currentTarget);
     try {
-      const response = await fetch(`/api/partner-inquiries`, {
+      const response = await fetch(`${apiUrl}/api/partner-inquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -15,6 +15,8 @@ type RedemptionPreview = {
   expires_at: string;
 };
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 export default function ValidateRedemptionPage() {
   const router = useRouter();
   const [code, setCode] = useState("");
@@ -26,9 +28,16 @@ export default function ValidateRedemptionPage() {
   const [signingOut, setSigningOut] = useState(false);
 
   async function callApi(path: "preview" | "confirm") {
-    const response = await fetch(`/api/partner/redemptions/${path}`, {
+    const { data } = await createClient().auth.getSession();
+    const token = data.session?.access_token;
+    if (!token || !apiUrl) throw new Error("Sessão ou API indisponível");
+
+    const response = await fetch(`${apiUrl}/api/partner/redemptions/${path}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ manual_code: code }),
     });
     const payload = (await response.json()) as {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { RecordSavingsForm } from "./record-savings-form";
 import type { SavingsRecord } from "@/types/member";
 
@@ -50,9 +51,16 @@ export function RedeemBenefitButton({
     if (!benefitId || !businessLocationId) return;
     setStatus("loading");
     try {
-      const response = await fetch("/api/me/redemptions/attempt", {
+      const { data } = await createClient().auth.getSession();
+      const token = data.session?.access_token;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!token || !apiUrl) throw new Error();
+      const response = await fetch(`${apiUrl}/api/me/redemptions/attempt`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           benefit_id: benefitId,
           business_location_id: businessLocationId,
