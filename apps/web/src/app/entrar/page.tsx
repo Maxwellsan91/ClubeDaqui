@@ -87,20 +87,20 @@ export default function SignInPage() {
           <Image
             src="/logo-light.png"
             alt="Clube Daqui"
-            width={130}
-            height={36}
+            width={150}
+            height={42}
             priority
             className="dark:hidden"
-            style={{ height: "32px", width: "auto" }}
+            style={{ height: "40px", width: "auto" }}
           />
           <Image
             src="/logo-dark.png"
             alt="Clube Daqui"
-            width={130}
-            height={36}
+            width={150}
+            height={42}
             priority
             className="hidden dark:block"
-            style={{ height: "32px", width: "auto" }}
+            style={{ height: "40px", width: "auto" }}
           />
         </Link>
         <Link

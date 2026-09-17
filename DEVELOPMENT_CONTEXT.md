@@ -241,6 +241,7 @@ serena memories check
 ### 2026-09-17 — Correções de lint, login, modo escuro e renomeação da marca
 
 **Erros de lint — todos corrigidos (0 erros, 0 typecheck, Prettier limpo):**
+
 - API: desativado `@typescript-eslint/no-unnecessary-type-assertion` no
   `eslint.config.mjs` para padrões de tipagem explícita do Supabase; removido
   directivo eslint orphan no `admin.controller.ts`.
@@ -256,12 +257,14 @@ serena memories check
 - Commits: `0a811e8`.
 
 **Bug de login duplo — corrigido:**
+
 - Causa raiz: `router.refresh() + router.replace(next)` desencadeava navegação
   SSR antes de os cookies de sessão do Supabase serem visíveis pelo middleware.
 - Fix: substituído por `window.location.href = next` (reload completo garante
   que os cookies são enviados na próxima request). Ficheiro: `entrar/page.tsx`.
 
 **Modo escuro — redesenhado (3 iterações):**
+
 - Problema original: `--color-olive-900` era invertido para cream (`#f2f0e8`),
   tornando o footer, sidebar admin, botões e cards todos brancos/cream.
 - Fix 1 (`3c88150`): `olive-900` mantido near-white para `text-olive-900`, mas
@@ -275,6 +278,7 @@ serena memories check
   (dark mode: `#18221b`, subtilmente mais claro que o fundo `#0d120f`).
 
 **Renomeação da marca — Clube Ribatejo → Clube Daqui (`273a7de`):**
+
 - Nova identidade: **Clube Daqui** · tagline **"Descobre o melhor daqui."**
 - 35 ficheiros alterados: packages (`@clube-daqui/*`), i18n PT+EN, header,
   footer, login, registo, admin, clube, ofertas, parceiros, conta, erro de auth,

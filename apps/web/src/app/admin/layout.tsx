@@ -84,9 +84,9 @@ export default async function AdminLayout({
             <Image
               src="/logo-dark.png"
               alt="Clube Daqui"
-              width={120}
-              height={32}
-              style={{ height: "26px", width: "auto" }}
+              width={140}
+              height={38}
+              style={{ height: "32px", width: "auto" }}
             />
             <p className="text-gold-500 text-[10px] font-semibold tracking-widest uppercase">
               Admin

@@ -16,9 +16,9 @@ export function SiteFooter() {
             <Image
               src="/logo-dark.png"
               alt="Clube Daqui"
-              width={150}
-              height={40}
-              style={{ height: "36px", width: "auto" }}
+              width={170}
+              height={46}
+              style={{ height: "44px", width: "auto" }}
             />
             <p className="text-cream-100/60 mt-4 max-w-xs text-sm leading-6">
               {t("footerDescription")}
@@ -81,9 +81,9 @@ export function SiteFooter() {
           <Image
             src="/logo-dark.png"
             alt="Clube Daqui"
-            width={130}
-            height={36}
-            style={{ height: "30px", width: "auto" }}
+            width={150}
+            height={40}
+            style={{ height: "36px", width: "auto" }}
           />
           <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-2">
             <Link href="/explorar" className="text-cream-100/65 py-1 text-sm">

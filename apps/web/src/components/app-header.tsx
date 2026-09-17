@@ -52,20 +52,20 @@ export function AppHeader({ rightSlot, mobileRight }: AppHeaderProps) {
           <Image
             src="/logo-light.png"
             alt="Clube Daqui"
-            width={140}
-            height={38}
+            width={160}
+            height={44}
             priority
             className="dark:hidden"
-            style={{ height: "34px", width: "auto" }}
+            style={{ height: "42px", width: "auto" }}
           />
           <Image
             src="/logo-dark.png"
             alt="Clube Daqui"
-            width={140}
-            height={38}
+            width={160}
+            height={44}
             priority
             className="hidden dark:block"
-            style={{ height: "34px", width: "auto" }}
+            style={{ height: "42px", width: "auto" }}
           />
         </Link>
 
