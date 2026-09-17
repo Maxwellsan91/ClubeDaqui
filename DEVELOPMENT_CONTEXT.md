@@ -198,17 +198,94 @@ serena memories check
 
 ## Próximas ações
 
-1. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
-   ativa e um utilizador parceiro de teste.
-2. Fechar o recorte piloto de Almeirim e rever as correspondências OSM e os
-   possíveis duplicados do inventário de restauração.
-3. Decidir o modelo de proveniência para `businesses` e
-   `business_locations` e criar a migration de importação validada.
-4. Evoluir a área de parceiro para gestão de benefícios e histórico de
-   utilizações.
-5. Implementar avaliações próprias dos clientes após uma utilização confirmada.
+### Produto / Homepage
+1. Substituir imagens de placeholder (Unsplash) no carrossel de parceiros por
+   fotografias reais dos estabelecimentos.
+2. Ligar os dados do carrossel à API `/api/businesses` (actualmente estáticos).
+3. Reavaliar inclusão de barra de pesquisa no hero da homepage (existia no
+   design anterior e foi removida na redesign).
+
+### Mobile (Expo)
+4. Executar `pod install` localmente e compilar o development build iOS para
+   testar mapas nativos e fluxo de resgate no simulador.
+5. Configurar variáveis de ambiente no EAS (`preview` e `production`) e obter
+   os SHA-1 Android para restringir a chave Google Maps.
+6. Commit das alterações mobile pendentes (ver git status).
+
+### Infra / Segurança
+7. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
+   ativa e um utilizador parceiro de teste no ambiente publicado.
+8. Ativar proteção contra palavras-passe expostas no Supabase Auth.
+9. Corrigir os erros de lint preexistentes (17 API + 10 web) documentados na
+   auditoria.
+
+### Inventário / Dados
+10. Rever manualmente as 115 correspondências OSM pendentes.
+11. Decidir modelo de proveniência para `businesses`/`business_locations` e
+    criar a migration de importação validada.
 
 ## Diário
+
+### 2026-09-17 — Review da sessão e atualização do diário
+
+- Revisto o estado do projeto após a sessão de homepage e mobile.
+- Atualizada a secção **Próximas ações** com prioridades organizadas por área:
+  produto/homepage, mobile, infra/segurança e inventário/dados.
+- Alterações mobile não-comprometidas: `app.config.js`, `mapa.tsx`, `eas.json`,
+  `expo-env.d.ts`, `package.json`, metro config, projetos nativos iOS/Android
+  e `.gitignore`. Aguardam commit separado após validação local.
+
+### 2026-09-16 — Redesign editorial da homepage
+
+- Análise do concorrente town4two.com: design Wix genérico, sem preços visíveis,
+  sem animações de scroll, sem testemunhos; identificadas vantagens competitivas.
+- Homepage reescrita de raiz em `apps/web/src/app/page.tsx` com:
+  - Hero editorial full-bleed, `min-h-[92vh]`, headline Cormorant Garamond,
+    fundo parallax com mutação directa do DOM (sem estado React), `scale-110`
+    para evitar margens em branco durante o parallax.
+  - Secção de stats com count-up animado (`requestAnimationFrame`, easing
+    cubic ease-out), formatação portuguesa (1 200 em vez de 1200).
+  - "Como funciona" — 3 passos com números dourados visíveis (gold 35% opacity);
+    antes estavam quase invisíveis (olive 8%).
+  - Carrossel de parceiros (9 cards, scroll-snap, sem setas, fade lateral) com
+    cards em modo landscape `w-40 h-[100px]` mobile, `w-64 h-[160px]` desktop,
+    correspondendo ao estilo da página `/conta`.
+  - CTA de adesão com preço €59,90/ano e promessa de poupança de €1 500/ano.
+  - Secção de testemunhos (3 cards) com fade-up escalonado.
+  - Secção B2B com botão wine-700.
+- Animações de scroll implementadas sem dependências externas: `IntersectionObserver`
+  (dispara uma vez e desconecta), `requestAnimationFrame`, transições CSS via
+  `style` prop tipado como `React.CSSProperties`.
+- Footer mobile simplificado: grelha 2 colunas compacta, `py-8` vs `py-16`
+  desktop, removida etiqueta "localContent".
+- Commits: `d4320e6`, `0bd90d6`, `c74642c`, `27fa760`.
+
+### 2026-09-16 — Perfil iOS Simulator
+
+- Adicionado o perfil `ios-simulator` ao `apps/mobile/eas.json` para gerar uma
+  build destinada ao simulador iOS sem Apple Developer Program pago.
+- Validado `npx expo config --type public` e a presença da opção
+  `ios.simulator` no perfil EAS.
+- A build do simulador requer macOS com Xcode; não pode ser instalada num
+  iPhone físico sem assinatura Apple válida.
+
+### 2026-09-16 — Diagnóstico do arranque Android
+
+- Captura guardada em `apps/Screenshot 2026-09-16 at 18.21.51.png` mostrou
+  erro Hermes `[runtime not ready]: TypeError: property is not writable`.
+- Reinstaladas as dependências com `npm install`; o workspace mobile mantém
+  React 19.1.0 e React Native 0.81.5 conforme Expo SDK 54.
+- O typecheck do mobile continua a passar. Falta recompilar o development
+  build Android e confirmar o arranque no emulador.
+- Adicionado `apps/mobile/metro.config.js` para impedir que o Metro use as
+  versões React/React Native da raiz do monorepo; arranque do Metro validado.
+- Definido `ios.deploymentTarget` como `16.4` no `app.config.js`, compatível
+  com o Xcode 27 e os runtimes atuais.
+- Iniciada atualização para Expo SDK 57.0.23 com React Native 0.86.3 e
+  `expo-build-properties`; ativado `ios.enableSceneSupport` para Xcode 27.
+- Corrigido `StyleSheet.absoluteFillObject` para `StyleSheet.absoluteFill`;
+  typecheck passa. `expo prebuild` regenerou os projetos nativos; `pod install`
+  ficou bloqueado pela permissão do ambiente e deve ser executado localmente.
 
 ### 2026-09-11 — Inventário inicial
 
