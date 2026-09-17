@@ -7,8 +7,6 @@ import { createClient } from "@/lib/supabase/client";
 import { AppHeader } from "@/components/app-header";
 import { validateNIF } from "@/lib/nif";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 type ProfileData = {
   fullName: string | null;
   phone: string | null;
@@ -56,15 +54,13 @@ export default function PerfilPage() {
   const initialised = useRef(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data }) => {
-      const token = data.session?.access_token;
-      if (!token || !apiUrl) {
+    void (async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
         router.replace("/entrar");
         return;
       }
-      const res = await fetch(`${apiUrl}/api/me/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch("/api/me/profile");
       if (res.ok) {
         const json = (await res.json()) as { data?: ProfileData };
         if (json.data) {
@@ -78,7 +74,7 @@ export default function PerfilPage() {
         }
       }
       setLoading(false);
-    });
+    })();
   }, []);
 
   const nifLocked = Boolean(profile?.nif);
@@ -93,8 +89,6 @@ export default function PerfilPage() {
     }
     setSaving(true);
     setProfileMsg(null);
-    const { data: session } = await supabase.auth.getSession();
-    const token = session.session?.access_token ?? "";
     const body: Record<string, string> = {};
     if (name !== (profile?.fullName ?? "")) body.fullName = name;
     if (phone !== (profile?.phone ?? "")) body.phone = phone;
@@ -104,12 +98,9 @@ export default function PerfilPage() {
       setProfileMsg({ text: "Sem alterações para guardar.", ok: true });
       return;
     }
-    const res = await fetch(`${apiUrl}/api/me/profile`, {
+    const res = await fetch("/api/me/profile", {
       method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
     const json = (await res.json()) as { error?: string };

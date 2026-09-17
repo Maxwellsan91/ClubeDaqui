@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 interface ReviewFormProps {
   redemptionId: string;
@@ -25,26 +24,15 @@ export default function ReviewForm({
     e.preventDefault();
     if (rating === 0 || status === "saving") return;
     setStatus("saving");
-    const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const token = session?.access_token;
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/me/redemptions/${redemptionId}/review`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({
-            rating,
-            comment: comment.trim() || undefined,
-          }),
-        },
-      );
+      const res = await fetch(`/api/me/redemptions/${redemptionId}/review`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating,
+          comment: comment.trim() || undefined,
+        }),
+      });
       if (!res.ok) {
         const json = (await res.json()) as { message?: string };
         if (res.status === 409) {

@@ -83,11 +83,9 @@ export function StickyRedeemBar({
   useEffect(() => {
     if (resolvedBenefitId && resolvedLocationId) return;
     if (!isAuthenticated) return;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (!apiUrl) return;
     void (async () => {
       try {
-        const bizRes = await fetch(`${apiUrl}/api/businesses/${businessSlug}`);
+        const bizRes = await fetch(`/api/businesses/${businessSlug}`);
         if (!bizRes.ok) return;
         const bizPayload = (await bizRes.json()) as {
           data?: { id?: string; businessLocationId?: string };
@@ -96,9 +94,7 @@ export function StickyRedeemBar({
         const bizId = bizPayload.data?.id;
         if (locId) setResolvedLocationId(locId);
         if (!bizId) return;
-        const beneRes = await fetch(
-          `${apiUrl}/api/businesses/${bizId}/benefits`,
-        );
+        const beneRes = await fetch(`/api/businesses/${bizId}/benefits`);
         if (!beneRes.ok) return;
         const benePayload = (await beneRes.json()) as {
           data?: { id?: string }[];
@@ -216,26 +212,15 @@ export function StickyRedeemBar({
     }
 
     try {
-      const supabase = createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!token || !apiUrl)
-        throw new Error("Sessão expirada. Recarregue a página.");
       const bId = resolvedBenefitId;
       const lId = resolvedLocationId;
       if (!bId || !lId)
         throw new Error(
           "Benefício temporariamente indisponível. Recarregue a página.",
         );
-      const response = await fetch(`${apiUrl}/api/me/redemptions/attempt`, {
+      const response = await fetch("/api/me/redemptions/attempt", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ benefit_id: bId, business_location_id: lId }),
       });
       const payload = (await response.json()) as {
@@ -270,18 +255,11 @@ export function StickyRedeemBar({
     setFormError(undefined);
     setPhase("saving");
     try {
-      const { data: session } = await createClient().auth.getSession();
-      const token = session.session?.access_token;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!token || !apiUrl) throw new Error();
       const res = await fetch(
-        `${apiUrl}/api/me/redemptions/${redemptionId}/financials`,
+        `/api/me/redemptions/${redemptionId}/financials`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             total_bill_amount: total,
             discount_amount: disc,
@@ -308,16 +286,9 @@ export function StickyRedeemBar({
     if (!redemptionId || reviewRating === 0) return;
     setReviewSubmitting(true);
     try {
-      const { data: session } = await createClient().auth.getSession();
-      const token = session.session?.access_token;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (!token || !apiUrl) throw new Error();
-      await fetch(`${apiUrl}/api/me/redemptions/${redemptionId}/review`, {
+      await fetch(`/api/me/redemptions/${redemptionId}/review`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           rating: reviewRating,
           comment: reviewComment.trim() || undefined,
