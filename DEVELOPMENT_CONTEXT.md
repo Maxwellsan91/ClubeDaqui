@@ -112,14 +112,18 @@ reivindicado antes de ser apresentado como parceiro.
 - [x] Fluxo de autenticação completo.
 - [x] Interface de registo, confirmação SSR e login por palavra-passe
       implementada; entrega de email e redirect para área de membro validados em produção.
-- [ ] Catálogo navegável de estabelecimentos ligado ao Supabase.
-- [ ] Fluxo de benefícios e resgates ligado à interface.
+- [x] Catálogo navegável de estabelecimentos ligado ao Supabase (via rotas
+      Next.js API a partir de 2026-09-17).
+- [x] Fluxo de benefícios e resgates ligado à interface.
 - [x] Validação transacional de códigos por utilizadores parceiros ligada à
       interface.
 - [x] Auditoria técnica de fluxos, roles, segurança e desempenho documentada em
       `docs/APP_AUDIT_2026-09-15.md`.
-- [ ] Área de parceiro.
+- [x] App web autónoma — não depende do servidor NestJS para o fluxo de membro.
+- [ ] Área de parceiro (rotas Next.js em implementação; validar precisa de teste).
 - [ ] Sistema de avaliações dos clientes em produção.
+- [ ] Configurar `SUPABASE_SERVICE_ROLE_KEY` no `apps/web/.env.local` para
+      rotas admin funcionarem.
 
 ### Inventário de estabelecimentos
 
@@ -217,10 +221,12 @@ serena memories check
 
 ### Infra / Segurança
 
-7. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
+7. Adicionar `SUPABASE_SERVICE_ROLE_KEY` ao `apps/web/.env.local` (e variáveis
+   de ambiente do deployment) para activar as rotas admin Next.js.
+8. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
    ativa e um utilizador parceiro de teste no ambiente publicado.
-8. Ativar proteção contra palavras-passe expostas no Supabase Auth.
-9. ~~Corrigir os erros de lint preexistentes~~ — **concluído** (sessão 2026-09-17).
+9. Ativar proteção contra palavras-passe expostas no Supabase Auth.
+10. ~~Corrigir os erros de lint preexistentes~~ — **concluído** (sessão 2026-09-17).
 
 ### Marca / Domínio
 
@@ -946,6 +952,84 @@ serena memories check
 - O build preview iOS reconheceu o projeto; falta configurar variáveis no
   ambiente EAS `preview` e credenciais Apple para distribuição interna.
 
+### 2026-09-17 — Integração dos logotipos finais e modo escuro
+
+**Logotipos (`dde7960`, `8619f92`):**
+
+- A pasta `Logotipo/` já existia com 7 ficheiros finais; foram mapeados para
+  os destinos corretos:
+  - `Logo3.png` → `apps/web/public/logo-light.png` (horizontal, fundo claro)
+  - `Logo.png` → `apps/web/public/logo-dark.png` (horizontal, fundo escuro)
+  - `Logo2.png` → `apps/web/public/logo-icon.png`, `app/icon.png`,
+    `app/apple-icon.png` (Next.js auto-wires favicon)
+  - `Logo6.png` → `apps/web/public/og-image.png`
+  - `LogoMobile.png` → `apps/mobile/assets/icon.png` e `adaptive-icon.png`
+  - `Logo3.png` → `apps/mobile/assets/splash-icon.png`
+- Header, footer, login, registo e admin passaram a usar `<Image>` do Next.js
+  com `dark:hidden` / `hidden dark:block` para trocar logo claro/escuro.
+- `app.config.js` mobile atualizado: `name: "Clube Daqui"`, slug, scheme,
+  bundle IDs, splash e adaptive icon.
+- Logo ligeiramente maior: `height: "42px"` no header (era 36px).
+
+**Modo escuro — revisão da sessão anterior:**
+
+- Tokens `--color-cream-100` tornavam-se near-black em dark mode; fix:
+  re-scope `html.dark footer { --color-cream-100: #e4eae4 }` para que todas
+  as variantes de opacidade no footer resolvam near-white.
+- Secções "Descubra por categoria" e "Membros" tinham
+  `style={{ background: "#f6f0e4" }}` (inline, não sobreposto por CSS);
+  substituídas por `className="bg-cream-100"`.
+
+### 2026-09-17 — Diagnóstico e correção da carga de dados
+
+**Causa raiz identificada:**
+
+- `NEXT_PUBLIC_API_URL=http://localhost:3001` aponta para o servidor NestJS;
+  quando este não está em execução, os fetches falham e a app mostra estados
+  de erro em vez de dados ou fallback estático.
+- `/explorar` mostrava "Não foi possível carregar os lugares" (error state).
+- `/conta` ficava sem dados de membro (API status = fallback).
+
+**Solução — rotas Next.js API (commit `457f1ef`):**
+
+Criadas 14 rotas em `apps/web/src/app/api/` que replicam os controladores
+NestJS consultando o Supabase diretamente a partir do servidor Next.js. A
+autenticação nas rotas protegidas usa os cookies da sessão Supabase (via
+`createClient()` do `@/lib/supabase/server`) em vez de tokens Bearer.
+
+- **Públicas:** `businesses/`, `businesses/[slug]/`, `businesses/[slug]/benefits/`,
+  `businesses/[slug]/reviews/`, `benefits/`
+- **Membro (auth via cookie):** `me/summary/`, `me/savings/`, `me/redemptions/`,
+  `me/redemptions/attempt/`, `me/redemptions/[id]/financials/`,
+  `me/redemptions/[id]/review/`, `me/influencer/`, `me/referral/`, `me/profile/`
+
+10 páginas/componentes atualizados para usar URLs relativas (`/api/...`) sem
+passar tokens Bearer manualmente.
+
+**Arquitectura resultante:**
+
+- A app web é agora autónoma para o fluxo de membro: não precisa do servidor
+  NestJS em execução para carregar dados de explorar/conta/parceiro.
+- O NestJS continua em `apps/api` para uso futuro (mobile, deployment Vercel).
+- As rotas admin no Next.js precisam de `SUPABASE_SERVICE_ROLE_KEY` no
+  `apps/web/.env.local` — a chave está atualmente vazia.
+
+**Rotas de parceiro e admin — em implementação:**
+
+- `api/partner/redemptions/preview`, `confirm`, `stats`
+- `api/partner-inquiries/`
+- `api/admin/*` (stats, businesses, users, influencers, referrals)
+- Páginas `parceiros/validar`, `parceiros/dashboard`, `parceiros/page`,
+  admin/* actualizadas para usar URLs relativas.
+
+**Nota operacional:**
+
+Para que as rotas admin funcionem, adicionar ao `apps/web/.env.local`:
+```
+SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
+```
+(Project Settings → API → `service_role`)
+
 ### Modelo para entradas futuras
 
 ```text
@@ -958,3 +1042,4 @@ serena memories check
 - Bloqueios:
 - Próximo passo:
 ```
+  
