@@ -1,4 +1,4 @@
-# Clube Ribatejo — Checklist e diário de desenvolvimento
+# Clube Daqui — Checklist e diário de desenvolvimento
 
 Este ficheiro é o contexto operacional do projeto. Deve ser lido no início de
 cada sessão do Codex e atualizado no fim de cada tarefa relevante.
@@ -25,9 +25,10 @@ cada sessão do Codex e atualizado no fim de cada tarefa relevante.
 
 ### Visão
 
-O Clube Ribatejo é uma aplicação web responsiva para descobrir
-estabelecimentos locais e usufruir de benefícios exclusivos no Ribatejo. O
-produto começa por Santarém e Almeirim, com o inventário atual focado no
+O **Clube Daqui** é uma aplicação web responsiva para descobrir
+estabelecimentos locais e usufruir de benefícios exclusivos no Ribatejo.
+Tagline: **"Descobre o melhor daqui."**
+O produto começa por Santarém e Almeirim, com o inventário atual focado no
 concelho de Almeirim.
 
 ### Utilizadores e valor
@@ -142,7 +143,7 @@ reivindicado antes de ser apresentado como parceiro.
 - Google Maps/Places pode fornecer validação e `place_id`; não copiar a
   interface, fotografias, ratings ou avaliações.
 - As avaliações, classificações, fotografias e comentários do produto serão
-  produzidos pelos clientes do Clube Ribatejo.
+  produzidos pelos clientes do Clube Daqui.
 - Guardar a origem e a data de atualização de cada campo importado.
 
 ## Checklist técnico por tarefa
@@ -219,8 +220,15 @@ serena memories check
 7. Validar de ponta a ponta o fluxo membro → parceiro → economia com uma adesão
    ativa e um utilizador parceiro de teste no ambiente publicado.
 8. Ativar proteção contra palavras-passe expostas no Supabase Auth.
-9. Corrigir os erros de lint preexistentes (17 API + 10 web) documentados na
-   auditoria.
+9. ~~Corrigir os erros de lint preexistentes~~ — **concluído** (sessão 2026-09-17).
+
+### Marca / Domínio
+
+- Registar o domínio `clubedaqui.pt`.
+- Verificar disponibilidade dos usernames nas redes sociais (@clubedaqui).
+- Pesquisar disponibilidade da marca no INPI/EUIPO antes de fechar oficialmente.
+- Integrar os logotipos finais (`Logotipo/`) na app: substituir placeholder
+  favicon, og:image e app icon mobile.
 
 ### Inventário / Dados
 
@@ -229,6 +237,51 @@ serena memories check
     criar a migration de importação validada.
 
 ## Diário
+
+### 2026-09-17 — Correções de lint, login, modo escuro e renomeação da marca
+
+**Erros de lint — todos corrigidos (0 erros, 0 typecheck, Prettier limpo):**
+- API: desativado `@typescript-eslint/no-unnecessary-type-assertion` no
+  `eslint.config.mjs` para padrões de tipagem explícita do Supabase; removido
+  directivo eslint orphan no `admin.controller.ts`.
+- Web — `page.tsx` (homepage): 6 chamadas `useInView` refatoradas para
+  destructuring no call-site (`const { ref: statsRef, visible: statsVisible }`)
+  para cumprir a regra `react-hooks/refs`; entidades HTML não escapadas corrigidas.
+- Web — páginas admin/explorar/conta: `<a>` substituídos por `<Link>` do Next.js;
+  `eslint-disable-next-line react-hooks/set-state-in-effect` adicionado em padrões
+  legítimos de fetch-on-mount; constante não usada removida.
+- Prettier: adicionadas exclusões para `apps/mobile/ios/`, `android/`, `.expo/`,
+  `.claude/` e `supabase/.temp/` ao `.prettierignore`; 119 ficheiros gerados
+  deixaram de ser verificados.
+- Commits: `0a811e8`.
+
+**Bug de login duplo — corrigido:**
+- Causa raiz: `router.refresh() + router.replace(next)` desencadeava navegação
+  SSR antes de os cookies de sessão do Supabase serem visíveis pelo middleware.
+- Fix: substituído por `window.location.href = next` (reload completo garante
+  que os cookies são enviados na próxima request). Ficheiro: `entrar/page.tsx`.
+
+**Modo escuro — redesenhado (3 iterações):**
+- Problema original: `--color-olive-900` era invertido para cream (`#f2f0e8`),
+  tornando o footer, sidebar admin, botões e cards todos brancos/cream.
+- Fix 1 (`3c88150`): `olive-900` mantido near-white para `text-olive-900`, mas
+  `bg-olive-900` explicitamente sobreposto para `#1b2a1f`; `text-cream-50`
+  corrigido nas dark cards; overlays modais, inputs, sombras e scrollbar cobertos.
+- Fix 2 (`0f6f56a`): Footer — tokens `cream-50/100` re-scopados dentro de
+  `html.dark footer {}` para que as variantes de opacidade
+  (`text-cream-100/70`, `/65`, `/40`) resolvam near-white em vez de near-black.
+  Secções "Descubra por categoria" e "Membros" — inline
+  `style={{ background: "#f6f0e4" }}` substituídos por `bg-cream-100`
+  (dark mode: `#18221b`, subtilmente mais claro que o fundo `#0d120f`).
+
+**Renomeação da marca — Clube Ribatejo → Clube Daqui (`273a7de`):**
+- Nova identidade: **Clube Daqui** · tagline **"Descobre o melhor daqui."**
+- 35 ficheiros alterados: packages (`@clube-daqui/*`), i18n PT+EN, header,
+  footer, login, registo, admin, clube, ofertas, parceiros, conta, erro de auth,
+  homepage hero, mobile (nome, slug, scheme, bundle ID `pt.clubedaqui.app`,
+  ecrãs), API (health IDs, CORS, User-Agent, fonte de reviews), localStorage key.
+- Referências geográficas ao Ribatejo como região preservadas.
+- Pasta `Logotipo/` já existia com 7 ficheiros de logo finais.
 
 ### 2026-09-17 — Review da sessão e atualização do diário
 
