@@ -33,6 +33,14 @@ export function CheckoutButton() {
         data?: { url?: string | null };
         message?: string;
       };
+      if (response.status === 401) {
+        // The browser can retain a token for an account that was removed or
+        // whose session expired. Clear it so the user can register/login again
+        // instead of seeing the backend's generic "Invalid session" message.
+        await supabase.auth.signOut();
+        router.push("/registar?redirect=/clube");
+        return;
+      }
       if (!response.ok || !payload.data?.url) {
         throw new Error(payload.message ?? "Não foi possível iniciar o pagamento");
       }

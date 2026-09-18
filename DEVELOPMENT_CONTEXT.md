@@ -1079,3 +1079,15 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - Bloqueios:
 - Próximo passo:
 ```
+
+### 2026-09-19 — Sessão inválida no botão de adesão
+
+- Objetivo: evitar que um token Supabase antigo bloqueie o checkout Stripe.
+- Causa provável: a conta de teste foi removida, mas o navegador ainda mantinha
+  a sessão dessa conta; a API rejeita corretamente o token como `Invalid session`.
+- Alteração: `CheckoutButton` agora faz `signOut` e redireciona para o registo
+  quando o endpoint de checkout responde 401.
+- Validação: pendente de teste no browser após limpar a sessão e criar/confirmar
+  novamente o utilizador.
+- Próximo passo: fazer logout/limpar os dados do site, registar o utilizador de
+  novo, confirmar o email e testar o botão “Aderir por 59 €”.
