@@ -2,13 +2,25 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { validateNIF } from "@/lib/nif";
 
 export default function SignUpPage() {
   const router = useRouter();
+  const [redirectPath, setRedirectPath] = useState("/conta");
+  useEffect(() => {
+    const requestedRedirect = new URLSearchParams(window.location.search).get(
+      "redirect",
+    );
+    if (
+      requestedRedirect?.startsWith("/") &&
+      !requestedRedirect.startsWith("//")
+    ) {
+      setRedirectPath(requestedRedirect);
+    }
+  }, []);
   const [email, setEmail] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [sent, setSent] = useState(false);
@@ -55,7 +67,7 @@ export default function SignUpPage() {
               referral_code: referralCode.trim().toUpperCase(),
             }),
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`,
         },
       });
 
@@ -69,7 +81,9 @@ export default function SignUpPage() {
       }
 
       if (data.session) {
-        router.replace("/conta?welcome=1");
+        router.replace(
+          redirectPath === "/conta" ? "/conta?welcome=1" : redirectPath,
+        );
         router.refresh();
         return;
       }

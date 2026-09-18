@@ -20,7 +20,7 @@ export function CheckoutButton() {
       const { data } = await supabase.auth.getSession();
       const session = data.session;
       if (!session) {
-        router.push("/entrar?redirect=/clube");
+        router.push("/registar?redirect=/clube");
         return;
       }
       if (!apiUrl) throw new Error("Serviço de pagamentos indisponível");
