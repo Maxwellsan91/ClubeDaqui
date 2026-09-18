@@ -249,6 +249,21 @@ serena memories check
 
 ## Diário
 
+### 2026-09-19 — Limpeza de conta de teste Stripe
+
+- Sessão MCP do Supabase renovada com escopos válidos.
+- Eliminada, após confirmação explícita, a conta de teste
+  `maxwellsanrosa@gmail.com` e os dados associados à adesão e aos resgates.
+- Verificação final: utilizador, perfil, adesão e resgates ficaram a zero.
+
+### 2026-09-19 — Email de boas-vindas após pagamento
+
+- O webhook Stripe passou a enviar um email de boas-vindas via API Resend após
+  ativar a adesão, com proteção contra reprocessamento do mesmo pagamento.
+- A confirmação de email continua a ser enviada pelo Supabase Auth através do
+  SMTP Resend configurado no projeto.
+- O backend requer `RESEND_API_KEY` e `EMAIL_FROM` para o email adicional.
+
 ### 2026-09-17 — Correções de lint, login, modo escuro e renomeação da marca
 
 **Erros de lint — todos corrigidos (0 erros, 0 typecheck, Prettier limpo):**

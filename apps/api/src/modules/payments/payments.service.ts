@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   ServiceUnavailableException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -16,6 +17,7 @@ const MEMBERSHIP_PRICE_CENTS = 5900;
 @Injectable()
 export class PaymentsService {
   private stripeClient: Stripe | null = null;
+  private readonly logger = new Logger(PaymentsService.name);
 
   constructor(
     private readonly config: ConfigService<Environment, true>,
@@ -171,7 +173,7 @@ export class PaymentsService {
     if (!membershipId || !paymentId) return;
 
     const admin = this.supabase.createAdminClient();
-    await admin
+    const { data: updatedPayment } = await admin
       .from("payments")
       .update({
         status: "paid",
@@ -182,11 +184,52 @@ export class PaymentsService {
             : null,
       })
       .eq("id", paymentId)
-      .eq("membership_id", membershipId);
+      .eq("membership_id", membershipId)
+      .eq("status", "pending")
+      .select("id")
+      .maybeSingle();
+    if (!updatedPayment) return;
+
     await admin
       .from("memberships")
       .update({ status: "active" })
       .eq("id", membershipId)
       .eq("status", "pending");
+
+    const email = session.customer_details?.email ?? session.customer_email;
+    await this.sendWelcomeEmail(email);
+  }
+
+  private async sendWelcomeEmail(email: string | null) {
+    const apiKey = this.config.get("RESEND_API_KEY", { infer: true });
+    const from = this.config.get("EMAIL_FROM", { infer: true });
+    if (!apiKey || !from || !email) {
+      this.logger.warn(
+        "Email de boas-vindas não enviado: RESEND_API_KEY, EMAIL_FROM ou email ausente",
+      );
+      return;
+    }
+
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to: [email],
+        subject: "Bem-vindo ao Clube Daqui",
+        html: `
+          <h1>Bem-vindo ao Clube Daqui!</h1>
+          <p>A sua adesão foi confirmada e já tem acesso aos benefícios exclusivos do Clube.</p>
+          <p>A adesão é válida por 12 meses. Explore os parceiros e aproveite.</p>
+          <p><a href="${this.config.getOrThrow("WEB_URL", { infer: true })}/conta">Abrir a minha área de membro</a></p>
+        `,
+      }),
+    });
+    if (!response.ok) {
+      this.logger.error(`Falha ao enviar email de boas-vindas: ${response.status}`);
+    }
   }
 }

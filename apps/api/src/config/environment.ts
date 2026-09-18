@@ -19,6 +19,8 @@ const environmentSchema = z.object({
   STRIPE_WEBHOOK_SECRET: emptyAsUndefined(
     z.string().startsWith("whsec_"),
   ).optional(),
+  RESEND_API_KEY: emptyAsUndefined(z.string().startsWith("re_")).optional(),
+  EMAIL_FROM: emptyAsUndefined(z.string().min(3)).optional(),
 });
 
 export type Environment = z.infer<typeof environmentSchema>;
