@@ -8,7 +8,7 @@ import type { Environment } from "./config/environment.js";
 export type NestApplicationFactory = Pick<typeof NestFactory, "create">;
 
 export async function createApp(factory: NestApplicationFactory = NestFactory) {
-  const app = await factory.create(AppModule);
+  const app = await factory.create(AppModule, { rawBody: true });
   const config = app.get(ConfigService<Environment, true>);
 
   app.setGlobalPrefix("api");

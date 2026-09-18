@@ -1,0 +1,192 @@
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  ServiceUnavailableException,
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import Stripe from "stripe";
+
+import type { Environment } from "../../config/environment.js";
+import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
+import type { AuthenticatedRequest } from "../members/member-auth.guard.js";
+
+const MEMBERSHIP_PRICE_CENTS = 5900;
+
+@Injectable()
+export class PaymentsService {
+  private stripeClient: Stripe | null = null;
+
+  constructor(
+    private readonly config: ConfigService<Environment, true>,
+    private readonly supabase: SupabaseService,
+  ) {}
+
+  private stripe(): Stripe {
+    if (!this.stripeClient) {
+      const secret = this.config.get("STRIPE_SECRET_KEY", { infer: true });
+      if (!secret) {
+        throw new ServiceUnavailableException(
+          "Pagamentos ainda não estão configurados",
+        );
+      }
+      this.stripeClient = new Stripe(secret);
+    }
+    return this.stripeClient;
+  }
+
+  async createCheckout(request: AuthenticatedRequest) {
+    const priceId = this.config.get("STRIPE_PRICE_ID", { infer: true });
+    if (!priceId) {
+      throw new ServiceUnavailableException(
+        "O preço Stripe ainda não está configurado",
+      );
+    }
+
+    const admin = this.supabase.createAdminClient();
+    const { data: activeMembership } = await admin
+      .from("memberships")
+      .select("id,ends_at")
+      .eq("profile_id", request.user.id)
+      .eq("status", "active")
+      .gt("ends_at", new Date().toISOString())
+      .maybeSingle();
+    if (activeMembership) {
+      throw new ConflictException("Já tem uma adesão ativa");
+    }
+
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("full_name")
+      .eq("id", request.user.id)
+      .maybeSingle();
+
+    const startsAt = new Date();
+    const endsAt = new Date(startsAt);
+    endsAt.setUTCFullYear(endsAt.getUTCFullYear() + 1);
+
+    const { data: membership, error: membershipError } = await admin
+      .from("memberships")
+      .insert({
+        profile_id: request.user.id,
+        starts_at: startsAt.toISOString(),
+        ends_at: endsAt.toISOString(),
+        status: "pending",
+      })
+      .select("id")
+      .single();
+    if (membershipError || !membership) {
+      throw new BadRequestException(
+        membershipError?.message ?? "Não foi possível iniciar a adesão",
+      );
+    }
+
+    const { data: payment, error: paymentError } = await admin
+      .from("payments")
+      .insert({
+        membership_id: membership.id,
+        provider: "stripe",
+        amount_cents: MEMBERSHIP_PRICE_CENTS,
+        currency: "EUR",
+        status: "pending",
+      })
+      .select("id")
+      .single();
+    if (paymentError || !payment) {
+      await admin.from("memberships").delete().eq("id", membership.id);
+      throw new BadRequestException(
+        paymentError?.message ?? "Não foi possível criar o pagamento",
+      );
+    }
+
+    const webUrl = this.config.getOrThrow("WEB_URL", { infer: true });
+    let session: Stripe.Checkout.Session;
+    try {
+      session = await this.stripe().checkout.sessions.create(
+        {
+          mode: "payment",
+          line_items: [{ price: priceId, quantity: 1 }],
+          customer_email: request.user.email,
+          client_reference_id: membership.id,
+          metadata: {
+            membership_id: membership.id,
+            payment_id: payment.id,
+            profile_id: request.user.id,
+          },
+          success_url: `${webUrl}/conta?payment=success`,
+          cancel_url: `${webUrl}/clube?payment=cancelled`,
+          locale: "pt",
+          submit_type: "pay",
+        },
+        { idempotencyKey: `membership-checkout-${membership.id}` },
+      );
+    } catch (error) {
+      await admin.from("payments").update({ status: "failed" }).eq("id", payment.id);
+      throw new BadRequestException(
+        error instanceof Error ? error.message : "Não foi possível abrir o Checkout",
+      );
+    }
+
+    await admin
+      .from("payments")
+      .update({ provider_checkout_session_id: session.id })
+      .eq("id", payment.id);
+
+    return { url: session.url, sessionId: session.id, name: profile?.full_name };
+  }
+
+  async handleWebhook(rawBody: Buffer, signature: string) {
+    const webhookSecret = this.config.get("STRIPE_WEBHOOK_SECRET", {
+      infer: true,
+    });
+    if (!webhookSecret) {
+      throw new ServiceUnavailableException(
+        "O webhook Stripe ainda não está configurado",
+      );
+    }
+
+    let event: Stripe.Event;
+    try {
+      event = this.stripe().webhooks.constructEvent(
+        rawBody,
+        signature,
+        webhookSecret,
+      );
+    } catch {
+      throw new BadRequestException("Assinatura do webhook Stripe inválida");
+    }
+
+    if (
+      event.type !== "checkout.session.completed" &&
+      event.type !== "checkout.session.async_payment_succeeded"
+    ) {
+      return;
+    }
+
+    const session = event.data.object as Stripe.Checkout.Session;
+    if (session.payment_status !== "paid") return;
+
+    const membershipId = session.metadata?.membership_id ?? session.client_reference_id;
+    const paymentId = session.metadata?.payment_id;
+    if (!membershipId || !paymentId) return;
+
+    const admin = this.supabase.createAdminClient();
+    await admin
+      .from("payments")
+      .update({
+        status: "paid",
+        paid_at: new Date().toISOString(),
+        provider_payment_intent_id:
+          typeof session.payment_intent === "string"
+            ? session.payment_intent
+            : null,
+      })
+      .eq("id", paymentId)
+      .eq("membership_id", membershipId);
+    await admin
+      .from("memberships")
+      .update({ status: "active" })
+      .eq("id", membershipId)
+      .eq("status", "pending");
+  }
+}

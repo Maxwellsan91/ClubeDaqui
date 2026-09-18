@@ -60,7 +60,7 @@ concelho de Almeirim.
 - Marketplace, pagamentos de consumo em restaurantes ou entrega de comida.
 - Chat em tempo real, rede social ou programa de pontos complexo.
 - Expansão nacional antes de validar o MVP no Ribatejo.
-- Integração de Stripe e Resend antes de existir um fluxo que as utilize.
+- Integração de Resend antes de existir um fluxo que a utilize.
 
 ### Limites técnicos
 
@@ -122,6 +122,9 @@ reivindicado antes de ser apresentado como parceiro.
 - [x] App web autónoma — não depende do servidor NestJS para o fluxo de membro.
 - [ ] Área de parceiro (rotas Next.js em implementação; validar precisa de teste).
 - [ ] Sistema de avaliações dos clientes em produção.
+- [x] Checkout Stripe de teste criado no backend com webhook idempotente e
+      botão de adesão anual na página do Clube; falta configurar o webhook no
+      Stripe e validar um pagamento de teste.
 - [ ] Configurar `SUPABASE_SERVICE_ROLE_KEY` no `apps/web/.env.local` para
       rotas admin funcionarem.
 
@@ -227,6 +230,8 @@ serena memories check
    ativa e um utilizador parceiro de teste no ambiente publicado.
 9. Ativar proteção contra palavras-passe expostas no Supabase Auth.
 10. ~~Corrigir os erros de lint preexistentes~~ — **concluído** (sessão 2026-09-17).
+11. Configurar `STRIPE_WEBHOOK_SECRET` no backend, publicar a API e validar o
+    fluxo Checkout → webhook → adesão ativa com o cartão de teste.
 
 ### Marca / Domínio
 
@@ -1042,4 +1047,3 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - Bloqueios:
 - Próximo passo:
 ```
-  

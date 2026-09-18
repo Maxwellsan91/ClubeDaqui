@@ -14,6 +14,11 @@ const environmentSchema = z.object({
   SUPABASE_URL: emptyAsUndefined(z.url()).optional(),
   SUPABASE_PUBLISHABLE_KEY: emptyAsUndefined(z.string().min(1)).optional(),
   SUPABASE_SERVICE_ROLE_KEY: emptyAsUndefined(z.string().min(1)).optional(),
+  STRIPE_SECRET_KEY: emptyAsUndefined(z.string().startsWith("sk_")).optional(),
+  STRIPE_PRICE_ID: emptyAsUndefined(z.string().startsWith("price_")).optional(),
+  STRIPE_WEBHOOK_SECRET: emptyAsUndefined(
+    z.string().startsWith("whsec_"),
+  ).optional(),
 });
 
 export type Environment = z.infer<typeof environmentSchema>;

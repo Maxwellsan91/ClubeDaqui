@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { SectionHeader } from "@/components/section-header";
+import { CheckoutButton } from "@/components/checkout-button";
 
 export default function ClubPage() {
   return (
@@ -19,12 +20,7 @@ export default function ClubPage() {
           benefícios exclusivos em lugares selecionados.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/registar"
-            className="bg-wine-700 hover:bg-wine-800 inline-flex min-h-[48px] items-center rounded-full px-7 py-3 text-sm font-semibold text-white transition"
-          >
-            Quero ser membro
-          </Link>
+          <CheckoutButton />
           <Link
             href="/explorar"
             className="inline-flex min-h-[48px] items-center rounded-full border border-olive-900/20 px-7 py-3 text-sm font-semibold text-olive-900 transition hover:bg-olive-900/5"
@@ -67,11 +63,11 @@ export default function ClubPage() {
               12 meses
             </p>
             <p className="mt-4 text-sm leading-6 text-olive-700">
-              A validade e o preço final serão apresentados quando a subscrição
-              estiver disponível.
+              Adesão anual por 59 €, com pagamento seguro através do Stripe.
             </p>
             <p className="mt-6 text-sm font-semibold text-olive-900">
-              Sem pagamentos ou reservas nesta versão demo.
+              Pagamento único. A adesão fica ativa durante 12 meses após a
+              confirmação do pagamento.
             </p>
           </div>
         </section>
