@@ -24,6 +24,7 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [sent, setSent] = useState(false);
+  const [resending, setResending] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -96,6 +97,23 @@ export default function SignUpPage() {
     }
   }
 
+  async function resendConfirmation() {
+    if (!email.trim()) return;
+    setResending(true);
+    setError("");
+    const { error: resendError } = await createClient().auth.resend({
+      type: "signup",
+      email: email.trim(),
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`,
+      },
+    });
+    if (resendError) {
+      setError("Não foi possível reenviar o email. Aguarde alguns minutos e tente novamente.");
+    }
+    setResending(false);
+  }
+
   return (
     <main className="bg-cream-50 flex min-h-screen flex-col">
       {/* Header */}
@@ -148,6 +166,15 @@ export default function SignUpPage() {
                 Não encontra o email? Verifique a pasta de spam. Por segurança,
                 não indicamos se este endereço já estava registado.
               </p>
+              <button
+                type="button"
+                onClick={resendConfirmation}
+                disabled={resending}
+                className="text-gold-500 mt-5 text-sm font-semibold underline underline-offset-4 disabled:opacity-60"
+              >
+                {resending ? "A reenviar…" : "Reenviar email de confirmação"}
+              </button>
+              {error && <p className="mt-3 text-sm text-red-200">{error}</p>}
             </div>
           ) : (
             <>

@@ -1091,3 +1091,16 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   novamente o utilizador.
 - Próximo passo: fazer logout/limpar os dados do site, registar o utilizador de
   novo, confirmar o email e testar o botão “Aderir por 59 €”.
+
+### 2026-09-19 — Confirmação de email e Price ID Stripe
+
+- Diagnóstico: `price_prod_...` é um Product ID incorretamente prefixado; o
+  Stripe exige o Price ID real, que começa por `price_` e é obtido no preço
+  associado ao produto.
+- Alterações: validação da configuração rejeita `price_prod_...`; o checkout
+  devolve uma mensagem orientadora em vez do erro técnico bruto; o registo
+  passou a permitir reenviar o email de confirmação.
+- Validação: `npm run typecheck --workspace apps/api` e `npm run typecheck --workspace apps/web` passaram.
+- Bloqueio operacional: é necessário substituir `STRIPE_PRICE_ID` na Vercel
+  pelo Price ID correto e fazer novo deploy. Links antigos de confirmação podem
+  estar expirados ou já utilizados; deve ser usado o email mais recente.

@@ -124,8 +124,16 @@ export class PaymentsService {
       );
     } catch (error) {
       await admin.from("payments").update({ status: "failed" }).eq("id", payment.id);
+      const stripeMessage = error instanceof Stripe.errors.StripeError
+        ? error.message
+        : error instanceof Error
+          ? error.message
+          : "Não foi possível abrir o Checkout";
+      const message = stripeMessage.includes("No such price")
+        ? "O preço Stripe configurado é inválido. Configure o ID do preço (price_...), não o ID do produto (prod_...)."
+        : stripeMessage;
       throw new BadRequestException(
-        error instanceof Error ? error.message : "Não foi possível abrir o Checkout",
+        message,
       );
     }
 

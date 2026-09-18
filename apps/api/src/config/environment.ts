@@ -15,7 +15,14 @@ const environmentSchema = z.object({
   SUPABASE_PUBLISHABLE_KEY: emptyAsUndefined(z.string().min(1)).optional(),
   SUPABASE_SERVICE_ROLE_KEY: emptyAsUndefined(z.string().min(1)).optional(),
   STRIPE_SECRET_KEY: emptyAsUndefined(z.string().startsWith("sk_")).optional(),
-  STRIPE_PRICE_ID: emptyAsUndefined(z.string().startsWith("price_")).optional(),
+  STRIPE_PRICE_ID: emptyAsUndefined(
+    z
+      .string()
+      .startsWith("price_")
+      .refine((value) => !value.startsWith("price_prod_"), {
+        message: "Use o ID do preço Stripe, não o ID do produto",
+      }),
+  ).optional(),
   STRIPE_WEBHOOK_SECRET: emptyAsUndefined(
     z.string().startsWith("whsec_"),
   ).optional(),
