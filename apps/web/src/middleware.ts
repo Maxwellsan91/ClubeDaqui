@@ -25,10 +25,10 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/parceiros/dashboard");
   const isMemberRoute =
     request.nextUrl.pathname.startsWith("/conta") ||
-    request.nextUrl.pathname.startsWith("/explorar") ||
-    request.nextUrl.pathname.startsWith("/admin");
+    request.nextUrl.pathname.startsWith("/ofertas");
+  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
 
-  if (!user && (isPartnerRoute || isMemberRoute)) {
+  if (!user && (isPartnerRoute || isMemberRoute || isAdminRoute)) {
     const url = request.nextUrl.clone();
     url.pathname = "/entrar";
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
@@ -48,13 +48,43 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
   }
+  if (user && isMemberRoute) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    // Admins and partners use their own areas and do not need a membership.
+    if (profile?.role === "MEMBER") {
+      const { data: membership } = await supabase
+        .from("memberships")
+        .select("id")
+        .eq("profile_id", user.id)
+        .eq("status", "active")
+        .gt("ends_at", new Date().toISOString())
+        .maybeSingle();
+
+      if (!membership) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/clube";
+        url.search = "";
+        url.searchParams.set("required", "membership");
+        url.searchParams.set(
+          "redirectTo",
+          `${request.nextUrl.pathname}${request.nextUrl.search}`,
+        );
+        return NextResponse.redirect(url);
+      }
+    }
+  }
   return response;
 }
 
 export const config = {
   matcher: [
-    "/conta/:path*",
-    "/explorar/:path*",
+  "/conta/:path*",
+  "/ofertas/:path*",
     "/parceiros/validar/:path*",
     "/parceiros/dashboard/:path*",
     "/admin/:path*",
