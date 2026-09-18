@@ -264,6 +264,14 @@ serena memories check
   SMTP Resend configurado no projeto.
 - O backend requer `RESEND_API_KEY` e `EMAIL_FROM` para o email adicional.
 
+### 2026-09-19 — CTA de adesão
+
+- O botão “Aderir por 59 €” agora envia visitantes para `/registar?redirect=/clube`.
+- O redirect do email de confirmação preserva esse destino; utilizadores já
+  autenticados continuam a abrir diretamente o Checkout.
+- Typecheck web passou; o build local ficou bloqueado apenas pelo acesso
+  offline às fontes Google usadas por `next/font`.
+
 ### 2026-09-17 — Correções de lint, login, modo escuro e renomeação da marca
 
 **Erros de lint — todos corrigidos (0 erros, 0 typecheck, Prettier limpo):**
