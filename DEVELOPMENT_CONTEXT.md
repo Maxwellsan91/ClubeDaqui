@@ -1135,3 +1135,14 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   URL, cobrindo templates padrão e templates SSR do Supabase.
 - Validação: `npm run typecheck --workspace apps/web` passou após regenerar o
   cache `.next`.
+
+- A conta de teste foi removida novamente em 2026-09-19 após novo ciclo de
+  validação; confirmação final: zero registos em `auth.users` e `profiles`.
+
+### 2026-09-19 — Correção do build do callback
+
+- Causa: a página `/auth/callback` usava `useSearchParams()` diretamente numa
+  página prerenderizada, exigindo um limite `Suspense` no Next.js.
+- Alteração: separado o conteúdo do callback e envolvido em `Suspense` com
+  fallback de confirmação.
+- Validação: `npm run typecheck --workspace apps/web` passou.

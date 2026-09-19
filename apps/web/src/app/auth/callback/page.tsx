@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { EmailOtpType } from "@supabase/supabase-js";
 
@@ -10,7 +10,7 @@ function safeDestination(value: string | null) {
   return value?.startsWith("/") && !value.startsWith("//") ? value : "/conta";
 }
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState(false);
@@ -86,5 +86,19 @@ export default function AuthCallbackPage() {
     <main className="flex min-h-screen items-center justify-center px-6">
       <p className="text-sm text-olive-700">A confirmar o seu email…</p>
     </main>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center px-6">
+          <p className="text-sm text-olive-700">A confirmar o seu email…</p>
+        </main>
+      }
+    >
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
