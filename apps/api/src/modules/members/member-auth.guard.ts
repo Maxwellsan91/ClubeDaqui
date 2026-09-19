@@ -8,7 +8,7 @@ import {
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 
 export type AuthenticatedRequest = {
-  headers: { authorization?: string };
+  headers: { authorization?: string; origin?: string };
   user: { id: string; email?: string };
   accessToken: string;
 };

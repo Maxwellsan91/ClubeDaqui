@@ -1139,6 +1139,23 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - A conta de teste foi removida novamente em 2026-09-19 após novo ciclo de
   validação; confirmação final: zero registos em `auth.users` e `profiles`.
 
+- A conta de teste e a adesão ativa foram removidas novamente em 2026-09-19
+  para repetir o fluxo completo de registo e pagamento; verificação final sem
+  utilizador nem perfil associado.
+
+- A conta de teste foi removida mais uma vez em 2026-09-19 antes de repetir o
+  checkout com o `WEB_URL` de produção corrigido; verificação final: zero em
+  `auth.users` e `profiles`.
+
+### 2026-09-19 — Proteção do redirect Stripe em produção
+
+- Problema: o Checkout continuava a gerar `localhost:3000` quando o deployment
+  da API ainda tinha `WEB_URL` antigo ou configurado no ambiente errado.
+- Alteração: se um pedido vier do domínio oficial da web e `WEB_URL` estiver
+  acidentalmente em localhost, o backend usa o origin oficial para o
+  `success_url`/`cancel_url` dessa sessão.
+- Validação: `npm run typecheck --workspace apps/api` passou.
+
 ### 2026-09-19 — Correção do build do callback
 
 - Causa: a página `/auth/callback` usava `useSearchParams()` diretamente numa

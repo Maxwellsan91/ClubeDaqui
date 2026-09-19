@@ -101,7 +101,13 @@ export class PaymentsService {
       );
     }
 
-    const webUrl = this.config.getOrThrow("WEB_URL", { infer: true });
+    const configuredWebUrl = this.config.getOrThrow("WEB_URL", { infer: true });
+    const requestOrigin = request.headers.origin?.replace(/\/$/, "");
+    const webUrl =
+      configuredWebUrl.startsWith("http://localhost") &&
+      requestOrigin === "https://clube-ribatejo-web.vercel.app"
+        ? requestOrigin
+        : configuredWebUrl;
     let session: Stripe.Checkout.Session;
     try {
       session = await this.stripe().checkout.sessions.create(
