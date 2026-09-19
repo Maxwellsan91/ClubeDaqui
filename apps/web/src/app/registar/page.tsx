@@ -9,7 +9,7 @@ import { validateNIF } from "@/lib/nif";
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [redirectPath, setRedirectPath] = useState("/conta");
+  const [redirectPath, setRedirectPath] = useState("/checkout");
   useEffect(() => {
     const requestedRedirect = new URLSearchParams(window.location.search).get(
       "redirect",
@@ -82,9 +82,7 @@ export default function SignUpPage() {
       }
 
       if (data.session) {
-        router.replace(
-          redirectPath === "/conta" ? "/conta?welcome=1" : redirectPath,
-        );
+        router.replace(redirectPath);
         router.refresh();
         return;
       }

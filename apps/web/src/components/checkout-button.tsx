@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export function CheckoutButton() {
+export function CheckoutButton({ autoStart = false }: { autoStart?: boolean }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function startCheckout() {
+  const startCheckout = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -20,7 +20,7 @@ export function CheckoutButton() {
       const { data } = await supabase.auth.getSession();
       const session = data.session;
       if (!session) {
-        router.push("/registar?redirect=/clube");
+        router.push("/registar?redirect=/checkout");
         return;
       }
       if (!apiUrl) throw new Error("Serviço de pagamentos indisponível");
@@ -38,7 +38,7 @@ export function CheckoutButton() {
         // whose session expired. Clear it so the user can register/login again
         // instead of seeing the backend's generic "Invalid session" message.
         await supabase.auth.signOut();
-        router.push("/registar?redirect=/clube");
+        router.push("/registar?redirect=/checkout");
         return;
       }
       if (!response.ok || !payload.data?.url) {
@@ -53,7 +53,11 @@ export function CheckoutButton() {
       );
       setLoading(false);
     }
-  }
+  }, [router]);
+
+  useEffect(() => {
+    if (autoStart) void startCheckout();
+  }, [autoStart, startCheckout]);
 
   return (
     <div>

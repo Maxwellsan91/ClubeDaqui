@@ -1156,6 +1156,36 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   `success_url`/`cancel_url` dessa sessão.
 - Validação: `npm run typecheck --workspace apps/api` passou.
 
+- A conta `maxwellsanrosa@gmail.com` foi removida novamente em 2026-09-19 para
+  repetir o fluxo após o novo deploy; confirmação final: zero em `auth.users` e
+  `profiles`.
+
+### 2026-09-19 — Fecho da sessão Stripe/Auth
+
+- Resultado: o fluxo completo de registo, confirmação de email e pagamento
+  Stripe em modo de teste foi validado com sucesso.
+- Correções concluídas: callback de confirmação compatível com `code`,
+  `token_hash` e fragmento; página protegida por `Suspense`; Price ID Stripe
+  validado; redirect de Checkout protegido contra `localhost` em produção.
+- Configuração operacional: `WEB_URL` deve permanecer como
+  `https://clube-ribatejo-web.vercel.app` no ambiente Production da API; o
+  webhook ativo é `https://clube-ribatejo-api.vercel.app/api/payments/webhook`.
+- Estado dos testes: a conta `maxwellsanrosa@gmail.com` foi removida após a
+  validação, sem dados de teste pendentes.
+- Próxima sessão: continuar as melhorias do produto a partir do checklist,
+  começando por rever o fluxo pós-pagamento e a experiência da área de membro.
+
+### 2026-09-19 — Cadastro encaminha diretamente para pagamento
+
+- Objetivo: eliminar o segundo clique no `/clube` e tornar o percurso uniforme
+  a partir de qualquer formulário de registo.
+- Alterações: novo `/checkout` inicia o Checkout Stripe automaticamente; o
+  registo usa `/checkout` como destino padrão e preserva esse destino após a
+  confirmação do email; o botão de adesão aponta para o mesmo fluxo.
+- Resultado esperado: cadastro → confirmação de email (quando exigida) →
+  Checkout Stripe → `/conta?payment=success`.
+- Validação: typecheck web e API passaram.
+
 ### 2026-09-19 — Correção do build do callback
 
 - Causa: a página `/auth/callback` usava `useSearchParams()` diretamente numa
