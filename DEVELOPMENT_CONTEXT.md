@@ -1104,3 +1104,34 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - Bloqueio operacional: é necessário substituir `STRIPE_PRICE_ID` na Vercel
   pelo Price ID correto e fazer novo deploy. Links antigos de confirmação podem
   estar expirados ou já utilizados; deve ser usado o email mais recente.
+
+### 2026-09-19 — Remoção do utilizador de teste
+
+- Pedido: apagar `maxwellsanrosa@gmail.com`, confirmado pelo utilizador como
+  conta exclusivamente de teste.
+- Ação: removidos os registos associados de memberships, payments, referrals,
+  redemptions, reviews, dados financeiros e perfil; depois removido o utilizador
+  de `auth.users`.
+- Verificação: `auth.users`, `profiles`, `memberships`, `payments` e
+  `redemptions` ficaram com zero registos para este utilizador.
+
+- A conta foi recriada durante os testes e removida novamente em 2026-09-19;
+  a verificação final confirmou zero registos em `auth.users` e `profiles`.
+
+### 2026-09-19 — Diagnóstico dos links de confirmação
+
+- Causa provável: o template padrão de confirmação do Supabase usa o fluxo
+  implícito com token no fragmento da URL, enquanto a web usa SSR/PKCE.
+- O callback da aplicação já aceita `code` e `token_hash`; para o fluxo SSR é
+  necessário configurar o template **Confirm signup** para apontar para
+  `/auth/callback?token_hash={{ .TokenHash }}&type=email`.
+- Também é necessário autorizar `https://clube-ribatejo-web.vercel.app/auth/callback`
+  em Authentication → URL Configuration → Redirect URLs.
+- Próximo passo: guardar o template/configuração, aguardar o limite de envio do
+  Supabase e testar apenas o email de confirmação mais recente.
+
+- Correção adicional: o callback `/auth/callback` passou a ser executado no
+  browser e aceita os formatos `code`, `token_hash` e tokens no fragmento da
+  URL, cobrindo templates padrão e templates SSR do Supabase.
+- Validação: `npm run typecheck --workspace apps/web` passou após regenerar o
+  cache `.next`.
