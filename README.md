@@ -1,4 +1,4 @@
-# Clube Ribatejo
+# Clube Daqui
 
 MVP de uma web app responsiva para descoberta de estabelecimentos e benefícios exclusivos no Ribatejo, inicialmente focada em Santarém e Almeirim.
 
@@ -19,7 +19,7 @@ supabase/
 - O Supabase fornece PostgreSQL, Auth, Storage e RLS.
 - Operações críticas permanecem atómicas no PostgreSQL.
 
-Stripe e Resend fazem parte da stack prevista, mas ainda não estão instalados porque não são utilizados nesta fase.
+Stripe (checkout e webhook) e Resend (email de boas-vindas) integram o fluxo de adesão em modo de teste.
 
 ## Requisitos
 
@@ -89,13 +89,13 @@ Supabase.
 
 Classificações, contagens e textos de avaliações, fotografias e descrições de
 terceiros são deliberadamente descartados. As avaliações da aplicação são
-exclusivamente as submetidas por clientes do Clube Ribatejo.
+exclusivamente as submetidas por clientes do Clube Daqui.
 
 Scripts de workspace também podem ser executados isoladamente:
 
 ```bash
-npm run build --workspace @clube-ribatejo/web
-npm run build --workspace @clube-ribatejo/api
+npm run build --workspace @clube-daqui/web
+npm run build --workspace @clube-daqui/api
 ```
 
 ## Supabase no frontend

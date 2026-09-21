@@ -1175,6 +1175,17 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - Próxima sessão: continuar as melhorias do produto a partir do checklist,
   começando por rever o fluxo pós-pagamento e a experiência da área de membro.
 
+### 2026-09-21 — Renomeação técnica para ClubeDaqui
+
+- GitHub: repositório renomeado de `ClubeRibatejo` para `ClubeDaqui`; remote
+  local atualizado para `https://github.com/Maxwellsan91/ClubeDaqui.git`.
+- Vercel: projetos renomeados para `clube-daqui-web` e `clube-daqui-api`.
+- Domínios: a Vercel manteve os aliases públicos existentes
+  (`clube-ribatejo-web.vercel.app` e `clube-ribatejo-api.vercel.app`), evitando
+  quebra imediata de Supabase, Stripe, Google Maps e variáveis de ambiente.
+- Documentação: README alinhado com a marca Clube Daqui e os nomes atuais dos
+  workspaces.
+
 ### 2026-09-19 — Cadastro encaminha diretamente para pagamento
 
 - Objetivo: eliminar o segundo clique no `/clube` e tornar o percurso uniforme
