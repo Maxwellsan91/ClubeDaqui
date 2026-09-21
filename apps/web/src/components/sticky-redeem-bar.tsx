@@ -173,9 +173,12 @@ export function StickyRedeemBar({
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
+    const prevRoot = document.documentElement.style.overflow;
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
+      document.documentElement.style.overflow = prevRoot;
     };
   }, [open]);
 
@@ -371,7 +374,7 @@ export function StickyRedeemBar({
       {open && (
         <div
           ref={sheetRef}
-          className="fixed inset-x-0 bottom-0 z-[70] rounded-t-3xl bg-white shadow-2xl"
+          className="fixed inset-x-0 bottom-0 z-[70] max-h-[calc(100dvh-0.5rem)] w-full max-w-full touch-pan-y overflow-y-auto overscroll-contain rounded-t-3xl bg-white shadow-2xl"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
           {/* Handle + close button — inner wrapper is relative */}
@@ -404,7 +407,7 @@ export function StickyRedeemBar({
             )}
           </div>
 
-          <div className="px-5 pt-2 pb-6">
+          <div className="min-w-0 px-5 pt-2 pb-6">
             {phase === "loading" && (
               <div className="flex flex-col items-center gap-3 py-8">
                 <svg

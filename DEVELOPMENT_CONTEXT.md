@@ -1201,6 +1201,20 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   `/conta` continua reservado para o retorno após pagamento.
 - Validação: `npm run typecheck --workspace apps/web` passou.
 
+- A conta `maxwellsanrosa@gmail.com` foi removida novamente em 2026-09-21 para
+  repetir o fluxo após o ajuste; confirmação final: zero em `auth.users` e
+  `profiles`.
+
+### 2026-09-21 — Sheet de resgate responsivo no mobile
+
+- Problema: ao preencher valores da visita e avaliação, o bottom sheet podia
+  exceder a altura do viewport e deslocar a página.
+- Alteração: sheet limitado à altura da viewport (`100dvh`), com overflow e
+  overscroll controlados internamente; scroll do `html` e `body` bloqueado
+  enquanto está aberto; conteúdo com largura máxima para evitar deslocamento
+  horizontal.
+- Validação: `npm run typecheck --workspace apps/web` passou.
+
 ### 2026-09-19 — Correção do build do callback
 
 - Causa: a página `/auth/callback` usava `useSearchParams()` diretamente numa
