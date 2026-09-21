@@ -1258,6 +1258,13 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - Validação: `npm run typecheck --workspace apps/web` e `git diff --check`
   passaram.
 
+### 2026-09-21 — Limpeza da conta de teste para novo fluxo
+
+- Removida novamente a conta de teste `maxwellsanrosa@gmail.com`, incluindo os
+  registos associados de adesão, pagamentos, resgates e dados financeiros.
+- Verificação final no Supabase: `auth.users`, `profiles` e `memberships` sem
+  registos para essa conta.
+
 ### 2026-09-19 — Correção do build do callback
 
 - Causa: a página `/auth/callback` usava `useSearchParams()` diretamente numa
