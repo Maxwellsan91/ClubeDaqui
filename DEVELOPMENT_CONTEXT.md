@@ -1186,6 +1186,21 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   Checkout Stripe → `/conta?payment=success`.
 - Validação: typecheck web e API passaram.
 
+### 2026-09-21 — Preparação de novo teste do fluxo
+
+- Removida a conta de teste `maxwellsanrosa@gmail.com` e os dados associados
+  (adesão, pagamentos, resgates, avaliações e referências).
+- A sessão OAuth do conector Supabase precisou ser renovada antes da operação.
+- Verificação final: zero registos em `auth.users` e `profiles` para a conta.
+
+### 2026-09-21 — Confirmação de email encaminha para pagamento
+
+- Ajuste: quando uma confirmação de registo não traz `next`, o callback agora
+  usa `/checkout` como destino padrão para os tipos `signup` e `email`.
+- Resultado esperado: confirmar email → abrir automaticamente o Checkout Stripe;
+  `/conta` continua reservado para o retorno após pagamento.
+- Validação: `npm run typecheck --workspace apps/web` passou.
+
 ### 2026-09-19 — Correção do build do callback
 
 - Causa: a página `/auth/callback` usava `useSearchParams()` diretamente numa

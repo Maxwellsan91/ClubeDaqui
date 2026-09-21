@@ -6,8 +6,8 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 
 import { createClient } from "@/lib/supabase/client";
 
-function safeDestination(value: string | null) {
-  return value?.startsWith("/") && !value.startsWith("//") ? value : "/conta";
+function safeDestination(value: string | null, fallback = "/conta") {
+  return value?.startsWith("/") && !value.startsWith("//") ? value : fallback;
 }
 
 function AuthCallbackContent() {
@@ -27,7 +27,10 @@ function AuthCallbackContent() {
       const destination =
         type === "recovery"
           ? "/conta/atualizar-senha"
-          : safeDestination(searchParams.get("next"));
+          : safeDestination(
+              searchParams.get("next"),
+              type === "signup" || type === "email" ? "/checkout" : "/conta",
+            );
 
       if (code) {
         const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(
