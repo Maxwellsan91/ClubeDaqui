@@ -374,7 +374,7 @@ export function StickyRedeemBar({
       {open && (
         <div
           ref={sheetRef}
-          className="fixed inset-x-0 bottom-0 z-[70] max-h-[calc(100dvh-0.5rem)] w-full max-w-full touch-pan-y overflow-y-auto overscroll-contain rounded-t-3xl bg-white shadow-2xl"
+          className="fixed inset-0 z-[70] h-[100dvh] max-h-[100dvh] w-full max-w-full touch-pan-y overflow-y-auto overscroll-contain rounded-none bg-white shadow-2xl sm:inset-x-0 sm:inset-y-auto sm:bottom-0 sm:h-auto sm:max-h-[calc(100dvh-0.5rem)] sm:rounded-t-3xl"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
           {/* Handle + close button — inner wrapper is relative */}

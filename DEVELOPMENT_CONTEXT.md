@@ -1196,6 +1196,17 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   web, `WEB_URL` no projeto API, Redirect URLs/Site URL do Supabase, endpoint
   do webhook Stripe e restrições de website do Google Maps.
 - Validação: `npm run typecheck --workspace apps/api` passou.
+- Decisão temporária: as chaves Web do Google Maps permanecem sem restrições
+  durante os testes; configurar restrições de domínio e API antes da publicação
+  definitiva.
+
+- A conta de teste `maxwellsanrosa@gmail.com` foi removida novamente em
+  2026-09-21 para novo teste do fluxo completo; verificação final: zero em
+  `auth.users` e `profiles`.
+
+- A conta parceira de teste `aadega@mail.com` foi identificada como `PARTNER`
+  ativa e recebeu uma password temporária para validação manual; a password não
+  é guardada neste ficheiro.
 
 ### 2026-09-19 — Cadastro encaminha diretamente para pagamento
 
@@ -1236,6 +1247,16 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   enquanto está aberto; conteúdo com largura máxima para evitar deslocamento
   horizontal.
 - Validação: `npm run typecheck --workspace apps/web` passou.
+
+### 2026-09-21 — Sheet de resgate em ecrã inteiro no mobile
+
+- Refinamento: no mobile, o painel de valores e feedback passou a ocupar toda a
+  viewport (`100dvh`) e a página de fundo permanece fixa; o scroll, quando
+  necessário, acontece apenas dentro do painel.
+- Em ecrãs maiores, foi preservado o comportamento de bottom sheet para não
+  alterar a experiência desktop.
+- Validação: `npm run typecheck --workspace apps/web` e `git diff --check`
+  passaram.
 
 ### 2026-09-19 — Correção do build do callback
 
