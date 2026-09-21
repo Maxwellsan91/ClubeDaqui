@@ -1186,6 +1186,17 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - Documentação: README alinhado com a marca Clube Daqui e os nomes atuais dos
   workspaces.
 
+### 2026-09-21 — Migração dos domínios Vercel
+
+- Domínios novos configurados pelo utilizador:
+  `clube-daqui-web.vercel.app` e `clube-daqui-api.vercel.app`.
+- Código atualizado: CORS da API aceita o novo frontend; o fallback do checkout
+  reconhece o novo origin; plano mobile e README usam o novo domínio da API.
+- Configuração externa pendente: atualizar `NEXT_PUBLIC_API_URL` no projeto
+  web, `WEB_URL` no projeto API, Redirect URLs/Site URL do Supabase, endpoint
+  do webhook Stripe e restrições de website do Google Maps.
+- Validação: `npm run typecheck --workspace apps/api` passou.
+
 ### 2026-09-19 — Cadastro encaminha diretamente para pagamento
 
 - Objetivo: eliminar o segundo clique no `/clube` e tornar o percurso uniforme

@@ -134,7 +134,7 @@ ficam limitadas à autenticação e a operações explicitamente autorizadas.
 Exemplo (sem valores reais):
 
 ```env
-EXPO_PUBLIC_API_URL=https://clube-ribatejo-api.vercel.app
+EXPO_PUBLIC_API_URL=https://clube-daqui-api.vercel.app
 EXPO_PUBLIC_SUPABASE_URL=https://project.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=...
 GOOGLE_MAPS_ANDROID_KEY=...

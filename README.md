@@ -188,6 +188,9 @@ Na API, configure `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`,
 arrancar sem as variáveis Supabase, mas qualquer funcionalidade que consulte a
 base de dados exige as credenciais correspondentes.
 
+Em produção, use `https://clube-daqui-web.vercel.app` em `WEB_URL` e
+`https://clube-daqui-api.vercel.app` em `NEXT_PUBLIC_API_URL`.
+
 ## Supabase MCP no Codex
 
 Este projeto está registado globalmente no Codex como `supabase-clube-ribatejo`. Depois de reiniciar a sessão do Codex, use `/mcp` para confirmar que a ligação está disponível.

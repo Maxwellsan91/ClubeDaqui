@@ -15,6 +15,7 @@ export async function createApp(factory: NestApplicationFactory = NestFactory) {
   app.enableCors({
     origin: [
       config.getOrThrow("WEB_URL", { infer: true }),
+      "https://clube-daqui-web.vercel.app",
       "https://clube-ribatejo-web.vercel.app",
       "http://localhost:3000",
     ],

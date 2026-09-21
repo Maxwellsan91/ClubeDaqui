@@ -105,7 +105,8 @@ export class PaymentsService {
     const requestOrigin = request.headers.origin?.replace(/\/$/, "");
     const webUrl =
       configuredWebUrl.startsWith("http://localhost") &&
-      requestOrigin === "https://clube-ribatejo-web.vercel.app"
+      (requestOrigin === "https://clube-daqui-web.vercel.app" ||
+        requestOrigin === "https://clube-ribatejo-web.vercel.app")
         ? requestOrigin
         : configuredWebUrl;
     let session: Stripe.Checkout.Session;
