@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 const emptyAsUndefined = <T extends z.ZodTypeAny>(schema: T) =>
-  z.preprocess((value) => (value === "" ? undefined : value), schema);
+  z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    schema.optional(),
+  );
 
 const environmentSchema = z
   .object({
