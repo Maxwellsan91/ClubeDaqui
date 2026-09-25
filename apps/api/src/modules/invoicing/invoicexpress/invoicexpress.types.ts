@@ -1,5 +1,9 @@
 export type InvoiceXpressTax = { id: number; name: string; value: number };
-export type InvoiceXpressClient = { id: string | number; code?: string };
+export type InvoiceXpressClient = {
+  id: string | number;
+  code?: string;
+  fiscal_id?: string;
+};
 
 export type InvoiceXpressDocument = {
   id: string | number;

@@ -189,6 +189,14 @@ export class InvoiceXpressService implements InvoicingProvider {
       if (!(error instanceof InvoiceXpressHttpError && error.status === 404))
         throw error;
     }
+    if (!existing && input.customer.fiscalId) {
+      const response = await this.client.request<{
+        clients?: ClientResponse[];
+      }>("clients.json", {}, { fiscal_id: input.customer.fiscalId });
+      existing = response.clients?.find(
+        (client) => client.fiscal_id === input.customer.fiscalId,
+      );
+    }
     if (existing) {
       await this.client.request(
         `clients/${encodeURIComponent(String(existing.id))}.json`,

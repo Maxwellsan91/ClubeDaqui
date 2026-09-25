@@ -399,6 +399,26 @@ serena memories check
   responder, devendo ser consultados os logs da deployment e as variáveis
   Production. Nenhum token de sessão ou dado pessoal foi registado aqui.
 
+### 2026-09-25 — Pagamento confirmado, webhook pendente
+
+- A Checkout Session do teste está `paid`/`complete` no Stripe, com evento
+  `checkout.session.completed` ainda com `pending_webhooks=1`.
+- No Supabase, a payment e a membership permanecem `pending` e não existe
+  `fiscal_document`; o redirect para `/clube` é consequência desse estado.
+- Após o novo deployment, `/api/health` respondeu HTTP 200. O evento Stripe
+  precisa ser reenviado/reprocessado no Dashboard (ou aguardar o retry) para
+  atualizar a membership e iniciar a emissão InvoiceXpress.
+
+### 2026-09-25 — Correção de cliente InvoiceXpress duplicado
+
+- Após o reprocessamento do webhook, a membership foi ativada, mas a emissão
+  ficou `FAILED` porque `clients.json` respondeu HTTP 422.
+- Verificação read-only confirmou que já existia um cliente InvoiceXpress com o
+  mesmo NIF; o provider procurava apenas pelo `code` estável e tentava criar um
+  duplicado.
+- O provider foi corrigido para reutilizar também um cliente encontrado pelo
+  NIF, evitando duplicação e permitindo o retry da fatura.
+
 ### 2026-09-23 — Auditoria InvoiceXpress e proposta de schema
 
 - Auditados o webhook Stripe, `payments`, `memberships`, perfil fiscal, guards,
