@@ -419,6 +419,15 @@ serena memories check
 - O provider foi corrigido para reutilizar também um cliente encontrado pelo
   NIF, evitando duplicação e permitindo o retry da fatura.
 
+### 2026-09-25 — Limpeza da conta para novo teste fiscal
+
+- Confirmada a conta `maxwellsanrosa@gmail.com` com 2 memberships, 2 payments e
+  1 documento fiscal falhado.
+- Removidos numa transação todos os registos associados e o utilizador Auth,
+  sem afetar outras contas.
+- Verificação final: utilizador, perfis órfãos, memberships órfãs e documentos
+  fiscais órfãos = 0.
+
 ### 2026-09-23 — Auditoria InvoiceXpress e proposta de schema
 
 - Auditados o webhook Stripe, `payments`, `memberships`, perfil fiscal, guards,
