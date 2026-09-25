@@ -8,6 +8,7 @@
     "data:food-inventory": "tsx src/commands/build-food-inventory.ts",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
+    "test": "tsx --test src/modules/invoicing/*.spec.ts src/modules/payments/*.spec.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

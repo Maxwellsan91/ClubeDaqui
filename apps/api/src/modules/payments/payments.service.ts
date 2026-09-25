@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import {
   BadRequestException,
   ConflictException,
@@ -11,6 +12,7 @@ import Stripe from "stripe";
 import type { Environment } from "../../config/environment.js";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 import type { AuthenticatedRequest } from "../members/member-auth.guard.js";
+import { InvoicingService } from "../invoicing/invoicing.service.js";
 
 const MEMBERSHIP_PRICE_CENTS = 5900;
 
@@ -22,6 +24,7 @@ export class PaymentsService {
   constructor(
     private readonly config: ConfigService<Environment, true>,
     private readonly supabase: SupabaseService,
+    private readonly invoicing: InvoicingService,
   ) {}
 
   private stripe(): Stripe {
@@ -130,18 +133,20 @@ export class PaymentsService {
         { idempotencyKey: `membership-checkout-${membership.id}` },
       );
     } catch (error) {
-      await admin.from("payments").update({ status: "failed" }).eq("id", payment.id);
-      const stripeMessage = error instanceof Stripe.errors.StripeError
-        ? error.message
-        : error instanceof Error
+      await admin
+        .from("payments")
+        .update({ status: "failed" })
+        .eq("id", payment.id);
+      const stripeMessage =
+        error instanceof Stripe.errors.StripeError
           ? error.message
-          : "Não foi possível abrir o Checkout";
+          : error instanceof Error
+            ? error.message
+            : "Não foi possível abrir o Checkout";
       const message = stripeMessage.includes("No such price")
         ? "O preço Stripe configurado é inválido. Configure o ID do preço (price_...), não o ID do produto (prod_...)."
         : stripeMessage;
-      throw new BadRequestException(
-        message,
-      );
+      throw new BadRequestException(message);
     }
 
     await admin
@@ -149,7 +154,11 @@ export class PaymentsService {
       .update({ provider_checkout_session_id: session.id })
       .eq("id", payment.id);
 
-    return { url: session.url, sessionId: session.id, name: profile?.full_name };
+    return {
+      url: session.url,
+      sessionId: session.id,
+      name: profile?.full_name,
+    };
   }
 
   async handleWebhook(rawBody: Buffer, signature: string) {
@@ -183,36 +192,62 @@ export class PaymentsService {
     const session = event.data.object as Stripe.Checkout.Session;
     if (session.payment_status !== "paid") return;
 
-    const membershipId = session.metadata?.membership_id ?? session.client_reference_id;
+    const membershipId =
+      session.metadata?.membership_id ?? session.client_reference_id;
     const paymentId = session.metadata?.payment_id;
-    if (!membershipId || !paymentId) return;
+    if (
+      !membershipId ||
+      !paymentId ||
+      !session.amount_total ||
+      !session.currency
+    )
+      return;
 
     const admin = this.supabase.createAdminClient();
-    const { data: updatedPayment } = await admin
-      .from("payments")
-      .update({
-        status: "paid",
-        paid_at: new Date().toISOString(),
-        provider_payment_intent_id:
+    const email = session.customer_details?.email ?? session.customer_email;
+    const { data: processed, error } = await admin.rpc(
+      "record_stripe_payment_succeeded",
+      {
+        p_stripe_event_id: event.id,
+        p_event_type: event.type,
+        p_checkout_session_id: session.id,
+        p_payment_intent_id:
           typeof session.payment_intent === "string"
             ? session.payment_intent
             : null,
-      })
-      .eq("id", paymentId)
-      .eq("membership_id", membershipId)
-      .eq("status", "pending")
-      .select("id")
-      .maybeSingle();
-    if (!updatedPayment) return;
+        p_payment_id: paymentId,
+        p_membership_id: membershipId,
+        p_amount_cents: session.amount_total,
+        p_currency: session.currency.toUpperCase(),
+        p_paid_at: new Date(event.created * 1000).toISOString(),
+        p_customer_email: email,
+        p_livemode: event.livemode,
+      },
+    );
+    if (error)
+      throw new BadRequestException(`Pagamento inválido: ${error.message}`);
 
-    await admin
-      .from("memberships")
-      .update({ status: "active" })
-      .eq("id", membershipId)
-      .eq("status", "pending");
+    const result = (processed?.[0] ?? null) as {
+      fiscal_document_id: string;
+      already_processed: boolean;
+    } | null;
+    if (!result?.fiscal_document_id) return;
 
-    const email = session.customer_details?.email ?? session.customer_email;
-    await this.sendWelcomeEmail(email);
+    try {
+      await this.invoicing.processDocument(result.fiscal_document_id);
+    } catch {
+      this.logger.error(
+        `Fiscal document ${result.fiscal_document_id} queued for retry`,
+      );
+    }
+
+    if (!result.already_processed) {
+      try {
+        await this.sendWelcomeEmail(email);
+      } catch {
+        this.logger.error("Falha de rede ao enviar email de boas-vindas");
+      }
+    }
   }
 
   private async sendWelcomeEmail(email: string | null) {
@@ -244,7 +279,9 @@ export class PaymentsService {
       }),
     });
     if (!response.ok) {
-      this.logger.error(`Falha ao enviar email de boas-vindas: ${response.status}`);
+      this.logger.error(
+        `Falha ao enviar email de boas-vindas: ${response.status}`,
+      );
     }
   }
 }

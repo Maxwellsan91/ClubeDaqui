@@ -11,6 +11,7 @@ import { MembersModule } from "./modules/members/members.module.js";
 import { PartnerRedemptionsModule } from "./modules/partners/partner-redemptions.module.js";
 import { AdminModule } from "./modules/admin/admin.module.js";
 import { PaymentsModule } from "./modules/payments/payments.module.js";
+import { InvoicingModule } from "./modules/invoicing/invoicing.module.js";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { PaymentsModule } from "./modules/payments/payments.module.js";
     MembersModule,
     PartnerRedemptionsModule,
     AdminModule,
+    InvoicingModule,
     PaymentsModule,
   ],
 })

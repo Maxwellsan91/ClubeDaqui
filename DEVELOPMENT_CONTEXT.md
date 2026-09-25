@@ -125,6 +125,14 @@ reivindicado antes de ser apresentado como parceiro.
 - [x] Checkout Stripe de teste criado no backend com webhook idempotente e
       botão de adesão anual na página do Clube; falta configurar o webhook no
       Stripe e validar um pagamento de teste.
+- [x] Conta de teste solicitada em 2026-09-22 removida do Auth e das tabelas
+      funcionais associadas; ausência dos registos confirmada após a operação.
+- [x] Fluxo Stripe, modelos de pagamento/membership e requisitos InvoiceXpress
+      auditados; proposta de schema documentada, ainda sem implementação.
+- [x] Núcleo da integração direta NestJS → InvoiceXpress implementado com
+      idempotência, persistência, retry manual, PDF e testes mockados.
+- [ ] Aplicar/testar a migration fiscal numa branch Supabase e configurar a
+      sequência e o enquadramento de IVA/isenção antes de ativar a emissão real.
 - [ ] Configurar `SUPABASE_SERVICE_ROLE_KEY` no `apps/web/.env.local` para
       rotas admin funcionarem.
 
@@ -248,6 +256,135 @@ serena memories check
     criar a migration de importação validada.
 
 ## Diário
+
+### 2026-09-23 — Integração direta InvoiceXpress implementada localmente
+
+- Decidido não instalar a aplicação InvoiceXpress by Kapta para evitar emissão
+  duplicada e manter a lógica fiscal no NestJS.
+- Criado o módulo `invoicing` com provider abstrato, client HTTPS centralizado,
+  timeout/retry, mapper e implementação InvoiceXpress.
+- Criada a migration `20260923120000_invoicing.sql` com eventos Stripe,
+  clientes externos, documentos fiscais, constraints/RLS e RPC atómica para
+  pagamento, membership e criação do trabalho fiscal.
+- O webhook passou a usar `amount_total`/`currency` confirmados pelo Stripe,
+  ativar 12 meses a partir do pagamento e emitir fora da transação.
+- Adicionados endpoints protegidos de membro/admin, PDF sob demanda e retry
+  manual; suporte de nota de crédito e email ficou preparado.
+- Validação: lint, typecheck e build da API passaram; 13 testes unitários com
+  InvoiceXpress mockado passaram. A suite precisou de execução fora do sandbox
+  devido ao socket IPC do `tsx`.
+- A Supabase CLI não está instalada e a tentativa segura de validar a migration
+  remotamente dentro de uma transação com `ROLLBACK` ficou bloqueada porque o
+  conector Supabase exige reautenticação; nenhuma alteração remota foi feita.
+- Próximo passo: renomear a variável local para `INVOICEXPRESS_API_KEY`,
+  preencher account/sequence/tax, aplicar a migration numa branch e executar
+  um pagamento Stripe de teste.
+- Decisão posterior: `INVOICEXPRESS_SEQUENCE_ID` ficou opcional para contas de
+  demonstração; quando vazio, o provider deixa o InvoiceXpress usar a série
+  predefinida `INVOICEXPRESSDEMO`.
+- Auditoria do `.env` da API: API key, imposto e restantes campos estão
+  presentes sem expor valores; `INVOICEXPRESS_ACCOUNT_NAME` foi preenchido com
+  um URL completo e precisa conter apenas o identificador da conta.
+
+### 2026-09-23 — Conectividade InvoiceXpress validada
+
+- Executada uma verificação HTTPS apenas de leitura usando a configuração local
+  da API; não foram criados documentos nem alterados dados.
+- Os endpoints `taxes.json` e `sequences.json` responderam HTTP 200, confirmando
+  conectividade, conta acessível e autenticação aceite pela API.
+- A configuração local ainda deve ser corrigida para que
+  `INVOICEXPRESS_ACCOUNT_NAME` contenha apenas o subdomínio da conta, sem
+  `https://` nem `.app.invoicexpress.com`.
+
+### 2026-09-23 — Conta InvoiceXpress corrigida e revalidada
+
+- `INVOICEXPRESS_ACCOUNT_NAME` atualizado para `clubedaqui`.
+- Nova verificação read-only ao endpoint `taxes.json` respondeu HTTP 200; a
+  conta e a autenticação continuam acessíveis com o formato correto.
+
+### 2026-09-23 — Diagnóstico de compra sem documento fiscal
+
+- Stripe confirmou sessões Checkout pagas em modo teste; os eventos
+  `checkout.session.completed` estão configurados e sem entregas pendentes.
+- O endpoint público da API (`/api/health`) está disponível, mas não foi
+  possível consultar o estado fiscal no Supabase porque o MCP exige
+  reautenticação.
+- A configuração local ainda tem `SUPABASE_SERVICE_ROLE_KEY` vazia e a migration
+  fiscal permanece por aplicar; validar estes dois pontos no ambiente publicado
+  antes de repetir a compra.
+
+### 2026-09-25 — Auditoria antes do teste ponta a ponta
+
+- A compra Stripe em modo teste está a ser aceite e o endpoint publicado está
+  configurado para os eventos de Checkout relevantes.
+- A integração fiscal e a migration continuam como alterações locais não
+  commitadas (`apps/api/src/modules/invoicing/` e
+  `supabase/migrations/20260923120000_invoicing.sql`); por isso ainda não estão
+  disponíveis no deployment que recebe o webhook.
+- Na configuração local, `SUPABASE_SERVICE_ROLE_KEY` está vazia. A migration
+  fiscal também ainda não foi aplicada no Supabase, e o conector MCP continua a
+  exigir reautenticação.
+- Validação local da API: lint, typecheck, build e `git diff --check` passaram.
+- Para testar o fluxo real, falta: aplicar a migration, configurar as variáveis
+  no ambiente Production da API, fazer commit/deploy da API e só então repetir
+  uma compra Stripe de teste.
+
+### 2026-09-25 — Revalidação de configuração Supabase
+
+- `SUPABASE_SERVICE_ROLE_KEY` está preenchida localmente, mas o valor tem
+  prefixo de segredo de webhook Stripe (`whsec_`), não de chave administrativa
+  Supabase; consultas read-only ao REST responderam HTTP 401.
+- A variável deve ser substituída pela chave `service_role`/secret do projeto
+  Supabase, sem registar o valor neste ficheiro.
+
+### 2026-09-25 — Chave Supabase corrigida; migration ainda pendente
+
+- A nova `SUPABASE_SERVICE_ROLE_KEY` tem formato JWT válido e foi aceite pelo
+  endpoint REST do projeto.
+- `public.fiscal_documents` e `public.stripe_webhook_events` responderam HTTP
+  404 (`PGRST205`), confirmando que a migration fiscal ainda não foi aplicada
+  no Supabase remoto.
+
+### 2026-09-25 — Tentativa de aplicar migration bloqueada
+
+- A aplicação remota de `20260923120000_invoicing.sql` foi tentada após pedido
+  explícito, mas o conector MCP respondeu que requer reautenticação.
+- Nenhum SQL foi executado e nenhuma alteração remota foi feita.
+
+### 2026-09-25 — Migration fiscal aplicada no Supabase
+
+- O MCP Supabase foi reautenticado via OAuth e a migration
+  `20260923120000_invoicing.sql` foi aplicada com sucesso.
+- Verificação read-only confirmou as tabelas `public.fiscal_documents`,
+  `public.stripe_webhook_events` e `public.invoicing_customers`, todas com RLS
+  ativo e sem documentos fiscais existentes.
+- Próximo bloqueio: publicar/confirmar o código atual da API e as variáveis de
+  produção antes de repetir o pagamento Stripe.
+
+### 2026-09-23 — Auditoria InvoiceXpress e proposta de schema
+
+- Auditados o webhook Stripe, `payments`, `memberships`, perfil fiscal, guards,
+  configuração da API e ausência atual de queue/testes fiscais.
+- Documentada em `docs/INVOICEXPRESS_AUDIT_AND_SCHEMA.md` a proposta para
+  eventos Stripe, clientes por provider, documentos fiscais, RLS, RPC atómica,
+  retry, PDF, email e futuras notas de crédito.
+- Confirmado apenas o nome da variável local `INVOICE_XPRESS_API`; o segredo
+  não foi lido nem registado. O nome canónico proposto é
+  `INVOICEXPRESS_API_KEY`.
+- A documentação oficial confirma `proprietary_uid` para deduplicação, criação
+  inicial em draft, finalização separada e geração assíncrona do PDF.
+- Não foram criadas migrations nem feitas chamadas à API real.
+- Próximo passo: validar o schema e confirmar sequência/taxa/isenção antes de
+  implementar.
+
+### 2026-09-22 — Limpeza de conta de teste concluída
+
+- Identificada de forma inequívoca a única conta correspondente ao pedido.
+- Eliminados numa transação o registo Auth, perfil, adesão e dados de teste
+  associados (resgate, poupança e avaliação); não existiam pagamentos.
+- Verificação final confirmou zero registos no Auth, sessões, perfil e tabelas
+  funcionais diretamente associadas ao utilizador.
+- A conta pode voltar a percorrer o fluxo de registo desde o início.
 
 ### 2026-09-19 — Limpeza de conta de teste Stripe
 

@@ -20,6 +20,8 @@ supabase/
 - Operações críticas permanecem atómicas no PostgreSQL.
 
 Stripe (checkout e webhook) e Resend (email de boas-vindas) integram o fluxo de adesão em modo de teste.
+O InvoiceXpress é o provider fiscal, chamado exclusivamente pela API NestJS
+depois da confirmação assinada do pagamento Stripe.
 
 ## Requisitos
 
@@ -138,6 +140,67 @@ confirmada não deve obter sessão.
 - `createAdminClient()`: utiliza `service_role` apenas para operações internas previamente autorizadas no servidor.
 
 Não utilize o cliente administrativo como cliente padrão de pedidos autenticados.
+
+## InvoiceXpress Setup
+
+A integração fiscal é direta entre o NestJS e o InvoiceXpress. Não instale em
+paralelo a aplicação InvoiceXpress by Kapta no Stripe, porque ambos os fluxos
+poderiam emitir um documento para o mesmo pagamento.
+
+No InvoiceXpress, obtenha o nome da conta e a API key na área de configuração da
+API. Crie ou escolha também a sequência fiscal e confirme com o contabilista a
+taxa de IVA ou o motivo de isenção aplicável. Depois configure apenas na API:
+
+```env
+INVOICEXPRESS_ACCOUNT_NAME=your-account-name
+INVOICEXPRESS_API_KEY=your-api-key
+# Optional in the test account; leave empty to use the predefined default series
+INVOICEXPRESS_SEQUENCE_ID=
+INVOICEXPRESS_DEFAULT_TAX_NAME=IVA23
+INVOICEXPRESS_TAX_EXEMPTION_CODE=
+```
+
+`INVOICEXPRESS_TAX_EXEMPTION_CODE` é obrigatório quando a taxa configurada no
+InvoiceXpress for 0%. O sistema nunca escolhe automaticamente um código fiscal.
+`INVOICEXPRESS_BASE_URL` é opcional; por omissão é usado
+`https://{ACCOUNT_NAME}.app.invoicexpress.com`. Apenas HTTPS é aceite.
+
+`INVOICEXPRESS_SEQUENCE_ID` é opcional. Se estiver vazio, o InvoiceXpress usa a
+série predefinida da conta, incluindo a série de demonstração
+`INVOICEXPRESSDEMO`. Não coloque o nome da série nesse campo: quando for
+necessário escolher uma série específica, use o respetivo ID numérico.
+
+O nome antigo local `INVOICE_XPRESS_API` é aceite temporariamente como alias,
+mas deve ser renomeado para `INVOICEXPRESS_API_KEY`. Nunca use estas variáveis
+no Next.js ou no React Native.
+
+Aplique primeiro a migration numa branch Supabase:
+
+```text
+supabase/migrations/20260923120000_invoicing.sql
+```
+
+Para executar os testes unitários, que usam mocks e não chamam a API real:
+
+```bash
+npm test --workspace @clube-daqui/api
+```
+
+Um administrador pode consultar e repetir uma emissão falhada através de:
+
+```text
+GET  /api/admin/fiscal-documents/:id
+POST /api/admin/fiscal-documents/:id/retry
+```
+
+O membro autenticado pode listar os próprios documentos e pedir o PDF:
+
+```text
+GET /api/me/fiscal-documents
+GET /api/me/fiscal-documents/:id/pdf
+```
+
+O PDF é consultado sob demanda e a API key nunca é enviada ao browser.
 
 ## Validação de benefícios pelo parceiro
 
