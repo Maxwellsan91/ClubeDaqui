@@ -361,6 +361,44 @@ serena memories check
 - Próximo bloqueio: publicar/confirmar o código atual da API e as variáveis de
   produção antes de repetir o pagamento Stripe.
 
+### 2026-09-25 — Remoção da conta de teste para novo fluxo
+
+- Confirmada a conta `maxwellsanrosa@gmail.com` com 1 perfil, 1 membership e 1
+  pagamento; não existia documento fiscal emitido.
+- Removidos numa transação os registos de teste associados e o utilizador de
+  `auth.users`, sem afetar outras contas.
+- Verificação final: `auth.users` = 0 para a conta, sem perfis órfãos nem
+  memberships sem utilizador.
+
+### 2026-09-25 — Diagnóstico de `Load failed` no checkout
+
+- `https://clube-daqui-api.vercel.app/api/health` respondeu HTTP 500 com
+  `FUNCTION_INVOCATION_FAILED`.
+- O alias antigo `https://clube-ribatejo-api.vercel.app/api/health` respondeu
+  HTTP 404.
+- O `apps/web/.env.local` ainda aponta para o alias antigo da API. É necessário
+  atualizar `NEXT_PUBLIC_API_URL` no projeto Web da Vercel e corrigir as
+  variáveis Production da API antes de repetir o checkout.
+
+### 2026-09-25 — Revalidação das variáveis e URL do frontend
+
+- As variáveis necessárias estão preenchidas localmente e a série InvoiceXpress
+  permanece opcional para a conta demo.
+- Corrigido `apps/web/.env.local` para apontar para
+  `https://clube-daqui-api.vercel.app`.
+- O health da API publicada continua HTTP 500 (`FUNCTION_INVOCATION_FAILED`),
+  portanto a configuração Production da Vercel ou o deployment ainda precisa
+  ser corrigido; valores locais não confirmam as variáveis da Vercel.
+
+### 2026-09-25 — Falha de função no checkout publicado
+
+- O browser está a chamar o domínio novo correto da API, mas recebe “No
+  response headers”; o health público continua HTTP 500 com
+  `FUNCTION_INVOCATION_FAILED`.
+- Conclusão: a função NestJS falha no arranque/execução na Vercel antes de
+  responder, devendo ser consultados os logs da deployment e as variáveis
+  Production. Nenhum token de sessão ou dado pessoal foi registado aqui.
+
 ### 2026-09-23 — Auditoria InvoiceXpress e proposta de schema
 
 - Auditados o webhook Stripe, `payments`, `memberships`, perfil fiscal, guards,
