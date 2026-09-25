@@ -428,6 +428,14 @@ serena memories check
 - Verificação final: utilizador, perfis órfãos, memberships órfãs e documentos
   fiscais órfãos = 0.
 
+### 2026-09-25 — Fluxo fiscal ponta a ponta validado
+
+- O fluxo completo foi validado com sucesso: registo/login, Checkout Stripe,
+  webhook assinado, payment pago, membership ativa e emissão da Fatura-Recibo
+  no InvoiceXpress.
+- O retry do webhook e a reutilização de cliente por NIF ficaram validados;
+  documentos fiscais duplicados não são criados.
+
 ### 2026-09-23 — Auditoria InvoiceXpress e proposta de schema
 
 - Auditados o webhook Stripe, `payments`, `memberships`, perfil fiscal, guards,
