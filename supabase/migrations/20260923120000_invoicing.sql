@@ -159,18 +159,18 @@ begin
     set attempt_count = public.stripe_webhook_events.attempt_count + 1
   returning status into v_event_status;
 
-  select * into v_payment
-  from public.payments
-  where id = p_payment_id and membership_id = p_membership_id
+  select pmt.* into v_payment
+  from public.payments as pmt
+  where pmt.id = p_payment_id and pmt.membership_id = p_membership_id
   for update;
   if not found then raise exception 'Payment does not match membership'; end if;
   if v_payment.provider_checkout_session_id is distinct from p_checkout_session_id then
     raise exception 'Checkout session does not match payment';
   end if;
 
-  select * into v_membership
-  from public.memberships
-  where id = p_membership_id
+  select mem.* into v_membership
+  from public.memberships as mem
+  where mem.id = p_membership_id
   for update;
   if not found then raise exception 'Membership not found'; end if;
 
