@@ -1484,3 +1484,76 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - Alteração: separado o conteúdo do callback e envolvido em `Suspense` com
   fallback de confirmação.
 - Validação: `npm run typecheck --workspace apps/web` passou.
+
+### 2026-09-28 — Primeiro vídeo promocional com o plugin Brag
+
+- Adicionado e testado o plugin local `brag@brag` (marketplace
+  `latent-spaces/brag`) para analisar o produto e gerar um vídeo promocional.
+- Criada a composição Hyperframes em `brag-output-2026-09-28-114007/`, baseada
+  no fluxo real de descoberta do Clube Daqui, sem dados pessoais, segredos ou
+  conteúdo de contas de teste.
+- Resultado: `brag.mp4` em 1920x1080, 20 segundos, com áudio AAC e capa
+  `brag-poster.jpg`; a composição passou no `hyperframes check` sem erros de
+  lint/runtime, mantendo apenas avisos de edição do Studio sobre subcomposições.
+
+### 2026-09-28 — Auditoria de segurança defensiva
+
+- Foi feita uma revisão read-only de `apps/web`, `apps/api`, migrations
+  Supabase e configuração de dependências. Confirmados como presentes:
+  assinatura de webhooks Stripe, idempotência de pagamentos/faturação, guards
+  de membro/parceiro/admin, RLS nas tabelas principais, `search_path` fixo nas
+  funções `SECURITY DEFINER`, API key do InvoiceXpress apenas no backend e
+  headers básicos de segurança.
+- Riscos a tratar antes de produção: migrar o rate limit em memória para uma
+  solução distribuída, aplicar `ValidationPipe`/DTOs estritos, proteger e
+  monitorizar o formulário público de parceiros, rever uso de service-role em
+  operações de membro, configurar CSP/HSTS no ambiente final, testar grants e
+  RLS no projeto Supabase remoto e atualizar dependências móveis sinalizadas
+  pelo `npm audit`.
+- Validação local: `npm run typecheck` passou. `npm audit --omit=dev` reportou
+  18 vulnerabilidades transitivas (2 altas, 16 moderadas), sobretudo na cadeia
+  Expo/PostCSS; o teste da API ficou bloqueado pelo limite de sockets do
+  ambiente (`tsx`/`listen EPERM`), sem alteração de código.
+
+### 2026-09-28 — Planeamento de reforço de segurança
+
+- Criado `docs/SECURITY_HARDENING_PLAN.md` com o plano faseado para bloquear
+  abuso, reduzir privilégios, validar pagamentos/faturação, testar RLS,
+  atualizar dependências e preparar o release gate de segurança.
+- A ordem acordada começa por baseline, DTOs/rate limiting e autorização antes
+  de alterações de dependências ou lançamento público.
+
+### 2026-09-28 — Início da Fase 1 de segurança
+
+- Adicionado `ZodValidationPipe` para validação runtime de bodies.
+- O endpoint público `POST /api/partner-inquiries` passou a aceitar apenas os
+  três campos esperados, com trim, limites de tamanho e rejeição de campos
+  desconhecidos.
+- Validação: `npm run typecheck --workspace @clube-daqui/api`,
+  `npm run lint --workspace @clube-daqui/api` e `git diff --check` passaram.
+- Próximo passo: substituir o rate limit em memória por um mecanismo
+  distribuído e aplicar o mesmo padrão de DTO/validation aos restantes
+  endpoints.
+
+### 2026-09-28 — Rate limiting distribuído iniciado
+
+- Criada a migration `20260928130000_distributed_rate_limits.sql` com tabela e
+  função PostgreSQL protegida para contagem atómica por janela.
+- O middleware NestJS deixou de depender apenas de um `Map` local: endpoints
+  POST sensíveis consultam a RPC partilhada usando uma chave SHA-256 de IP e
+  caminho, sem guardar o IP em claro.
+- Em produção, se o backend de rate limiting estiver indisponível, o endpoint
+  protegido responde 503 em vez de permitir abuso silenciosamente; em
+  desenvolvimento mantém fallback permissivo para facilitar o trabalho local.
+- Validação: typecheck, lint da API e `git diff --check` passaram. A migration
+  ainda precisa de ser aplicada/testada numa branch Supabase antes do deploy.
+
+### 2026-09-28 — Migration de rate limiting aplicada no Supabase
+
+- A sessão OAuth do MCP Supabase foi renovada e a migration
+  `distributed_rate_limits` foi aplicada no projeto remoto.
+- Verificação remota concluída: a tabela `public.api_rate_limits` e a função
+  `public.consume_api_rate_limit(text,integer,integer)` existem; não havia
+  chaves de rate limit armazenadas antes do primeiro uso.
+- O próximo deploy da API deve incluir o código que chama esta RPC; até esse
+  deploy, o rate limiting distribuído permanece inativo na versão publicada.

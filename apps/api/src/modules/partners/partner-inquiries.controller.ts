@@ -1,39 +1,33 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   HttpCode,
   Post,
   ServiceUnavailableException,
+  UsePipes,
 } from "@nestjs/common";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
-type Inquiry = {
-  businessName: string;
-  contactName: string;
-  contact: string;
-  createdAt: string;
-};
+import { z } from "zod";
+import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe.js";
+
+const partnerInquirySchema = z
+  .object({
+    businessName: z.string().trim().min(1).max(120),
+    contactName: z.string().trim().min(1).max(120),
+    contact: z.string().trim().min(3).max(240),
+  })
+  .strict();
+
+type Inquiry = z.infer<typeof partnerInquirySchema> & { createdAt: string };
 const inquiries: Inquiry[] = [];
 @Controller("partner-inquiries")
 export class PartnerInquiriesController {
   constructor(private readonly supabase: SupabaseService) {}
   @Post()
   @HttpCode(201)
-  async create(@Body() body: Record<string, unknown>) {
-    const businessName =
-      typeof body.businessName === "string" ? body.businessName.trim() : "";
-    const contactName =
-      typeof body.contactName === "string" ? body.contactName.trim() : "";
-    const contact = typeof body.contact === "string" ? body.contact.trim() : "";
-    if (
-      businessName.length > 120 ||
-      contactName.length > 120 ||
-      contact.length > 240
-    ) {
-      throw new BadRequestException("Os campos excedem o tamanho permitido");
-    }
-    if (!businessName || !contactName || !contact)
-      throw new BadRequestException("Campos obrigatórios em falta");
+  @UsePipes(new ZodValidationPipe(partnerInquirySchema))
+  async create(@Body() body: z.infer<typeof partnerInquirySchema>) {
+    const { businessName, contactName, contact } = body;
     try {
       const { error } = await this.supabase
         .createAdminClient()
