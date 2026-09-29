@@ -70,7 +70,8 @@ export async function createApp(factory: NestApplicationFactory = NestFactory) {
         const limited =
           path.includes("auth") ||
           path.includes("partner-inquiries") ||
-          path.includes("redemptions");
+          path.includes("redemptions") ||
+          path.includes("payments/checkout");
         if (limited) {
           const rawKey = `${request.ip ?? "unknown"}:${path}`;
           const key = createHash("sha256").update(rawKey).digest("hex");
