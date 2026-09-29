@@ -1601,3 +1601,12 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - A suite da API passou: 17 testes, 0 falhas. O script `npm test` agora inclui
   estes testes de segurança juntamente com pagamentos e faturação.
 - Typecheck, lint da API e `git diff --check` também passaram.
+
+### 2026-09-29 — Deploy da validação e testes de autorização
+
+- Commit `b8024fa` publicado em `main` com os schemas Zod administrativos e os
+  testes automatizados de segurança.
+- Após o deploy, `GET /api/health` respondeu 200; `/api/admin/stats` e
+  `/api/me/profile` sem autenticação responderam 401, sem criar dados.
+- O header `X-Powered-By: Express` continua visível na API e fica registado
+  como melhoria menor pendente.
