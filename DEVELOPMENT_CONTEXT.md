@@ -1566,5 +1566,7 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   estava incluído na lista de rotas limitadas; todos os pedidos ficaram em 401.
 - Corrigido o middleware para incluir `payments/checkout`; typecheck e lint da
   API passaram. Commit publicado: `096e812`.
-- Deve repetir-se o teste após o deploy Vercel: pedidos 1–30 devem seguir para
-  autenticação e os seguintes devem responder 429, sem criar pagamentos.
+- Após o deploy, novos pedidos sem autenticação ao checkout responderam 429,
+  confirmando que o rate limiting distribuído está ativo; não foram criados
+  pagamentos. A consulta posterior ao MCP Supabase perdeu a sessão OAuth, pelo
+  que a contagem interna da tabela não foi lida nesta verificação.
