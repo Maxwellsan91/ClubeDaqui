@@ -10,12 +10,129 @@ import {
   Put,
   Req,
   UseGuards,
+  UsePipes,
 } from "@nestjs/common";
+import { z } from "zod";
 import type { AuthenticatedRequest } from "../members/member-auth.guard.js";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
 import { AdminAuthGuard } from "./admin-auth.guard.js";
+import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe.js";
 
 const MEMBERSHIP_PRICE_EUR = 24;
+
+const userStatusSchema = z
+  .object({
+    isActive: z.boolean(),
+    reason: z.string().trim().min(1).max(500),
+  })
+  .strict();
+
+const userProfileSchema = z
+  .object({
+    fullName: z.string().trim().max(200).optional(),
+    phone: z.string().trim().max(40).optional(),
+    nif: z.string().regex(/^\d{9}$/).optional(),
+  })
+  .strict();
+
+const userRoleSchema = z
+  .object({
+    role: z.enum(["MEMBER", "PARTNER", "ADMIN", "INFLUENCER"]),
+  })
+  .strict();
+
+const commissionRateSchema = z.number().finite().min(0).max(100);
+const promoteInfluencerSchema = z
+  .object({
+    commissionRate: commissionRateSchema.optional(),
+    customCode: z.string().trim().min(3).max(32).regex(/^[A-Za-z0-9_-]+$/).optional(),
+  })
+  .strict();
+
+const businessCreateSchema = z
+  .object({
+    name: z.string().trim().min(1).max(160).optional(),
+    slug: z.string().trim().min(1).max(160).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
+    description: z.string().trim().max(5_000).optional(),
+    categorySlug: z.string().trim().max(160).optional(),
+  })
+  .strict();
+
+const businessUpdateSchema = z
+  .object({
+    name: z.string().trim().max(160).optional(),
+    description: z.string().trim().max(5_000).optional(),
+    isActive: z.boolean().optional(),
+    phone: z.string().trim().max(40).optional(),
+    instagram: z.string().trim().max(240).optional(),
+    websiteUrl: z.string().trim().max(500).optional(),
+  })
+  .strict();
+
+const businessFullUpdateSchema = z
+  .object({
+    name: z.string().trim().max(160).optional(),
+    description: z.string().trim().max(5_000).optional(),
+    phone: z.string().trim().max(40).optional(),
+    instagram: z.string().trim().max(240).optional(),
+    websiteUrl: z.string().trim().max(500).optional(),
+    imageUrl: z.string().trim().max(1_000).optional(),
+    isActive: z.boolean().optional(),
+    categorySlug: z.string().trim().max(160).optional(),
+    location: z
+      .object({
+        addressLine1: z.string().trim().max(240).optional(),
+        postalCode: z.string().trim().max(20).optional(),
+        locality: z.string().trim().max(120).optional(),
+        municipality: z.string().trim().max(120).optional(),
+        latitude: z.number().finite().min(-90).max(90).nullable().optional(),
+        longitude: z.number().finite().min(-180).max(180).nullable().optional(),
+        phone: z.string().trim().max(40).optional(),
+      })
+      .strict()
+      .optional(),
+    benefit: z
+      .object({
+        title: z.string().trim().max(200).optional(),
+        description: z.string().trim().max(5_000).optional(),
+        terms: z.string().trim().max(5_000).optional(),
+        type: z.string().trim().max(80).optional(),
+      })
+      .strict()
+      .optional(),
+    benefitRules: z
+      .object({
+        allowedWeekdays: z.array(z.number().int().min(0).max(6)).max(7).optional(),
+        startsAt: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+        endsAt: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+        reservationRequired: z.boolean().optional(),
+        cycleLimit: z.number().int().min(1).max(100).optional(),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
+const referralStatusSchema = z
+  .object({
+    status: z.enum(["PENDING", "VALIDATED", "CANCELLED"]),
+  })
+  .strict();
+
+const influencerCreateSchema = z
+  .object({
+    name: z.string().trim().min(1).max(160).optional(),
+    email: z.string().trim().email().optional(),
+    commissionRate: commissionRateSchema.optional(),
+    uniqueCode: z.string().trim().min(3).max(32).regex(/^[A-Za-z0-9_-]+$/).optional(),
+    notes: z.string().trim().max(2_000).optional(),
+  })
+  .strict();
+
+const influencerUpdateSchema = influencerCreateSchema
+  .omit({ uniqueCode: true })
+  .extend({ isActive: z.boolean().optional() })
+  .strict();
 
 @Controller("admin")
 @UseGuards(AdminAuthGuard)
@@ -163,13 +280,10 @@ export class AdminController {
   }
 
   @Post("users/:id/promote-influencer")
+  @UsePipes(new ZodValidationPipe(promoteInfluencerSchema))
   async promoteInfluencer(
     @Param("id") id: string,
-    @Body()
-    body: {
-      commissionRate?: number;
-      customCode?: string;
-    },
+    @Body() body: z.infer<typeof promoteInfluencerSchema>,
   ) {
     const { data: authUser, error: authError } =
       await this.db.auth.admin.getUserById(id);
@@ -313,14 +427,9 @@ export class AdminController {
   }
 
   @Post("businesses")
+  @UsePipes(new ZodValidationPipe(businessCreateSchema))
   async createBusiness(
-    @Body()
-    body: {
-      name?: string;
-      slug?: string;
-      description?: string;
-      categorySlug?: string;
-    },
+    @Body() body: z.infer<typeof businessCreateSchema>,
   ) {
     const { name, slug, description, categorySlug } = body;
     if (!name || !slug) {
@@ -351,17 +460,10 @@ export class AdminController {
   }
 
   @Patch("businesses/:id")
+  @UsePipes(new ZodValidationPipe(businessUpdateSchema))
   async updateBusiness(
     @Param("id") id: string,
-    @Body()
-    body: {
-      name?: string;
-      description?: string;
-      isActive?: boolean;
-      phone?: string;
-      instagram?: string;
-      websiteUrl?: string;
-    },
+    @Body() body: z.infer<typeof businessUpdateSchema>,
   ) {
     const patch: Record<string, unknown> = {};
     if (body.name !== undefined) patch.name = body.name;
@@ -503,41 +605,10 @@ export class AdminController {
   }
 
   @Put("businesses/:id")
+  @UsePipes(new ZodValidationPipe(businessFullUpdateSchema))
   async updateBusinessFull(
     @Param("id") id: string,
-    @Body()
-    body: {
-      name?: string;
-      description?: string;
-      phone?: string;
-      instagram?: string;
-      websiteUrl?: string;
-      imageUrl?: string;
-      isActive?: boolean;
-      categorySlug?: string;
-      location?: {
-        addressLine1?: string;
-        postalCode?: string;
-        locality?: string;
-        municipality?: string;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string;
-      };
-      benefit?: {
-        title?: string;
-        description?: string;
-        terms?: string;
-        type?: string;
-      };
-      benefitRules?: {
-        allowedWeekdays?: number[];
-        startsAt?: string;
-        endsAt?: string;
-        reservationRequired?: boolean;
-        cycleLimit?: number;
-      };
-    },
+    @Body() body: z.infer<typeof businessFullUpdateSchema>,
   ) {
     // 1. Update business
     const bizPatch: Record<string, unknown> = {};
@@ -938,9 +1009,10 @@ export class AdminController {
   }
 
   @Patch("referrals/:id")
+  @UsePipes(new ZodValidationPipe(referralStatusSchema))
   async updateReferral(
     @Param("id") id: string,
-    @Body() body: { status?: string },
+    @Body() body: z.infer<typeof referralStatusSchema>,
   ) {
     const allowed = ["PENDING", "VALIDATED", "CANCELLED"];
     if (!body.status || !allowed.includes(body.status)) {
@@ -960,15 +1032,9 @@ export class AdminController {
   }
 
   @Post("influencers")
+  @UsePipes(new ZodValidationPipe(influencerCreateSchema))
   async createInfluencer(
-    @Body()
-    body: {
-      name?: string;
-      email?: string;
-      commissionRate?: number;
-      uniqueCode?: string;
-      notes?: string;
-    },
+    @Body() body: z.infer<typeof influencerCreateSchema>,
   ) {
     const { name, email, commissionRate, notes } = body;
     if (!name || !email) return { error: "name e email são obrigatórios" };
@@ -1004,16 +1070,10 @@ export class AdminController {
   }
 
   @Patch("influencers/:id")
+  @UsePipes(new ZodValidationPipe(influencerUpdateSchema))
   async updateInfluencer(
     @Param("id") id: string,
-    @Body()
-    body: {
-      name?: string;
-      email?: string;
-      commissionRate?: number;
-      isActive?: boolean;
-      notes?: string;
-    },
+    @Body() body: z.infer<typeof influencerUpdateSchema>,
   ) {
     const patch: Record<string, unknown> = {};
     if (body.name !== undefined) patch.name = body.name;
@@ -1160,9 +1220,10 @@ export class AdminController {
   }
 
   @Patch("users/:id/status")
+  @UsePipes(new ZodValidationPipe(userStatusSchema))
   async updateUserStatus(
     @Param("id") id: string,
-    @Body() body: { isActive?: boolean; reason?: string },
+    @Body() body: z.infer<typeof userStatusSchema>,
     @Headers("authorization") auth: string,
   ) {
     if (body.isActive === undefined) return { error: "isActive é obrigatório" };
@@ -1210,9 +1271,10 @@ export class AdminController {
   }
 
   @Patch("users/:id/profile")
+  @UsePipes(new ZodValidationPipe(userProfileSchema))
   async updateUserProfile(
     @Param("id") id: string,
-    @Body() body: { fullName?: string; phone?: string; nif?: string },
+    @Body() body: z.infer<typeof userProfileSchema>,
   ) {
     const patch: Record<string, unknown> = {};
     if (body.fullName !== undefined)
@@ -1268,9 +1330,10 @@ export class AdminController {
   // ── Partner role management ────────────────────────────────────────────
 
   @Patch("users/:id/role")
+  @UsePipes(new ZodValidationPipe(userRoleSchema))
   async updateUserRole(
     @Param("id") id: string,
-    @Body() body: { role?: string },
+    @Body() body: z.infer<typeof userRoleSchema>,
     @Req() request: AuthenticatedRequest,
   ) {
     const allowed = ["MEMBER", "PARTNER", "ADMIN", "INFLUENCER"];

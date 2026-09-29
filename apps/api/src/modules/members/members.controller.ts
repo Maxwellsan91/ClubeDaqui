@@ -9,8 +9,11 @@ import {
   Body,
   Req,
   UseGuards,
+  UsePipes,
 } from "@nestjs/common";
+import { z } from "zod";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
+import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe.js";
 import {
   MemberAuthGuard,
   type AuthenticatedRequest,
@@ -19,9 +22,42 @@ import {
 /* Supabase's untyped query builder is normalized into the response contracts below. */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
 
-type FinancialBody = { total_bill_amount?: unknown; discount_amount?: unknown };
-type AttemptBody = { benefit_id?: unknown; business_location_id?: unknown };
-type ReviewBody = { rating?: unknown; comment?: unknown };
+const profileSchema = z
+  .object({
+    fullName: z.string().trim().max(200).optional(),
+    phone: z.string().trim().max(40).optional(),
+    nif: z.string().regex(/^\d{9}$/).optional(),
+  })
+  .strict();
+
+const moneyValue = z.union([
+  z.number().finite().min(0).max(1_000_000),
+  z.string().trim().regex(/^\d{1,7}(?:[.,]\d{1,2})?$/),
+]);
+
+const financialSchema = z
+  .object({
+    total_bill_amount: moneyValue,
+    discount_amount: moneyValue,
+  })
+  .strict();
+
+const attemptSchema = z
+  .object({
+    benefit_id: z.string().trim().min(1).max(80),
+    business_location_id: z.string().trim().min(1).max(80),
+  })
+  .strict();
+
+const reviewSchema = z
+  .object({
+    rating: z.union([
+      z.number().int().min(1).max(5),
+      z.string().regex(/^[1-5]$/),
+    ]),
+    comment: z.string().trim().max(2_000).optional(),
+  })
+  .strict();
 
 @Controller("me")
 @UseGuards(MemberAuthGuard)
@@ -116,9 +152,10 @@ export class MembersController {
   }
 
   @Patch("profile")
+  @UsePipes(new ZodValidationPipe(profileSchema))
   async updateProfile(
     @Req() request: AuthenticatedRequest,
-    @Body() body: { fullName?: string; phone?: string; nif?: string },
+    @Body() body: z.infer<typeof profileSchema>,
   ) {
     const client = this.supabase.createUserClient(request.accessToken);
 
@@ -170,9 +207,10 @@ export class MembersController {
   }
 
   @Post("redemptions/:id/financials")
+  @UsePipes(new ZodValidationPipe(financialSchema))
   async recordFinancials(
     @Param("id") redemptionId: string,
-    @Body() body: FinancialBody,
+    @Body() body: z.infer<typeof financialSchema>,
     @Req() request: AuthenticatedRequest,
   ) {
     const total = this.amount(body.total_bill_amount);
@@ -341,8 +379,9 @@ export class MembersController {
   }
 
   @Post("redemptions/attempt")
+  @UsePipes(new ZodValidationPipe(attemptSchema))
   async createAttempt(
-    @Body() body: AttemptBody,
+    @Body() body: z.infer<typeof attemptSchema>,
     @Req() request: AuthenticatedRequest,
   ) {
     if (
@@ -394,9 +433,10 @@ export class MembersController {
   }
 
   @Post("redemptions/:id/review")
+  @UsePipes(new ZodValidationPipe(reviewSchema))
   async submitReview(
     @Param("id") redemptionId: string,
-    @Body() body: ReviewBody,
+    @Body() body: z.infer<typeof reviewSchema>,
     @Req() request: AuthenticatedRequest,
   ) {
     const rating =

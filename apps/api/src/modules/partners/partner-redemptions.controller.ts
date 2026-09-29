@@ -7,15 +7,22 @@ import {
   Post,
   Req,
   UseGuards,
+  UsePipes,
 } from "@nestjs/common";
+import { z } from "zod";
 import { SupabaseService } from "../../infrastructure/supabase/supabase.service.js";
+import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe.js";
 import { type AuthenticatedRequest } from "../members/member-auth.guard.js";
 import { PartnerAuthGuard } from "./partner-auth.guard.js";
 
 /* Supabase's untyped RPC result is normalized into the response contracts below. */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-type RedemptionCodeBody = { manual_code?: unknown };
+const redemptionCodeSchema = z
+  .object({
+    manual_code: z.string().trim().regex(/^\d{6}$/),
+  })
+  .strict();
 
 @Controller("partner/redemptions")
 @UseGuards(PartnerAuthGuard)
@@ -24,8 +31,9 @@ export class PartnerRedemptionsController {
 
   @Post("preview")
   @HttpCode(200)
+  @UsePipes(new ZodValidationPipe(redemptionCodeSchema))
   async preview(
-    @Body() body: RedemptionCodeBody,
+    @Body() body: z.infer<typeof redemptionCodeSchema>,
     @Req() request: AuthenticatedRequest,
   ) {
     const manualCode = this.manualCode(body.manual_code);
@@ -49,8 +57,9 @@ export class PartnerRedemptionsController {
 
   @Post("confirm")
   @HttpCode(200)
+  @UsePipes(new ZodValidationPipe(redemptionCodeSchema))
   async confirm(
-    @Body() body: RedemptionCodeBody,
+    @Body() body: z.infer<typeof redemptionCodeSchema>,
     @Req() request: AuthenticatedRequest,
   ) {
     const manualCode = this.manualCode(body.manual_code);

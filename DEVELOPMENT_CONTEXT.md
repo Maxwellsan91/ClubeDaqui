@@ -1570,3 +1570,34 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   confirmando que o rate limiting distribuído está ativo; não foram criados
   pagamentos. A consulta posterior ao MCP Supabase perdeu a sessão OAuth, pelo
   que a contagem interna da tabela não foi lida nesta verificação.
+
+### 2026-09-29 — Validação runtime dos endpoints autenticados
+
+- Adicionados schemas Zod estritos para perfil, valores de poupança, tentativa de
+  resgate, avaliação e códigos de validação do parceiro.
+- Adicionada validação runtime aos endpoints admin de alteração de estado,
+  perfil e role de utilizadores; campos desconhecidos e formatos inválidos são
+  rejeitados antes da lógica de negócio.
+- Validação local: typecheck, lint da API e `git diff --check` passaram.
+- Ainda pendente: DTOs dos endpoints administrativos de negócios, influencers e
+  referrals, seguidos por testes de autorização 401/403.
+
+### 2026-09-29 — Validação runtime dos endpoints administrativos
+
+- Aplicados schemas Zod estritos a promoção de influencers, criação/edição de
+  negócios, edição completa de negócios, referrals e criação/edição de
+  influencers.
+- Foram adicionados limites de texto, percentagens de comissão, slugs, URLs,
+  coordenadas, horários, dias da semana e estados permitidos.
+- Validação: typecheck, lint da API e `git diff --check` passaram.
+- Próximo passo: criar testes automatizados 401/403 por role e cobrir casos
+  negativos dos novos schemas antes do próximo commit/deploy.
+
+### 2026-09-29 — Testes automatizados de segurança
+
+- Criado `apps/api/src/security.spec.ts` com testes para payloads estritos do
+  `ZodValidationPipe` e para os guards MEMBER, PARTNER e ADMIN, incluindo
+  cenários 401/403 e sessão válida.
+- A suite da API passou: 17 testes, 0 falhas. O script `npm test` agora inclui
+  estes testes de segurança juntamente com pagamentos e faturação.
+- Typecheck, lint da API e `git diff --check` também passaram.

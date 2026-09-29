@@ -1,4 +1,4 @@
-# Plano de reforço de segurança — Clube Daqui
+qual # Plano de reforço de segurança — Clube Daqui
 
 **Data:** 2026-09-28
 **Âmbito:** `apps/api`, `apps/web`, `apps/mobile`, Supabase e CI/CD
