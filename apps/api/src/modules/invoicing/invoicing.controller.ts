@@ -42,7 +42,15 @@ export class MemberFiscalDocumentsController {
 
   @Get(":id/pdf")
   async pdf(@Param("id") id: string, @Req() request: AuthenticatedRequest) {
-    return { data: { url: await this.invoicing.getPdf(id, request.user.id) } };
+    return {
+      data: {
+        url: await this.invoicing.getPdf(
+          id,
+          request.user.id,
+          request.accessToken,
+        ),
+      },
+    };
   }
 }
 

@@ -132,9 +132,11 @@ export class InvoicingService {
     }
   }
 
-  async getPdf(documentId: string, userId?: string) {
-    const admin = this.supabase.createAdminClient();
-    let query = admin
+  async getPdf(documentId: string, userId?: string, accessToken?: string) {
+    const reader = accessToken
+      ? this.supabase.createUserClient(accessToken)
+      : this.supabase.createAdminClient();
+    let query = reader
       .from("fiscal_documents")
       .select("id,user_id,status,external_document_id,pdf_url")
       .eq("id", documentId);
@@ -150,7 +152,11 @@ export class InvoicingService {
     const url = await this.provider.getDocumentPdf(
       document.external_document_id,
     );
-    await admin
+    // The member read above is RLS-protected. Only the backend cache write
+    // needs service_role because fiscal_documents is intentionally read-only
+    // for authenticated clients.
+    await this.supabase
+      .createAdminClient()
       .from("fiscal_documents")
       .update({ pdf_url: url })
       .eq("id", document.id);

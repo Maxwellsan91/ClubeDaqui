@@ -1625,3 +1625,12 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 - O service-role continua reservado para operações administrativas efetivas,
   webhooks, faturação e rate limiting distribuído.
 - Typecheck, lint e os 17 testes da API passaram.
+
+### 2026-09-29 — PDF fiscal com leitura protegida por RLS
+
+- `InvoicingService.getPdf` passou a ler o documento com o cliente autenticado
+  do membro quando recebe o Bearer token; a query continua limitada ao `user_id`.
+- O `service_role` ficou apenas para atualizar a cache `pdf_url` depois de o
+  documento já ter sido autorizado e para os fluxos internos/admin.
+- O controller de documentos fiscais passou o token autenticado para o serviço.
+- Typecheck, lint e os 17 testes da API passaram.
