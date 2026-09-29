@@ -36,6 +36,10 @@ export async function createApp(factory: NestApplicationFactory = NestFactory) {
   const config = app.get(ConfigService<Environment, true>);
 
   app.setGlobalPrefix("api");
+  const httpServer = app.getHttpAdapter().getInstance() as {
+    disable?: (setting: string) => void;
+  };
+  httpServer.disable?.("x-powered-by");
   app.enableCors({
     origin: [
       config.getOrThrow("WEB_URL", { infer: true }),
