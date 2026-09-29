@@ -1610,3 +1610,10 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   `/api/me/profile` sem autenticação responderam 401, sem criar dados.
 - O header `X-Powered-By: Express` continua visível na API e fica registado
   como melhoria menor pendente.
+
+### 2026-09-29 — Remoção do fingerprint Express
+
+- Adicionado `disable("x-powered-by")` no adapter HTTP e remoção explícita do
+  header em cada resposta, cobrindo o handler serverless da Vercel.
+- Commit `0d6c2f1` publicado. Após o deploy, `/api/health` manteve 200 e os
+  headers de segurança, sem retornar `X-Powered-By`.
