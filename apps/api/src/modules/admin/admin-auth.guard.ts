@@ -24,7 +24,7 @@ export class AdminAuthGuard implements CanActivate {
     if (error || !data.user) throw new UnauthorizedException("Invalid session");
 
     const { data: profile } = await this.supabase
-      .createAdminClient()
+      .createUserClient(token)
       .from("profiles")
       .select("role,is_active")
       .eq("id", data.user.id)

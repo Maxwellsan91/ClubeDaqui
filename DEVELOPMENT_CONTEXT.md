@@ -1617,3 +1617,11 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   header em cada resposta, cobrindo o handler serverless da Vercel.
 - Commit `0d6c2f1` publicado. Após o deploy, `/api/health` manteve 200 e os
   headers de segurança, sem retornar `X-Powered-By`.
+
+### 2026-09-29 — Redução de privilégio no guard admin
+
+- O `AdminAuthGuard` passou a consultar `profiles` com o cliente associado ao
+  Bearer token, usando RLS, em vez de `createAdminClient()`/service-role.
+- O service-role continua reservado para operações administrativas efetivas,
+  webhooks, faturação e rate limiting distribuído.
+- Typecheck, lint e os 17 testes da API passaram.
