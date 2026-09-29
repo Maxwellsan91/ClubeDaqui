@@ -56,11 +56,13 @@ export async function createApp(factory: NestApplicationFactory = NestFactory) {
       request: { method?: string; ip?: string; path?: string },
       response: {
         setHeader: (name: string, value: string) => void;
+        removeHeader?: (name: string) => void;
         status: (code: number) => { json: (body: unknown) => void };
       },
       next: () => void,
     ) => {
       const requestId = randomUUID();
+      response.removeHeader?.("X-Powered-By");
       response.setHeader("X-Request-Id", requestId);
       response.setHeader("X-Content-Type-Options", "nosniff");
       response.setHeader("X-Frame-Options", "DENY");
