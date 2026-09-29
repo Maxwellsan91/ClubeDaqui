@@ -1557,3 +1557,14 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   chaves de rate limit armazenadas antes do primeiro uso.
 - O próximo deploy da API deve incluir o código que chama esta RPC; até esse
   deploy, o rate limiting distribuído permanece inativo na versão publicada.
+
+### 2026-09-29 — Teste de endpoints e correção do rate limit do checkout
+
+- Produção verificada: `GET /api/health` respondeu 200, o preflight CORS da
+  web respondeu 204 e `POST /api/payments/checkout` sem Bearer respondeu 401.
+- O primeiro teste de 35 pedidos sem autenticação revelou que o checkout não
+  estava incluído na lista de rotas limitadas; todos os pedidos ficaram em 401.
+- Corrigido o middleware para incluir `payments/checkout`; typecheck e lint da
+  API passaram. Commit publicado: `096e812`.
+- Deve repetir-se o teste após o deploy Vercel: pedidos 1–30 devem seguir para
+  autenticação e os seguintes devem responder 429, sem criar pagamentos.
