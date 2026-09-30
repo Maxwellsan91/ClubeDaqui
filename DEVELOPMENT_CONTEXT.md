@@ -131,6 +131,14 @@ reivindicado antes de ser apresentado como parceiro.
       auditados; proposta de schema documentada, ainda sem implementação.
 - [x] Núcleo da integração direta NestJS → InvoiceXpress implementado com
       idempotência, persistência, retry manual, PDF e testes mockados.
+- [x] Skill local `design-taste-frontend` instalada para orientar a próxima
+      evolução visual do frontend; origem e versão ficam fixadas em
+      `skills-lock.json`.
+- [x] Primeira evolução audit-first da homepage aplicada: hero original do
+      Ribatejo, composição assimétrica, motion acessível e remoção de prova
+      social não verificada.
+- [x] Figma oficial ligado e homepage desktop atual importada como estrutura
+      editável no ficheiro `Clube Daqui - Homepage` (frame validado a 1440 px).
 - [ ] Aplicar/testar a migration fiscal numa branch Supabase e configurar a
       sequência e o enquadramento de IVA/isenção antes de ativar a emissão real.
 - [ ] Configurar `SUPABASE_SERVICE_ROLE_KEY` no `apps/web/.env.local` para
@@ -215,6 +223,9 @@ serena memories check
 ## Próximas ações
 
 ### Produto / Homepage
+
+- Rever colaborativamente no Figma os tokens, componentes e variantes
+  responsivas a partir da homepage desktop já importada.
 
 1. Substituir imagens de placeholder (Unsplash) no carrossel de parceiros por
    fotografias reais dos estabelecimentos.
@@ -1274,9 +1285,11 @@ passar tokens Bearer manualmente.
 **Nota operacional:**
 
 Para que as rotas admin funcionem, adicionar ao `apps/web/.env.local`:
+
 ```
 SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
 ```
+
 (Project Settings → API → `service_role`)
 
 ### Modelo para entradas futuras
@@ -1634,3 +1647,63 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   documento já ter sido autorizado e para os fluxos internos/admin.
 - O controller de documentos fiscais passou o token autenticado para o serviço.
 - Typecheck, lint e os 17 testes da API passaram.
+
+### 2026-09-29 — Skill de design frontend instalada
+
+- Confirmado no repositório oficial que `design-taste-frontend` é gratuito e
+  open source sob licença MIT; patrocínios e APIs externas mencionados pelo
+  autor são opcionais e não são necessários para usar a skill.
+- Executado `npx skills add https://github.com/Leonxlnx/taste-skill --skill
+  "design-taste-frontend"`; a instalação terminou com código 0.
+- Criados `.agents/skills/design-taste-frontend/SKILL.md` e
+  `skills-lock.json`, que fixa a origem e o hash do conteúdo instalado.
+- O instalador reportou a skill como segura, com zero alertas no Socket e risco
+  baixo no Snyk; o conteúdo deve ainda ser revisto antes de cada aplicação,
+  pois as skills executam com as permissões do agente.
+- A versão instalada é a v2, atualmente identificada pelo autor como
+  experimental. Próximo passo: fazer uma auditoria visual antes de alterar a
+  homepage, sem aplicar automaticamente regras incompatíveis com a marca.
+
+### 2026-09-29 — Primeira evolução visual da homepage
+
+- Aplicada a skill `design-taste-frontend` em modo redesign-preserve, com
+  direção `VARIANCE 7 / MOTION 5 / DENSITY 4` e manutenção das rotas, navegação,
+  logotipo, paleta olive/wine e preço existentes.
+- Gerada com a ferramenta integrada uma fotografia hero original inspirada no
+  Ribatejo, sem texto, marcas ou pessoas identificáveis. O ativo final foi
+  guardado em `apps/web/public/hero-ribatejo-v2.jpg` e comprimido de 2,4 MB para
+  cerca de 486 KB; o PNG intermédio foi removido.
+- Hero recomposto com `next/image`, prioridade LCP, altura `100dvh`, mensagem
+  mais direta e animações de entrada protegidas por `prefers-reduced-motion`.
+- As secções de processo e categorias passaram a composições assimétricas; a
+  CTA de adesão foi simplificada e os números/testemunhos não verificáveis foram
+  removidos.
+- O parallax baseado em listener global de scroll foi removido. O footer passou
+  a usar rótulos mais discretos, reduzindo repetição visual.
+- Validação: typecheck e lint dos ficheiros alterados passaram;
+  `git diff --check` passou. O build Webpack de produção terminou com sucesso.
+  O build Turbopack continua bloqueado pelo erro conhecido de binding de porta
+  (`Operation not permitted`) do ambiente, sem indicar falha no código.
+- O lint global continua bloqueado por dois erros preexistentes em
+  `registar/page.tsx` e `checkout-button.tsx`, além de avisos de hooks fora do
+  escopo desta alteração.
+- A integração oficial Figma foi identificada nesta etapa e ficou preparada
+  para autenticação; a ligação e a importação foram concluídas na tarefa
+  seguinte, registada abaixo.
+
+### 2026-09-29 — Figma ligado e homepage desktop importada
+
+- Ligação oficial ao Figma validada para a conta configurada pelo utilizador;
+  criado o ficheiro `Clube Daqui - Homepage` sem guardar credenciais no projeto.
+- A homepage local foi capturada como camadas e frames editáveis. A captura
+  final usa o breakpoint desktop de 1440 px e ficou organizada na página
+  `Homepage`, frame `Homepage / Desktop / 1440`.
+- As capturas intermédias de tablet, scroll parcial e animações ocultas foram
+  removidas; a renderização final foi conferida por screenshot e contém hero,
+  processo, categorias, parceiros, CTAs e footer.
+- O script de captura, a exceção CSP e a desativação temporária das animações
+  foram totalmente removidos do código após a importação.
+- Limitação observada: imagens externas usadas como `background-image` a partir
+  do Unsplash não foram incorporadas na captura; o hero local foi importado.
+  Próximo passo: substituir esses placeholders por ativos próprios e, depois,
+  estruturar tokens/componentes reutilizáveis e variantes mobile no Figma.

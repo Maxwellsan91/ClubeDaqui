@@ -47,7 +47,7 @@ export function AppHeader({ rightSlot, mobileRight }: AppHeaderProps) {
         <Link
           href="/"
           className="flex-none"
-          aria-label="Clube Daqui — página inicial"
+          aria-label="Clube Daqui - página inicial"
         >
           <Image
             src="/logo-light.png"

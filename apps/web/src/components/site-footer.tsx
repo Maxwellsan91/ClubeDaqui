@@ -25,7 +25,7 @@ export function SiteFooter() {
             </p>
           </div>
           <div>
-            <p className="text-gold-500 text-[10px] font-bold tracking-[0.22em] uppercase">
+            <p className="text-gold-500 text-sm font-semibold">
               {t("explore")}
             </p>
             <nav className="mt-4 flex flex-col gap-3">
@@ -50,9 +50,7 @@ export function SiteFooter() {
             </nav>
           </div>
           <div>
-            <p className="text-gold-500 text-[10px] font-bold tracking-[0.22em] uppercase">
-              {t("join")}
-            </p>
+            <p className="text-gold-500 text-sm font-semibold">{t("join")}</p>
             <nav className="mt-4 flex flex-col gap-3">
               <Link
                 href="/parceiros"
