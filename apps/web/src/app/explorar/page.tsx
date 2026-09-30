@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { type BusinessCardData } from "@/components/business-card";
 import { EmptyState } from "@/components/empty-state";
 import { AppHeader } from "@/components/app-header";
@@ -18,7 +19,7 @@ const staticPlaces: BusinessCardData[] = [
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80",
     cuisine: "Tradicional portuguesa",
     coordinates: [39.2028305, -8.6281241],
-    priceRange: "12 € – 35 €",
+    priceRange: "12 € - 35 €",
   },
   {
     slug: "a-adega",
@@ -30,7 +31,7 @@ const staticPlaces: BusinessCardData[] = [
       "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80",
     cuisine: "Cozinha portuguesa",
     coordinates: [39.1767872, -8.5833777],
-    priceRange: "15 € – 40 €",
+    priceRange: "15 € - 40 €",
   },
   {
     slug: "adega-novo-conceito",
@@ -41,7 +42,7 @@ const staticPlaces: BusinessCardData[] = [
     image:
       "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80",
     coordinates: [39.1791369, -8.5922863],
-    priceRange: "15 € – 40 €",
+    priceRange: "15 € - 40 €",
   },
   {
     slug: "experiências-do-tejo",
@@ -100,10 +101,16 @@ function HeartIcon({ filled }: { filled: boolean }) {
   );
 }
 
-export default function ExplorePage() {
-  const [filter, setFilter] = useState("Todos");
+function ExploreContent() {
+  const searchParams = useSearchParams();
+  const requestedCategory = searchParams.get("categoria");
+  const [filter, setFilter] = useState(() =>
+    requestedCategory && categoryFilters.includes(requestedCategory)
+      ? requestedCategory
+      : "Todos",
+  );
   const [showFavorites, setShowFavorites] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => searchParams.get("q")?.trim() ?? "");
   const [visibleCount, setVisibleCount] = useState(20);
   const [remotePlaces, setRemotePlaces] =
     useState<BusinessCardData[]>(staticPlaces);
@@ -529,5 +536,35 @@ export default function ExplorePage() {
         )}
       </section>
     </main>
+  );
+}
+
+function ExploreFallback() {
+  return (
+    <main className="min-h-screen">
+      <AppHeader />
+      <section
+        className="mx-auto max-w-2xl px-5 pt-8 pb-16 sm:px-8"
+        aria-label="A carregar o catálogo"
+      >
+        <div className="h-4 w-36 animate-pulse rounded-full bg-olive-900/10" />
+        <div className="mt-4 h-9 w-72 max-w-full animate-pulse rounded-full bg-olive-900/10" />
+        <div className="mt-6 h-14 animate-pulse rounded-2xl bg-olive-900/10" />
+        <div className="mt-5 flex gap-2" aria-hidden="true">
+          <div className="h-10 w-28 animate-pulse rounded-full bg-olive-900/10" />
+          <div className="h-10 w-20 animate-pulse rounded-full bg-olive-900/10" />
+          <div className="h-10 w-24 animate-pulse rounded-full bg-olive-900/10" />
+        </div>
+        <span className="sr-only">A carregar o catálogo</span>
+      </section>
+    </main>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<ExploreFallback />}>
+      <ExploreContent />
+    </Suspense>
   );
 }

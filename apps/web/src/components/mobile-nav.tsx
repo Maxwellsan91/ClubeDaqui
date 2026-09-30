@@ -115,14 +115,20 @@ export function MobileNav() {
               <Link
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex h-full flex-col items-center justify-center gap-[3px] transition-colors ${
+                className={`flex h-full flex-col items-center justify-center gap-0.5 px-1 transition active:scale-[0.97] ${
                   active ? "text-wine-700" : "text-olive-700/50"
                 }`}
               >
-                <Icon active={active} />
                 <span
-                  className={`text-[10px] font-semibold tracking-[0.04em] ${
-                    active ? "text-wine-700" : "text-olive-700/40"
+                  className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${
+                    active ? "bg-wine-700/10" : "bg-transparent"
+                  }`}
+                >
+                  <Icon active={active} />
+                </span>
+                <span
+                  className={`text-[10px] leading-4 font-semibold ${
+                    active ? "text-wine-700" : "text-olive-700/65"
                   }`}
                 >
                   {tab.label}

@@ -7,29 +7,6 @@ import { StickyRedeemBar } from "@/components/sticky-redeem-bar";
 import { ExploreGoogleMap } from "@/components/explore-google-map";
 import { createClient } from "@/lib/supabase/server";
 
-const AVATAR_COLORS = [
-  "#743b40",
-  "#5a6e5c",
-  "#b58b4a",
-  "#243029",
-  "#425044",
-  "#6b4226",
-];
-function avatarColor(name: string): string {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++)
-    hash = (hash * 31 + name.charCodeAt(i)) & 0xffffffff;
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
-function initials(name: string): string {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0].toUpperCase())
-    .join("");
-}
-
 const DAYS_PT = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 const DAYS_FULL = [
   "Segunda",
@@ -275,9 +252,6 @@ export default async function BusinessPage({
     ? `https://www.google.com/maps/dir/?api=1&destination=${business.coordinates[0]},${business.coordinates[1]}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name}, ${business.address}`)}`;
 
-  const color = avatarColor(business.name);
-  const ini = initials(business.name);
-
   // Parse rules from terms (newline-separated or as-is)
   const rules: string[] =
     benefit?.rules ??
@@ -306,40 +280,41 @@ export default async function BusinessPage({
       <AppHeader rightSlot={backLink} mobileRight={backLink} />
 
       {/* Hero image */}
-      <div
-        className="h-52 w-full bg-cover bg-center sm:h-72 lg:h-[360px]"
-        style={{ backgroundImage: `url(${business.image})` }}
-        role="img"
-        aria-label={`Imagem de ${business.name}`}
-      />
+      <div className="relative h-[34svh] max-h-[420px] min-h-64 w-full">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${business.image})` }}
+          role="img"
+          aria-label={`Imagem de ${business.name}`}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-olive-950/80 via-olive-950/10 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-5xl px-5 pb-6 text-white sm:px-8 sm:pb-8">
+          <p className="text-xs font-semibold tracking-[0.2em] text-white/80 uppercase">
+            {business.kind} <span aria-hidden="true">·</span> {business.city}
+          </p>
+          <h1 className="font-display mt-2 max-w-3xl text-3xl leading-tight tracking-tight sm:text-5xl">
+            {business.name}
+          </h1>
+        </div>
+      </div>
 
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         {/* Identity */}
-        <div className="pt-6 pb-5 sm:pt-8">
-          {/* Avatar + meta */}
-          <div className="flex items-start gap-4">
-            <div
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-base font-bold text-white shadow-sm"
-              style={{ backgroundColor: color }}
-              aria-hidden="true"
-            >
-              {ini}
-            </div>
-            <div className="min-w-0">
-              <p className="text-gold-500 text-[11px] font-bold tracking-[0.25em] uppercase">
-                {business.kind} · {business.city}
-              </p>
-              <h1 className="font-display mt-1 text-2xl leading-tight tracking-tight text-olive-900 sm:text-4xl">
-                {business.name}
-              </h1>
-              <p className="mt-0.5 text-xs text-olive-600">
-                {business.address}
-              </p>
-            </div>
+        <div className="pt-5 pb-5 sm:pt-7">
+          {/* Location and decision details */}
+          <div className="flex items-start justify-between gap-4">
+            <p className="min-w-0 text-sm leading-5 text-olive-700 sm:text-base">
+              {business.address}
+            </p>
+            {business.priceRange && (
+              <span className="shrink-0 rounded-full bg-olive-900/8 px-3 py-1.5 text-xs font-semibold text-olive-700 sm:text-sm">
+                {business.priceRange} por pessoa
+              </span>
+            )}
           </div>
 
           {/* Rating row */}
-          <div className="mt-4 flex flex-wrap items-center gap-4">
+          <div className="mt-3 flex flex-wrap items-center gap-3 sm:gap-4">
             <RatingDisplay
               rating={avgRating}
               reviewCount={reviews.length || null}
@@ -348,15 +323,10 @@ export default async function BusinessPage({
               href={mapsUrl}
               target="_blank"
               rel="noreferrer"
-              className="bg-wine-700 inline-flex min-h-[40px] items-center rounded-full px-5 py-2 text-sm font-semibold text-white"
+              className="bg-wine-700 hover:bg-wine-800 inline-flex min-h-11 items-center rounded-full px-5 py-2 text-sm font-semibold text-white transition active:scale-[0.98]"
             >
               Como chegar
             </a>
-            {business.priceRange && (
-              <span className="rounded-full bg-olive-900/8 px-4 py-2 text-sm font-semibold text-olive-700">
-                {business.priceRange} por pessoa
-              </span>
-            )}
           </div>
         </div>
 

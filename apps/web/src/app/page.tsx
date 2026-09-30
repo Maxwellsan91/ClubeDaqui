@@ -48,71 +48,17 @@ const CATEGORIES = [
   },
 ];
 
-const PARTNERS = [
-  {
-    name: "A Tasca do Bronze",
-    type: "Restaurante",
-    place: "Almeirim",
-    image:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    name: "A Adega",
-    type: "Restaurante",
-    place: "Fazendas de Almeirim",
-    image:
-      "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    name: "Adega Novo Conceito",
-    type: "Adega",
-    place: "Fazendas de Almeirim",
-    image:
-      "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    name: "Solar dos Presuntos",
-    type: "Restaurante",
-    place: "Almeirim",
-    image:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    name: "Quinta do Casal",
-    type: "Enoturismo",
-    place: "Santarém",
-    image:
-      "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    name: "Casa da Ribeira",
-    type: "Alojamento",
-    place: "Almeirim",
-    image:
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    name: "Pastelaria Central",
-    type: "Café",
-    place: "Almeirim",
-    image:
-      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    name: "Herdade do Vale",
-    type: "Lazer",
-    place: "Alpiarça",
-    image:
-      "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    name: "Taberna do Rio",
-    type: "Restaurante",
-    place: "Santarém",
-    image:
-      "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=600&q=80",
-  },
-];
+type HomepagePartner = {
+  slug: string;
+  name: string;
+  kind: string;
+  city: string;
+  imageUrl: string | null;
+};
+
+type PartnersState = "loading" | "ready" | "empty" | "error";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // Animation hooks
 
@@ -151,11 +97,76 @@ function fu(visible: boolean, delay = 0): React.CSSProperties {
 function PartnerCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { ref, visible } = useInView();
+  const [partners, setPartners] = useState<HomepagePartner[]>([]);
+  const [state, setState] = useState<PartnersState>(
+    apiUrl ? "loading" : "empty",
+  );
+  const [requestVersion, setRequestVersion] = useState(0);
+
+  useEffect(() => {
+    if (!apiUrl) return;
+
+    const controller = new AbortController();
+    fetch(`${apiUrl}/api/businesses`, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Não foi possível carregar a rede");
+        return response.json() as Promise<{
+          data?: Array<{
+            slug?: string;
+            name?: string;
+            kind?: string;
+            category?: string;
+            city?: string;
+            imageUrl?: string | null;
+          }>;
+        }>;
+      })
+      .then((payload) => {
+        const nextPartners = (payload.data ?? [])
+          .filter(
+            (item): item is typeof item & { slug: string; name: string } =>
+              Boolean(item.slug && item.name),
+          )
+          .slice(0, 9)
+          .map((item) => ({
+            slug: item.slug,
+            name: item.name,
+            kind: item.kind || item.category || "Estabelecimento local",
+            city: item.city || "Ribatejo",
+            imageUrl: item.imageUrl ?? null,
+          }));
+
+        setPartners(nextPartners);
+        setState(nextPartners.length > 0 ? "ready" : "empty");
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
+        setState("error");
+      });
+
+    return () => controller.abort();
+  }, [requestVersion]);
+
+  function scrollPartners(direction: -1 | 1) {
+    scrollRef.current?.scrollBy({
+      left: direction * 288,
+      behavior: "smooth",
+    });
+  }
+
+  function retry() {
+    setState("loading");
+    setRequestVersion((version) => version + 1);
+  }
 
   return (
     <section className="py-16 sm:py-24">
       <div ref={ref} className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="flex items-end justify-between" style={fu(visible, 0)}>
+        <div
+          className="flex items-end justify-between gap-8"
+          style={fu(visible, 0)}
+        >
           <div>
             <p
               className="text-[11px] font-semibold tracking-[0.3em] uppercase"
@@ -167,16 +178,30 @@ function PartnerCarousel() {
               Lugares que merecem ser descobertos.
             </h2>
           </div>
-          <Link
-            href="/explorar"
-            className="hidden text-sm font-semibold underline underline-offset-4 transition sm:block"
-            style={{
-              color: "#743b40",
-              textDecorationColor: "rgba(116,59,64,0.3)",
-            }}
-          >
-            Ver todos
-          </Link>
+          <div className="hidden shrink-0 items-center gap-5 sm:flex">
+            <button
+              type="button"
+              onClick={() => scrollPartners(-1)}
+              className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={state !== "ready"}
+            >
+              Anterior
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollPartners(1)}
+              className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={state !== "ready"}
+            >
+              Seguinte
+            </button>
+            <Link
+              href="/explorar"
+              className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition"
+            >
+              Ver todos
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -189,37 +214,101 @@ function PartnerCarousel() {
           className="from-cream-50 pointer-events-none absolute top-0 right-0 z-10 h-full w-16 bg-gradient-to-l to-transparent sm:w-24"
           aria-hidden="true"
         />
-        <div
-          ref={scrollRef}
-          className="flex gap-3 overflow-x-auto px-5 pb-4 sm:gap-4 sm:px-8"
-          style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none" }}
-        >
-          {PARTNERS.map(({ name, type, place, image }) => (
-            <Link
-              key={name}
-              href="/explorar"
-              className="group w-40 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white shadow-sm transition hover:shadow-md sm:w-64"
-              style={{ scrollSnapAlign: "start" }}
-            >
-              <div
-                className="h-[100px] overflow-hidden bg-cover bg-center transition duration-500 group-hover:scale-105 sm:h-[160px]"
-                style={{ backgroundImage: `url(${image})` }}
-                aria-label={`Imagem de ${name}`}
-              />
-              <div className="p-3 sm:p-4">
-                <p
-                  className="text-[9px] font-bold tracking-[0.2em] uppercase"
-                  style={{ color: "#b58b4a" }}
+        <div aria-live="polite">
+          {state === "loading" && (
+            <div className="flex gap-3 overflow-hidden px-5 pb-4 sm:gap-4 sm:px-8">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="w-40 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white sm:w-64"
+                  aria-hidden="true"
                 >
-                  {type}
-                </p>
-                <h3 className="font-display group-hover:text-wine-700 mt-1 text-base leading-tight text-olive-900 transition-colors sm:mt-1.5 sm:text-lg">
-                  {name}
+                  <div className="h-[100px] animate-pulse bg-olive-900/10 sm:h-[160px]" />
+                  <div className="space-y-3 p-4">
+                    <div className="h-2 w-20 animate-pulse rounded-full bg-olive-900/10" />
+                    <div className="h-5 w-4/5 animate-pulse rounded-full bg-olive-900/10" />
+                    <div className="h-3 w-2/5 animate-pulse rounded-full bg-olive-900/10" />
+                  </div>
+                </div>
+              ))}
+              <span className="sr-only">A carregar estabelecimentos</span>
+            </div>
+          )}
+
+          {state === "ready" && (
+            <div
+              ref={scrollRef}
+              className="flex gap-3 overflow-x-auto px-5 pb-4 sm:gap-4 sm:px-8"
+              style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none" }}
+            >
+              {partners.map(({ slug, name, kind, city, imageUrl }) => (
+                <Link
+                  key={slug}
+                  href={`/explorar/${slug}`}
+                  className="group w-40 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:w-64"
+                  style={{ scrollSnapAlign: "start" }}
+                >
+                  {imageUrl ? (
+                    <div
+                      className="h-[100px] overflow-hidden bg-cover bg-center transition duration-500 group-hover:scale-105 sm:h-[160px]"
+                      style={{ backgroundImage: `url(${imageUrl})` }}
+                      role="img"
+                      aria-label={`Fotografia de ${name}`}
+                    />
+                  ) : (
+                    <div className="flex h-[100px] items-end bg-[linear-gradient(145deg,rgba(90,110,92,0.22),rgba(36,48,41,0.9))] p-3 sm:h-[160px] sm:p-4">
+                      <span className="text-[10px] font-semibold tracking-[0.16em] text-white/75 uppercase">
+                        Fotografia em breve
+                      </span>
+                    </div>
+                  )}
+                  <div className="p-3 sm:p-4">
+                    <p className="text-wine-700 text-[9px] font-bold tracking-[0.2em] uppercase">
+                      {kind}
+                    </p>
+                    <h3 className="font-display group-hover:text-wine-700 mt-1 text-base leading-tight text-olive-900 transition-colors sm:mt-1.5 sm:text-lg">
+                      {name}
+                    </h3>
+                    <p className="mt-0.5 text-[11px] text-olive-600">{city}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {(state === "empty" || state === "error") && (
+            <div className="mx-5 border-t border-olive-900/15 py-8 sm:mx-8 sm:flex sm:items-center sm:justify-between sm:gap-8">
+              <div>
+                <h3 className="font-display text-2xl text-olive-900">
+                  {state === "error"
+                    ? "A rede está temporariamente indisponível."
+                    : "Estamos a preparar a rede local."}
                 </h3>
-                <p className="mt-0.5 text-[11px] text-olive-600">{place}</p>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-olive-700">
+                  {state === "error"
+                    ? "Pode tentar novamente ou explorar o catálogo completo."
+                    : "Os estabelecimentos aparecem aqui assim que os dados estiverem publicados."}
+                </p>
               </div>
-            </Link>
-          ))}
+              <div className="mt-5 flex flex-wrap gap-5 sm:mt-0 sm:shrink-0">
+                {state === "error" && (
+                  <button
+                    type="button"
+                    onClick={retry}
+                    className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition"
+                  >
+                    Tentar novamente
+                  </button>
+                )}
+                <Link
+                  href="/explorar"
+                  className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition"
+                >
+                  Explorar catálogo
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -249,7 +338,7 @@ export default function HomePage() {
       <AppHeader />
 
       {/* Hero */}
-      <section className="relative flex min-h-[calc(100dvh-60px)] flex-col justify-end overflow-hidden">
+      <section className="relative flex min-h-[calc(88svh-60px)] flex-col justify-end overflow-hidden sm:min-h-[calc(100dvh-60px)]">
         <Image
           src="/hero-ribatejo-v2.jpg"
           alt="Mesa portuguesa ao pôr do sol, entre vinhas e sobreiros do Ribatejo"
@@ -267,10 +356,10 @@ export default function HomePage() {
           aria-hidden="true"
         />
 
-        <div className="relative mx-auto w-full max-w-7xl px-5 pt-20 pb-12 sm:px-8 sm:pt-24 sm:pb-16 lg:pb-20">
+        <div className="relative mx-auto w-full max-w-7xl px-5 pt-14 pb-10 sm:px-8 sm:pt-24 sm:pb-16 lg:pb-20">
           <h1
             className="font-display max-w-3xl leading-[0.92] tracking-[-0.045em] text-white motion-safe:animate-[hero-rise_0.8s_cubic-bezier(0.16,1,0.3,1)_both]"
-            style={{ fontSize: "clamp(2.2rem, 11.5vw, 6.75rem)" }}
+            style={{ fontSize: "clamp(2rem, 10vw, 6.75rem)" }}
           >
             <span className="block whitespace-nowrap">O melhor daqui,</span>
             <span className="block whitespace-nowrap">mais perto de si.</span>
@@ -279,23 +368,37 @@ export default function HomePage() {
             Descubra lugares locais, aproveite benefícios e faça parte da
             economia da nossa região.
           </p>
-          <div className="mt-8 flex flex-col gap-3 motion-safe:animate-[hero-rise_0.8s_0.18s_cubic-bezier(0.16,1,0.3,1)_both] sm:flex-row">
+          <div className="mt-8 max-w-2xl motion-safe:animate-[hero-rise_0.8s_0.18s_cubic-bezier(0.16,1,0.3,1)_both]">
+            <form
+              action="/explorar"
+              method="get"
+              className="hero-search-shell grid gap-2 rounded-2xl border border-white/35 bg-white/94 p-2 shadow-[0_18px_50px_rgba(18,27,21,0.24)] backdrop-blur-md sm:grid-cols-[1fr_auto] sm:rounded-full"
+              role="search"
+            >
+              <label className="min-w-0 px-3 pt-1 sm:px-4 sm:pt-0">
+                <span className="text-wine-700 block text-xs font-bold">
+                  Encontrar um lugar
+                </span>
+                <input
+                  type="search"
+                  name="q"
+                  className="hero-search-input mt-0.5 w-full bg-transparent py-1 text-base text-olive-900 outline-none placeholder:text-olive-700/55"
+                  placeholder="Nome, local ou tipo"
+                  autoComplete="off"
+                />
+              </label>
+              <button
+                type="submit"
+                className="bg-gold-500 min-h-[50px] rounded-full px-7 text-sm font-bold whitespace-nowrap text-olive-900 transition duration-300 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-px"
+              >
+                Pesquisar
+              </button>
+            </form>
             <Link
               href="/clube"
-              className="inline-flex min-h-[50px] items-center justify-center rounded-full px-7 py-3 text-sm font-semibold whitespace-nowrap transition duration-300 hover:-translate-y-0.5 active:translate-y-px"
-              style={{ background: "#b58b4a", color: "#18221b" }}
+              className="mt-4 inline-flex min-h-[40px] items-center text-sm font-semibold text-white underline decoration-white/35 underline-offset-4 transition hover:decoration-white active:translate-y-px"
             >
               Conhecer o Clube
-            </Link>
-            <Link
-              href="/explorar"
-              className="inline-flex min-h-[50px] items-center justify-center rounded-full border px-7 py-3 text-sm font-semibold whitespace-nowrap text-white backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:bg-white/12 active:translate-y-px"
-              style={{
-                borderColor: "rgba(255,255,255,0.42)",
-                background: "rgba(18,27,21,0.34)",
-              }}
-            >
-              Explorar lugares
             </Link>
           </div>
         </div>
@@ -353,12 +456,16 @@ export default function HomePage() {
               Escolha o momento. Nós mostramos os lugares.
             </p>
           </div>
-          <div className="mt-10 grid gap-4 md:grid-cols-12 md:grid-rows-2">
+          <div
+            className="-mx-5 mt-8 flex snap-x snap-mandatory [scrollbar-width:none] gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:px-8 md:mx-0 md:mt-10 md:grid md:grid-cols-12 md:grid-rows-2 md:gap-4 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
+            role="group"
+            aria-label="Categorias para explorar"
+          >
             {CATEGORIES.map(({ label, detail, href, image }, i) => (
               <Link
                 key={label}
                 href={href}
-                className={`group relative min-h-[280px] overflow-hidden rounded-2xl md:min-h-0 ${
+                className={`group relative min-h-[280px] w-[82vw] max-w-[340px] flex-none snap-start overflow-hidden rounded-2xl sm:min-h-[300px] md:min-h-0 md:w-auto md:max-w-none ${
                   i === 0
                     ? "md:col-span-7 md:row-span-2 md:h-[620px]"
                     : "md:col-span-5 md:h-[302px]"

@@ -114,6 +114,26 @@ html.dark textarea::placeholder {
   color: rgba(168, 187, 168, 0.45);
 }
 
+/* The hero search stays a light, high-contrast surface over photography in
+   both themes. Scope the light tokens so global dark input rules do not leak
+   into this self-contained control. */
+.hero-search-shell {
+  --color-olive-700: #425044;
+  --color-olive-900: #243029;
+  --color-wine-700: #743b40;
+  --color-gold-500: #b58b4a;
+  color-scheme: light;
+}
+
+html.dark .hero-search-shell .hero-search-input {
+  color: #243029;
+  background-color: transparent;
+}
+
+html.dark .hero-search-shell .hero-search-input::placeholder {
+  color: rgba(66, 80, 68, 0.62);
+}
+
 /* Footer: scoped token override so opacity variants (text-cream-100/70, /65, /40)
    resolve to near-white rather than the near-black dark-mode cream values. */
 html.dark footer {

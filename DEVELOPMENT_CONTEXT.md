@@ -138,7 +138,17 @@ reivindicado antes de ser apresentado como parceiro.
       Ribatejo, composição assimétrica, motion acessível e remoção de prova
       social não verificada.
 - [x] Figma oficial ligado e homepage desktop atual importada como estrutura
-      editável no ficheiro `Clube Daqui - Homepage` (frame validado a 1440 px).
+      editável no ficheiro `Clube Daqui - Homepage` (`fileKey`
+      `7Mq3uG2D0TdFlIMy6c92wV`, frame `7:2`, validado a 1440 px).
+- [x] Carrossel da homepage ligado ao catálogo real `/api/businesses`, com
+      estados de carregamento, vazio, erro e ausência de fotografia.
+- [x] Pesquisa funcional integrada no hero e parâmetros `q`/`categoria`
+      consumidos por `/explorar`, com contraste preservado nos dois temas.
+- [x] Homepage ajustada para descoberta mobile-first: hero mais compacto em
+      ecrãs baixos, categorias em prateleira horizontal e navegação inferior
+      com estado ativo mais legível.
+- [x] Ficha de estabelecimento refinada com hierarquia mobile-first: título
+      integrado na imagem, morada/preço e CTA de localização agrupados no topo.
 - [ ] Aplicar/testar a migration fiscal numa branch Supabase e configurar a
       sequência e o enquadramento de IVA/isenção antes de ativar a emissão real.
 - [ ] Configurar `SUPABASE_SERVICE_ROLE_KEY` no `apps/web/.env.local` para
@@ -227,11 +237,16 @@ serena memories check
 - Rever colaborativamente no Figma os tokens, componentes e variantes
   responsivas a partir da homepage desktop já importada.
 
-1. Substituir imagens de placeholder (Unsplash) no carrossel de parceiros por
-   fotografias reais dos estabelecimentos.
-2. Ligar os dados do carrossel à API `/api/businesses` (actualmente estáticos).
-3. Reavaliar inclusão de barra de pesquisa no hero da homepage (existia no
-   design anterior e foi removida na redesign).
+1. Recolher fotografias autorizadas dos estabelecimentos e preencher
+   `image_url`; até lá, a homepage identifica honestamente a ausência da foto.
+2. ~~Ligar os dados do carrossel à API `/api/businesses`~~ - concluído em
+   2026-09-30.
+3. ~~Reavaliar inclusão de barra de pesquisa no hero da homepage~~ - pesquisa
+   funcional integrada e validada em 2026-09-30.
+4. ~~Rever no viewport mobile a ficha `/explorar/[slug]` e simplificar a
+   chamada para contacto/localização sem reduzir a informação factual~~ —
+   primeira passagem aplicada em 2026-09-30; falta validar visualmente em
+   dispositivo/viewport real.
 
 ### Mobile (Expo)
 
@@ -1707,3 +1722,82 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   do Unsplash não foram incorporadas na captura; o hero local foi importado.
   Próximo passo: substituir esses placeholders por ativos próprios e, depois,
   estruturar tokens/componentes reutilizáveis e variantes mobile no Figma.
+
+### 2026-09-30 — Rede real na homepage
+
+- Removida a lista estática de nove parceiros e respetivas fotografias
+  genéricas da homepage. O carrossel passa a consumir `/api/businesses` e cada
+  cartão aponta para a ficha real pelo respetivo `slug`.
+- Fotografias são mostradas apenas quando a API fornece `imageUrl`; na ausência
+  de um ativo autorizado, o cartão apresenta `Fotografia em breve` em vez de
+  associar uma imagem genérica ao estabelecimento.
+- Adicionados controlos anterior/seguinte no desktop e estados acessíveis de
+  carregamento, catálogo vazio, erro e repetição do pedido. O scroll horizontal
+  por toque permanece disponível no mobile.
+- Validação: Prettier, typecheck e ESLint do ficheiro alterado passaram;
+  `next build --webpack` terminou com sucesso. Mantêm-se os avisos conhecidos
+  de `middleware`, `metadataBase` e timezone do `next-intl`.
+
+### 2026-09-30 — Ficheiro Figma correto recuperado
+
+- Confirmado que o primeiro link partilhado (`Untitled`) continha apenas a
+  página vazia `Page 1`; nenhuma alteração ou captura foi persistida nesse
+  ficheiro.
+- Recuperado e validado o ficheiro correto `Clube Daqui - Homepage`, com
+  `fileKey` `7Mq3uG2D0TdFlIMy6c92wV` e frame
+  `Homepage / Desktop / 1440` (`7:2`, 1440 × 4091 px).
+- A estrutura e a renderização do frame foram verificadas: hero, processo,
+  categorias, rede, CTAs e footer estão presentes e editáveis.
+- Preparada a continuação com tokens locais e componentes reutilizáveis
+  (botões e cartão de estabelecimento), seguida da variante mobile.
+- A primeira chamada de descoberta dessa etapa foi bloqueada pelo limite de
+  chamadas MCP do plano Figma Starter. Nenhuma mutação foi feita no Figma e o
+  código da aplicação permaneceu inalterado.
+
+### 2026-09-30 — Pesquisa funcional no hero
+
+- A evolução visual continuou diretamente no código, sem dependência do Figma.
+- O hero passou a incluir um formulário de pesquisa compacto e acessível, com
+  rótulo visível, submissão GET para `/explorar?q=...` e CTA secundária para o
+  Clube.
+- `/explorar` passou a inicializar a pesquisa pelo parâmetro `q` e o filtro
+  pelos valores válidos de `categoria`; os links Comer, Dormir e Lazer da
+  homepage passam assim a abrir o catálogo já filtrado.
+- Adicionado um fallback estrutural de carregamento para o boundary de
+  `useSearchParams`, mantendo o layout estável durante a resolução da URL.
+- O formulário do hero usa tokens claros isolados para não herdar o fundo de
+  input do modo escuro e manter contraste legível sobre a fotografia.
+- Validação: Prettier dos três ficheiros alterados, ESLint direcionado e
+  typecheck do workspace Web passaram. `next build --webpack` terminou com
+  sucesso; mantêm-se apenas os avisos conhecidos de `middleware`,
+  `metadataBase` e fallback de ambiente do `next-intl`.
+
+### 2026-09-30 — Homepage priorizada para mobile
+
+- Hero reduzido para `88svh` como altura mínima em mobile, com menos espaço
+  superior e escala tipográfica mais contida; em ecrãs maiores mantém a altura
+  ligada ao viewport desktop.
+- As categorias Comer, Dormir e Lazer passaram de uma coluna longa para uma
+  prateleira horizontal com scroll-snap e indicação visual pelo próximo cartão
+  parcialmente visível. A grelha assimétrica existente mantém-se a partir de
+  `md`.
+- Navegação inferior recebeu um fundo discreto sob o separador ativo, rótulos
+  inativos mais legíveis e feedback tátil ao toque, preservando a barra fixa e
+  a área segura do dispositivo.
+- Validação: Prettier, ESLint direcionado e typecheck Web passaram;
+  `git diff --check` passou. Não foi executado teste automatizado nem build;
+  a sessão atual validou a tipagem e lint dos componentes alterados.
+
+### 2026-09-30 — Ficha do estabelecimento refinada para mobile
+
+- Hero passou a reservar mais presença à fotografia e integra nome, categoria
+  e localidade numa sobreposição com gradiente para manter contraste.
+- A identidade repetida por avatar/monograma foi retirada; morada, faixa de
+  preço e avaliação ficam agrupadas na primeira secção, com botão “Como
+  chegar” de pelo menos 44 px de altura.
+- Mantidos todos os dados factuais, benefício, contacto e mapa; o layout da
+  ficha desktop continua com a sua coluna lateral.
+- A direção visual foi orientada pela skill `design-taste-frontend`, aplicada
+  como critério de auditoria e não como template fixo.
+- Validação: Prettier, ESLint direcionado, typecheck Web e `git diff --check`
+  passaram. Não foi executado build nem validação visual num viewport real.
