@@ -3,6 +3,9 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
+import { SavingsByCategory } from "@/components/savings-by-category";
+import { SavingsOverview } from "@/components/savings-overview";
+import type { MemberSummaryData, SavingsRecord } from "@/types/member";
 
 // Data
 
@@ -60,6 +63,34 @@ type PartnersState = "loading" | "ready" | "empty" | "error";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+const memberDemoRecords: SavingsRecord[] = [
+  ["member-demo-1", "Gastronomia", 18, "2026-09-18T12:00:00.000Z"],
+  ["member-demo-2", "Experiências", 16, "2026-08-23T12:00:00.000Z"],
+  ["member-demo-3", "Alojamento", 24, "2026-07-12T12:00:00.000Z"],
+  ["member-demo-4", "Gastronomia", 22, "2026-06-04T12:00:00.000Z"],
+  ["member-demo-5", "Lazer", 24, "2026-05-19T12:00:00.000Z"],
+  ["member-demo-6", "Gastronomia", 20, "2026-04-08T12:00:00.000Z"],
+].map(([id, category, discountAmount, redeemedAt]) => ({
+  id: id as string,
+  businessName: "Parceiro de demonstração",
+  businessSlug: "",
+  category: category as SavingsRecord["category"],
+  redeemedAt: redeemedAt as string,
+  totalBillAmount: Number(discountAmount) * 2,
+  discountAmount: Number(discountAmount),
+}));
+
+const memberDemoSummary: MemberSummaryData = {
+  fullName: "Ana",
+  subscriptionStatus: "active",
+  validUntil: null,
+  usedBenefits: 6,
+  availableBenefits: 4,
+  totalBenefits: 10,
+  potentialSavings: 180,
+  subscriptionPrice: 59.9,
+};
+
 // Animation hooks
 
 function useInView(threshold = 0.12) {
@@ -96,12 +127,14 @@ function fu(visible: boolean, delay = 0): React.CSSProperties {
 
 function PartnerCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { ref, visible } = useInView();
   const [partners, setPartners] = useState<HomepagePartner[]>([]);
   const [state, setState] = useState<PartnersState>(
     apiUrl ? "loading" : "empty",
   );
   const [requestVersion, setRequestVersion] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     if (!apiUrl) return;
@@ -137,6 +170,7 @@ function PartnerCarousel() {
           }));
 
         setPartners(nextPartners);
+        setActiveIndex(0);
         setState(nextPartners.length > 0 ? "ready" : "empty");
       })
       .catch((error: unknown) => {
@@ -149,10 +183,44 @@ function PartnerCarousel() {
   }, [requestVersion]);
 
   function scrollPartners(direction: -1 | 1) {
-    scrollRef.current?.scrollBy({
-      left: direction * 288,
-      behavior: "smooth",
+    const container = scrollRef.current;
+    if (!container || partners.length === 0) return;
+    const nextIndex = Math.min(
+      Math.max(activeIndex + direction, 0),
+      partners.length - 1,
+    );
+    setActiveIndex(nextIndex);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const card = container.children[nextIndex] as HTMLElement | undefined;
+        if (!card) return;
+        const padding = Number.parseFloat(
+          getComputedStyle(container).paddingLeft,
+        );
+        container.scrollTo({
+          left: card.offsetLeft - padding,
+          behavior: "smooth",
+        });
+      });
     });
+  }
+
+  function updateActivePartner() {
+    const container = scrollRef.current;
+    if (!container) return;
+    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
+    scrollTimerRef.current = setTimeout(() => {
+      const padding = Number.parseFloat(
+        getComputedStyle(container).paddingLeft,
+      );
+      const left = container.scrollLeft + padding + 8;
+      let selected = 0;
+      Array.from(container.children).forEach((child, index) => {
+        const card = child as HTMLElement;
+        if (card.offsetLeft <= left) selected = index;
+      });
+      setActiveIndex(selected);
+    }, 100);
   }
 
   function retry() {
@@ -161,45 +229,31 @@ function PartnerCarousel() {
   }
 
   return (
-    <section className="py-16 sm:py-24">
+    <section className="dark-olive-surface overflow-hidden bg-[#172923] py-16 sm:py-24">
       <div ref={ref} className="mx-auto max-w-7xl px-5 sm:px-8">
         <div
-          className="flex items-end justify-between gap-8"
+          className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end sm:gap-8"
           style={fu(visible, 0)}
         >
           <div>
-            <p
-              className="text-[11px] font-semibold tracking-[0.3em] uppercase"
-              style={{ color: "#743b40" }}
-            >
-              A nossa rede
+            <p className="text-gold-400 text-[11px] font-semibold tracking-[0.3em] uppercase">
+              Lugares do Ribatejo
             </p>
-            <h2 className="font-display mt-3 text-4xl tracking-tight text-olive-900 sm:text-5xl">
-              Lugares que merecem ser descobertos.
+            <h2 className="font-display text-cream-50 mt-3 max-w-3xl text-4xl leading-[1.04] tracking-tight sm:text-5xl lg:text-6xl">
+              Descubra o Ribatejo, um lugar de cada vez.
             </h2>
+            <p className="text-cream-100/70 mt-4 max-w-2xl text-sm leading-6 sm:text-base sm:leading-7">
+              Da mesa posta à escapadinha de fim de semana, encontre espaços
+              locais para fazer planos — e vantagens para aproveitar pelo
+              caminho.
+            </p>
           </div>
-          <div className="hidden shrink-0 items-center gap-5 sm:flex">
-            <button
-              type="button"
-              onClick={() => scrollPartners(-1)}
-              className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition disabled:cursor-not-allowed disabled:opacity-40"
-              disabled={state !== "ready"}
-            >
-              Anterior
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollPartners(1)}
-              className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition disabled:cursor-not-allowed disabled:opacity-40"
-              disabled={state !== "ready"}
-            >
-              Seguinte
-            </button>
+          <div className="flex shrink-0 items-center gap-4">
             <Link
               href="/explorar"
-              className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition"
+              className="border-cream-50/25 text-cream-50 hover:border-cream-50 hover:bg-cream-50 inline-flex rounded-full border px-5 py-3 text-sm font-semibold transition hover:text-olive-900"
             >
-              Ver todos
+              Explorar todos
             </Link>
           </div>
         </div>
@@ -207,11 +261,11 @@ function PartnerCarousel() {
 
       <div className="relative mt-8" style={fu(visible, 0.15)}>
         <div
-          className="from-cream-50 pointer-events-none absolute top-0 left-0 z-10 h-full w-16 bg-gradient-to-r to-transparent sm:w-24"
+          className="pointer-events-none absolute top-0 left-0 z-10 h-full w-8 bg-gradient-to-r from-[#172923] to-transparent sm:w-16"
           aria-hidden="true"
         />
         <div
-          className="from-cream-50 pointer-events-none absolute top-0 right-0 z-10 h-full w-16 bg-gradient-to-l to-transparent sm:w-24"
+          className="pointer-events-none absolute top-0 right-0 z-10 h-full w-8 bg-gradient-to-l from-[#172923] to-transparent sm:w-16"
           aria-hidden="true"
         />
         <div aria-live="polite">
@@ -220,10 +274,10 @@ function PartnerCarousel() {
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
                   key={index}
-                  className="w-40 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white sm:w-64"
+                  className="w-[78vw] max-w-[340px] flex-none overflow-hidden rounded-[1.5rem] border border-olive-900/10 bg-white sm:w-[300px]"
                   aria-hidden="true"
                 >
-                  <div className="h-[100px] animate-pulse bg-olive-900/10 sm:h-[160px]" />
+                  <div className="h-[280px] animate-pulse bg-olive-900/10 sm:h-[340px]" />
                   <div className="space-y-3 p-4">
                     <div className="h-2 w-20 animate-pulse rounded-full bg-olive-900/10" />
                     <div className="h-5 w-4/5 animate-pulse rounded-full bg-olive-900/10" />
@@ -238,53 +292,90 @@ function PartnerCarousel() {
           {state === "ready" && (
             <div
               ref={scrollRef}
-              className="flex gap-3 overflow-x-auto px-5 pb-4 sm:gap-4 sm:px-8"
+              className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-[6vw] pb-5 sm:gap-5 sm:px-[7vw]"
               style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none" }}
+              onScroll={updateActivePartner}
             >
-              {partners.map(({ slug, name, kind, city, imageUrl }) => (
-                <Link
-                  key={slug}
-                  href={`/explorar/${slug}`}
-                  className="group w-40 flex-none overflow-hidden rounded-2xl border border-olive-900/10 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:w-64"
-                  style={{ scrollSnapAlign: "start" }}
-                >
-                  {imageUrl ? (
-                    <div
-                      className="h-[100px] overflow-hidden bg-cover bg-center transition duration-500 group-hover:scale-105 sm:h-[160px]"
-                      style={{ backgroundImage: `url(${imageUrl})` }}
-                      role="img"
-                      aria-label={`Fotografia de ${name}`}
-                    />
-                  ) : (
-                    <div className="flex h-[100px] items-end bg-[linear-gradient(145deg,rgba(90,110,92,0.22),rgba(36,48,41,0.9))] p-3 sm:h-[160px] sm:p-4">
-                      <span className="text-[10px] font-semibold tracking-[0.16em] text-white/75 uppercase">
-                        Fotografia em breve
+              {partners.map(({ slug, name, kind, city, imageUrl }, index) => {
+                const active = activeIndex === index;
+                const genericCategory = CATEGORIES[index % CATEGORIES.length];
+                const displayImage = imageUrl ?? genericCategory.image;
+
+                return (
+                  <div
+                    key={slug}
+                    className={`group/slide relative h-[380px] flex-none transition-[width] duration-500 sm:h-[min(50vw,610px)] ${
+                      active
+                        ? "w-[76vw] max-w-[760px] sm:w-[60vw]"
+                        : "w-[53vw] max-w-[300px] sm:w-[24vw]"
+                    }`}
+                    style={{ scrollSnapAlign: "start" }}
+                  >
+                    <Link
+                      href={`/explorar/${slug}`}
+                      aria-label={`${name}, ${kind}, ${city}${imageUrl ? "" : ", imagem ilustrativa"}`}
+                      className="absolute inset-0 overflow-hidden rounded-[1.5rem] bg-olive-900 shadow-[0_24px_70px_rgba(0,0,0,0.28)]"
+                    >
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover/slide:scale-[1.04]"
+                        style={{
+                          backgroundImage: `linear-gradient(180deg,rgba(18,34,28,0.04) 20%,rgba(18,34,28,0.88) 100%),url("${displayImage}")`,
+                        }}
+                        aria-hidden="true"
+                      />
+                      <span className="absolute top-5 left-5 rounded-full border border-white/35 bg-olive-900/30 px-3 py-1.5 text-[10px] font-semibold tracking-wide text-white backdrop-blur-sm sm:top-7 sm:left-7 sm:text-xs">
+                        {kind}
                       </span>
-                    </div>
-                  )}
-                  <div className="p-3 sm:p-4">
-                    <p className="text-wine-700 text-[9px] font-bold tracking-[0.2em] uppercase">
-                      {kind}
-                    </p>
-                    <h3 className="font-display group-hover:text-wine-700 mt-1 text-base leading-tight text-olive-900 transition-colors sm:mt-1.5 sm:text-lg">
-                      {name}
-                    </h3>
-                    <p className="mt-0.5 text-[11px] text-olive-600">{city}</p>
+                      {!imageUrl && (
+                        <span className="absolute top-5 right-5 rounded-full bg-black/25 px-2.5 py-1 text-[9px] font-medium text-white/85 backdrop-blur-sm sm:top-7 sm:right-7">
+                          Imagem ilustrativa · {genericCategory.label}
+                        </span>
+                      )}
+                      <div className="absolute inset-x-0 bottom-0 p-5 text-left sm:p-8 lg:p-10">
+                        <p className="text-xs font-medium tracking-wide text-white/75 sm:text-sm">
+                          {city}
+                        </p>
+                        <h3
+                          className={`font-display mt-2 max-w-[15ch] leading-[1.02] text-white ${
+                            active
+                              ? "text-3xl sm:text-5xl lg:text-6xl"
+                              : "text-xl sm:text-2xl"
+                          }`}
+                        >
+                          {name}
+                        </h3>
+                        {active && (
+                          <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white/90 sm:mt-7">
+                            Conhecer espaço <span aria-hidden="true">↗</span>
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                    {active && index < partners.length - 1 && (
+                      <button
+                        type="button"
+                        onClick={() => scrollPartners(1)}
+                        aria-label="Avançar para o próximo lugar"
+                        className="bg-cream-50 focus-visible:ring-gold-400 absolute top-1/2 -right-6 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-[5px] border-[#172923] text-xl text-olive-900 shadow-xl transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:outline-none sm:-right-8 sm:h-16 sm:w-16 sm:text-2xl"
+                      >
+                        <span aria-hidden="true">→</span>
+                      </button>
+                    )}
                   </div>
-                </Link>
-              ))}
+                );
+              })}
             </div>
           )}
 
           {(state === "empty" || state === "error") && (
             <div className="mx-5 border-t border-olive-900/15 py-8 sm:mx-8 sm:flex sm:items-center sm:justify-between sm:gap-8">
               <div>
-                <h3 className="font-display text-2xl text-olive-900">
+                <h3 className="font-display text-cream-50 text-2xl">
                   {state === "error"
                     ? "A rede está temporariamente indisponível."
                     : "Estamos a preparar a rede local."}
                 </h3>
-                <p className="mt-2 max-w-xl text-sm leading-6 text-olive-700">
+                <p className="text-cream-100/70 mt-2 max-w-xl text-sm leading-6">
                   {state === "error"
                     ? "Pode tentar novamente ou explorar o catálogo completo."
                     : "Os estabelecimentos aparecem aqui assim que os dados estiverem publicados."}
@@ -295,14 +386,14 @@ function PartnerCarousel() {
                   <button
                     type="button"
                     onClick={retry}
-                    className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition"
+                    className="text-gold-300 hover:text-gold-400 text-sm font-semibold underline underline-offset-4 transition"
                   >
                     Tentar novamente
                   </button>
                 )}
                 <Link
                   href="/explorar"
-                  className="text-wine-700 decoration-wine-700/30 hover:text-wine-800 text-sm font-semibold underline underline-offset-4 transition"
+                  className="text-gold-300 hover:text-gold-400 text-sm font-semibold underline underline-offset-4 transition"
                 >
                   Explorar catálogo
                 </Link>
@@ -310,6 +401,32 @@ function PartnerCarousel() {
             </div>
           )}
         </div>
+        {state === "ready" && partners[activeIndex] && (
+          <div className="mx-auto mt-1 flex max-w-7xl items-center gap-4 px-5 sm:px-8">
+            <p className="text-cream-50 min-w-0 flex-1 truncate text-xs font-medium">
+              {partners[activeIndex].name}
+              <span className="text-cream-100/60 ml-2">
+                {partners[activeIndex].city}
+              </span>
+            </p>
+            <div
+              className="h-px w-20 flex-none bg-white/20 sm:w-32"
+              aria-hidden="true"
+            >
+              <div
+                className="bg-gold-400 h-px transition-[width] duration-300"
+                style={{
+                  width: `${((activeIndex + 1) / partners.length) * 100}%`,
+                }}
+              />
+            </div>
+            <p className="text-cream-100/70 flex-none font-mono text-[11px]">
+              {String(activeIndex + 1).padStart(2, "0")}
+              <span className="text-cream-100/40 mx-1">/</span>
+              {String(partners.length).padStart(2, "0")}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mx-auto mt-4 max-w-7xl px-5 sm:hidden sm:px-8">
@@ -318,7 +435,7 @@ function PartnerCarousel() {
           className="text-sm font-semibold underline underline-offset-4"
           style={{ color: "#743b40" }}
         >
-          Ver todos os parceiros
+          Explorar todos os lugares
         </Link>
       </div>
     </section>
@@ -331,7 +448,6 @@ export default function HomePage() {
   const { ref: howRef, visible: howVisible } = useInView();
   const { ref: catsRef, visible: catsVisible } = useInView();
   const { ref: ctaRef, visible: ctaVisible } = useInView();
-  const { ref: b2bRef, visible: b2bVisible } = useInView();
 
   return (
     <main className="min-h-[100dvh] overflow-x-hidden">
@@ -400,6 +516,138 @@ export default function HomePage() {
             >
               Conhecer o Clube
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Member area preview */}
+      <section className="bg-cream-100 overflow-hidden px-5 py-12 sm:px-8 sm:py-24">
+        <div className="mx-auto grid max-w-7xl items-center gap-6 sm:gap-12 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
+          <div className="max-w-xl">
+            <p className="text-wine-700 text-[11px] font-semibold tracking-[0.28em] uppercase">
+              Veja como funciona a app
+            </p>
+            <h2 className="font-display mt-4 text-4xl leading-tight tracking-tight text-olive-900 sm:text-5xl lg:text-6xl">
+              Descobrir. Aproveitar. Poupar.
+            </h2>
+            <p className="mt-5 max-w-lg text-base leading-7 text-olive-700 sm:text-lg sm:leading-8">
+              Os melhores planos começam com um lugar novo. Encontre parceiros
+              locais, consulte as vantagens disponíveis e acompanhe o que já
+              poupou — tudo na área de membro.
+            </p>
+            <ol className="mt-8 space-y-3">
+              {[
+                {
+                  number: "01",
+                  title: "Encontre o próximo sítio",
+                  description:
+                    "Explore restaurantes, alojamentos e experiências da região.",
+                },
+                {
+                  number: "02",
+                  title: "Veja a vantagem antes de ir",
+                  description:
+                    "Consulte os detalhes e as condições de cada benefício.",
+                },
+                {
+                  number: "03",
+                  title: "Aproveite e acompanhe a poupança",
+                  description:
+                    "Use o benefício no parceiro e veja as suas economias na área de membro.",
+                },
+              ].map(({ number, title, description }) => (
+                <li
+                  key={number}
+                  className="member-step-card flex items-start gap-4 rounded-2xl border border-olive-900/10 bg-white/55 p-4 sm:p-5"
+                >
+                  <span className="font-display text-cream-50 flex h-10 w-10 flex-none items-center justify-center rounded-full bg-olive-900 text-sm">
+                    {number}
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-olive-900 sm:text-base">
+                      {title}
+                    </h3>
+                    <p className="mt-1 text-sm leading-6 text-olive-700">
+                      {description}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-5 text-xs leading-5 text-olive-600">
+              Exemplo ilustrativo: 124,00 € poupados em seis utilizações; após
+              59,90 € de adesão, saldo de 64,10 €.
+            </p>
+          </div>
+
+          <div className="relative flex min-h-[540px] items-center justify-center py-4 sm:min-h-[640px]">
+            <div
+              className="member-phone-shadow absolute bottom-10 left-1/2 z-0 h-5 w-40 -translate-x-1/2 rounded-[50%] bg-olive-900/20 blur-[10px]"
+              aria-hidden="true"
+            />
+            <div
+              className="member-phone relative z-10 w-[258px] rounded-[2.7rem] border-[7px] border-[#202720] bg-[#202720] p-[5px] shadow-[0_28px_70px_rgba(36,48,41,0.22)] sm:w-[278px]"
+              role="img"
+              aria-label="Pré-visualização da área real de membro com dados demonstrativos: seis utilizações, 124 euros poupados e saldo positivo de 64,10 euros"
+            >
+              <div className="member-phone-screen relative h-[506px] w-[234px] overflow-hidden rounded-[2.1rem] bg-[#f8f7f2] sm:h-[548px] sm:w-[254px]">
+                <div
+                  className="pointer-events-none absolute top-4 left-0 h-[817px] w-[390px] origin-top-left scale-[0.6] overflow-hidden bg-[#f8f7f2] sm:scale-[0.65]"
+                  aria-hidden="true"
+                >
+                  <div className="px-5 pt-9 pb-8">
+                    <div className="flex items-center gap-3">
+                      <span className="text-cream-50 flex h-10 w-10 items-center justify-center rounded-full bg-olive-900 text-sm font-semibold">
+                        CD
+                      </span>
+                      <div>
+                        <p className="text-wine-700 text-[11px] font-semibold tracking-[0.18em] uppercase">
+                          Clube Daqui
+                        </p>
+                        <p className="mt-0.5 text-xs text-olive-700">
+                          Área de membro
+                        </p>
+                      </div>
+                    </div>
+                    <h3 className="font-display mt-5 text-[26px] leading-tight text-olive-900">
+                      Olá, Ana
+                    </h3>
+                    <p className="mt-1 text-sm text-olive-700">
+                      As suas poupanças no Ribatejo.
+                    </p>
+                    <div className="mt-5">
+                      <SavingsOverview
+                        records={memberDemoRecords}
+                        summary={memberDemoSummary}
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <SavingsByCategory records={memberDemoRecords} />
+                    </div>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex h-4 items-center justify-between bg-[#f8f7f2] px-3 text-[7px] font-semibold text-olive-900">
+                  <span>9:41</span>
+                  <span className="flex items-center gap-1" aria-hidden="true">
+                    <span className="flex h-2 items-end gap-[1px]">
+                      <span className="h-1 w-[2px] rounded-t-sm bg-olive-800" />
+                      <span className="h-1.5 w-[2px] rounded-t-sm bg-olive-800" />
+                      <span className="h-2 w-[2px] rounded-t-sm bg-olive-800" />
+                    </span>
+                    <span className="flex items-center gap-[1px]">
+                      <span className="flex h-[9px] w-4 items-center rounded-[2px] border border-olive-800 p-[1px]">
+                        <span className="h-full w-full rounded-[1px] bg-olive-800" />
+                      </span>
+                      <span className="h-1 w-[2px] rounded-r-sm bg-olive-800" />
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div
+                className="pointer-events-none absolute top-[9px] left-1/2 h-[17px] w-[82px] -translate-x-1/2 rounded-full bg-[#202720]"
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -510,71 +758,91 @@ export default function HomePage() {
       {/* Partner network */}
       <PartnerCarousel />
 
-      {/* Club CTA */}
-      <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 sm:pb-24">
+      {/* Partner CTA */}
+      <section className="bg-cream-100 px-5 py-16 sm:px-8 sm:py-24">
         <div
           ref={ctaRef}
-          className="bg-cream-100 grid overflow-hidden rounded-2xl border border-olive-900/12 md:grid-cols-[1.35fr_0.65fr]"
+          className="dark-olive-surface mx-auto grid max-w-7xl overflow-hidden rounded-[2rem] bg-olive-900 shadow-[0_24px_70px_rgba(36,48,41,0.16)] md:grid-cols-[1.1fr_0.9fr]"
           style={fu(ctaVisible, 0)}
         >
           <div className="p-8 sm:p-12 lg:p-16">
-            <h2 className="font-display max-w-2xl text-4xl leading-tight tracking-tight text-olive-900 sm:text-5xl lg:text-6xl">
-              Viva mais a região.
+            <p className="text-gold-400 text-[11px] font-semibold tracking-[0.28em] uppercase">
+              Para negócios locais
+            </p>
+            <h2 className="font-display text-cream-50 mt-5 max-w-2xl text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+              O seu espaço merece ser descoberto.
             </h2>
-            <p className="mt-5 max-w-lg text-base leading-7 text-olive-700">
-              Benefícios em restaurantes, alojamentos e experiências locais,
-              reunidos numa adesão anual.
+            <p className="text-cream-100/70 mt-5 max-w-xl text-base leading-7 sm:text-lg sm:leading-8">
+              Damos visibilidade ao que é nosso. Apresente o seu estabelecimento
+              a pessoas que querem conhecer e aproveitar melhor a região.
             </p>
             <Link
-              href="/clube"
-              className="bg-wine-700 hover:bg-wine-800 mt-8 inline-flex min-h-[50px] items-center justify-center rounded-full px-8 py-3 text-sm font-semibold whitespace-nowrap text-white transition duration-300 hover:-translate-y-0.5 active:translate-y-px"
+              href="/parceiros"
+              className="bg-gold-400 hover:bg-gold-300 focus-visible:ring-cream-50 mt-8 inline-flex min-h-[52px] items-center justify-center gap-3 rounded-full px-7 py-3 text-sm font-semibold text-olive-900 transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:outline-none"
             >
-              Aderir ao Clube
+              Quero ser parceiro <span aria-hidden="true">→</span>
+            </Link>
+            <p className="text-cream-100/55 mt-4 text-xs">
+              Sem mensalidade para participar · Defina as condições do seu
+              benefício
+            </p>
+          </div>
+
+          <div className="group/partner-image relative flex min-h-[360px] flex-col justify-between gap-7 overflow-hidden border-t border-white/10 p-6 sm:min-h-[500px] sm:gap-8 sm:p-12 md:border-t-0 md:border-l lg:p-14">
+            <Image
+              src="/hero-ribatejo-v2.jpg"
+              alt=""
+              fill
+              sizes="(min-width: 768px) 40vw, 100vw"
+              className="partner-cta-image object-cover object-[64%_center]"
+              aria-hidden="true"
+            />
+            <div
+              className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,41,35,0.45)_0%,rgba(23,41,35,0.76)_48%,rgba(23,41,35,0.96)_100%)]"
+              aria-hidden="true"
+            />
+            <div
+              className="partner-cta-orbit border-gold-400/30 pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full border"
+              aria-hidden="true"
+            />
+            <div
+              className="partner-cta-orbit partner-cta-orbit-delayed border-gold-400/25 pointer-events-none absolute -top-12 -right-4 h-48 w-48 rounded-full border"
+              aria-hidden="true"
+            />
+            <div className="relative flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-cream-50/80 max-w-sm text-sm leading-6">
+                Uma parceria simples, pensada para o ritmo do seu negócio.
+              </p>
+              <span className="text-cream-50/85 flex-none rounded-full border border-white/25 bg-olive-950/30 px-3 py-1.5 text-[10px] font-semibold tracking-[0.12em] uppercase backdrop-blur-sm sm:tracking-[0.16em]">
+                Ribatejo · Rede local
+              </span>
+            </div>
+            <ol className="relative space-y-6">
+              {[
+                ["01", "Apareça no guia local"],
+                ["02", "Defina uma vantagem para membros"],
+                ["03", "Valide utilizações no seu espaço"],
+              ].map(([number, label]) => (
+                <li
+                  key={number}
+                  className="flex items-center gap-4 border-b border-white/20 pb-5 last:border-0 last:pb-0"
+                >
+                  <span className="font-display text-gold-400 text-2xl">
+                    {number}
+                  </span>
+                  <span className="text-cream-50 text-sm font-medium sm:text-base">
+                    {label}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <Link
+              href="/parceiros"
+              className="text-cream-50 hover:decoration-gold-400 relative inline-flex items-center gap-2 text-sm font-semibold underline decoration-white/50 underline-offset-4 transition"
+            >
+              Saber como funciona <span aria-hidden="true">↗</span>
             </Link>
           </div>
-          <div className="bg-wine-700 flex flex-col justify-between border-t border-olive-900/12 p-8 text-white sm:p-10 md:border-t-0 md:border-l">
-            <p className="text-sm leading-6 text-white/75">
-              Acesso durante 12 meses à rede e aos benefícios disponíveis.
-            </p>
-            <div className="mt-12">
-              <p className="font-display text-5xl leading-none">€59,90</p>
-              <p className="mt-3 text-sm text-white/70">
-                por ano, sem custos ocultos
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* B2B CTA */}
-      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <div
-          ref={b2bRef}
-          className="grid gap-8 border-t border-olive-900/15 pt-10 md:grid-cols-[1fr_auto] md:items-end"
-          style={fu(b2bVisible, 0)}
-        >
-          <div>
-            <p
-              className="text-[11px] font-semibold tracking-[0.3em] uppercase"
-              style={{ color: "#743b40" }}
-            >
-              Para estabelecimentos
-            </p>
-            <h2 className="font-display mt-4 max-w-xl text-4xl leading-tight text-olive-900 sm:text-5xl">
-              O seu negócio também pode fazer parte.
-            </h2>
-            <p className="mt-4 max-w-lg text-base leading-7 text-olive-700">
-              Apresente o seu espaço a pessoas que procuram e valorizam o que é
-              feito na região.
-            </p>
-          </div>
-          <Link
-            href="/parceiros"
-            className="inline-flex min-h-[50px] shrink-0 items-center justify-center rounded-full px-7 py-3 text-sm font-semibold whitespace-nowrap text-white transition duration-300 hover:-translate-y-0.5 active:translate-y-px"
-            style={{ background: "#743b40" }}
-          >
-            Ser parceiro
-          </Link>
         </div>
       </section>
     </main>

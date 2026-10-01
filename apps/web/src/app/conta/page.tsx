@@ -234,7 +234,7 @@ function AccountPageInner() {
         setApiStatus("fallback");
       }
     });
-  }, []);
+  }, [router, searchParams]);
 
   const byCategory = useMemo(() => {
     const map: Record<string, BusinessCardData[]> = {};

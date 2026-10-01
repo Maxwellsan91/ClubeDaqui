@@ -17,9 +17,12 @@ export function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={dark ? "Ativar modo claro" : "Ativar modo escuro"}
-      className="border-cream-50/20 text-cream-50 rounded-full border px-4 py-2 text-xs font-semibold"
+      className="border-cream-50/20 text-cream-50 flex min-h-10 items-center justify-center rounded-full border px-3 py-2 text-xs font-semibold sm:px-4"
     >
-      {dark ? "☀ Modo claro" : "☾ Modo escuro"}
+      <span aria-hidden="true">{dark ? "☀" : "☾"}</span>
+      <span className="ml-1.5 hidden sm:inline">
+        {dark ? "Modo claro" : "Modo escuro"}
+      </span>
     </button>
   );
 }

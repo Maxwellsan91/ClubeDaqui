@@ -338,7 +338,7 @@ export function StickyRedeemBar({
   if (!isAuthenticated) {
     return (
       <div
-        className="fixed inset-x-0 bottom-16 z-[60] border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm sm:bottom-0 lg:hidden"
+        className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-[60] border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm sm:bottom-0 lg:hidden"
         style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
@@ -349,10 +349,10 @@ export function StickyRedeemBar({
             </p>
           </div>
           <a
-            href="/registar"
+            href={`/entrar?redirectTo=${encodeURIComponent(`/explorar/${businessSlug}`)}`}
             className="bg-gold-500 hover:bg-gold-500/90 flex-none rounded-full px-6 py-3 text-sm font-semibold text-olive-900 transition"
           >
-            Aderir ao Clube
+            Entrar para usar
           </a>
         </div>
       </div>
@@ -669,7 +669,7 @@ export function StickyRedeemBar({
 
       {/* Sticky bar */}
       <div
-        className="fixed inset-x-0 bottom-16 z-[60] border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm sm:bottom-0 lg:hidden"
+        className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-[60] border-t border-olive-900/10 bg-white/95 px-5 py-3 backdrop-blur-sm sm:bottom-0 lg:hidden"
         style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto flex max-w-lg items-center justify-between gap-4">

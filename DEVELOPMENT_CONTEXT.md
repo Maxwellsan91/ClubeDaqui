@@ -141,14 +141,28 @@ reivindicado antes de ser apresentado como parceiro.
       editável no ficheiro `Clube Daqui - Homepage` (`fileKey`
       `7Mq3uG2D0TdFlIMy6c92wV`, frame `7:2`, validado a 1440 px).
 - [x] Carrossel da homepage ligado ao catálogo real `/api/businesses`, com
-      estados de carregamento, vazio, erro e ausência de fotografia.
+      estados de carregamento, vazio, erro e ausência de fotografia; secção
+      revista com cartões fotográficos imersivos, texto editorial e carrossel
+      assimétrico de foco: cartão ativo largo, adjacentes estreitos e parcialmente
+      visíveis, com navegação adaptada a mobile e desktop.
 - [x] Pesquisa funcional integrada no hero e parâmetros `q`/`categoria`
       consumidos por `/explorar`, com contraste preservado nos dois temas.
+- [x] Homepage apresenta no telemóvel componentes reais da área de membro com
+      dados ilustrativos, carrossel da rede local e secção dedicada a captar
+      estabelecimentos parceiros, ligada ao formulário de adesão existente.
 - [x] Homepage ajustada para descoberta mobile-first: hero mais compacto em
       ecrãs baixos, categorias em prateleira horizontal e navegação inferior
       com estado ativo mais legível.
+- [x] Nova revisão mobile da homepage: secção de membro mais compacta, bloco
+      visual para parceiros reorganizado em ecrãs estreitos e controlos do footer
+      com alvos de toque maiores e menor ocupação horizontal.
 - [x] Ficha de estabelecimento refinada com hierarquia mobile-first: título
-      integrado na imagem, morada/preço e CTA de localização agrupados no topo.
+      integrado na imagem, morada/preço e CTA de localização agrupados no topo;
+      faixa fixa de benefício posicionada acima da navegação inferior e da área
+      segura do dispositivo.
+- [x] CTA “Usar benefício” na ficha encaminha membros sem sessão para login e
+      regressa à ficha após autenticação, tanto no layout desktop como na barra
+      fixa mobile.
 - [ ] Aplicar/testar a migration fiscal numa branch Supabase e configurar a
       sequência e o enquadramento de IVA/isenção antes de ativar a emissão real.
 - [ ] Configurar `SUPABASE_SERVICE_ROLE_KEY` no `apps/web/.env.local` para
@@ -245,8 +259,11 @@ serena memories check
    funcional integrada e validada em 2026-09-30.
 4. ~~Rever no viewport mobile a ficha `/explorar/[slug]` e simplificar a
    chamada para contacto/localização sem reduzir a informação factual~~ —
-   primeira passagem aplicada em 2026-09-30; falta validar visualmente em
-   dispositivo/viewport real.
+   revisão estática e correção de sobreposição da faixa fixa aplicadas em
+   2026-10-01; falta validar visualmente em dispositivo/viewport real.
+5. ~~Rever a antevisão da área de membro na homepage~~ — o telemóvel incorpora
+   a rota real `/conta?demo=homepage`, com dados demonstrativos; captura visual
+   da nova integração ainda por confirmar.
 
 ### Mobile (Expo)
 
@@ -1801,3 +1818,190 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role_key do painel Supabase>
   como critério de auditoria e não como template fixo.
 - Validação: Prettier, ESLint direcionado, typecheck Web e `git diff --check`
   passaram. Não foi executado build nem validação visual num viewport real.
+
+### 2026-10-01 — Revisão da ficha mobile
+
+- A revisão dos elementos fixos encontrou que a faixa “Usar benefício” usava
+  `bottom-16` mesmo em dispositivos com área segura inferior. Em iPhones, esse
+  posicionamento podia sobrepor o espaço reservado pela navegação inferior.
+- As variantes autenticada e não autenticada passaram a posicionar a faixa em
+  `calc(4rem + env(safe-area-inset-bottom))` no mobile; a partir de `sm`, a faixa
+  continua no fundo do viewport, sem navegação inferior.
+- ESLint direcionado ao componente, Prettier, typecheck Web e `git diff --check`
+  passaram. O comando geral de lint continua a falhar nos erros preexistentes de
+  `registar/page.tsx` e `checkout-button.tsx`.
+- Não foi possível validar num dispositivo/viewport real nesta sessão; essa
+  confirmação visual permanece como próximo passo.
+
+### 2026-10-01 — Antevisão da área de membro na homepage
+
+- A página pública do Town4Two apresenta uma imagem da aplicação acompanhada
+  por uma explicação curta do fluxo; a homepage do Clube Daqui passou a usar uma
+  secção editorial própria para tornar a experiência do membro mais visível.
+- Criada uma composição responsiva de telemóvel em React/CSS com marca, saudação,
+  categorias e navegação de quatro separadores alinhada com a app.
+  A antevisão foi rotulada claramente e inicialmente não apresentava métricas
+  ou estados de conta fictícios.
+- A cópia descreve descoberta, utilizações, poupanças e avaliações existentes
+  na área de membro. As imagens de categoria reutilizam os ativos visuais já
+  presentes na homepage.
+- Validação: ESLint direcionado, Prettier, typecheck Web e `git diff --check`
+  passaram. Capturas Chrome mobile e desktop confirmaram o enquadramento da
+  secção, antes da alteração seguinte para mostrar valores simulados.
+
+### 2026-10-01 — Simulação de adesão ativa e movimento no mockup
+
+- A pedido do utilizador, a antevisão passou a representar uma membro com seis
+  utilizações, 124,00 € de poupanças acumuladas e uma adesão anual de 59,90 €,
+  resultando em saldo ilustrativo positivo de 64,10 €.
+- A cópia e o rótulo “Adesão ativa” identificam os valores como simulação, sem
+  os apresentar como resultados reais de membros.
+- Adicionada flutuação vertical suave de seis segundos ao telemóvel, respeitando
+  `prefers-reduced-motion`.
+- ESLint direcionado, Prettier, typecheck Web e `git diff --check` passaram.
+- Capturas Chrome mobile (390 px) e desktop (1440 px) confirmaram o cartão,
+  os valores e o enquadramento responsivo. O servidor de desenvolvimento web
+  ficou ativo em `http://localhost:3000` a pedido do utilizador.
+
+
+### 2026-10-01 — Conteúdo visível no telemóvel da homepage
+
+- O iframe da rota protegida `/conta` era redirecionado pelo middleware e
+  deixava o ecrã do telemóvel branco. A tentativa de exceção de autenticação
+  foi removida.
+- O telemóvel agora renderiza diretamente os componentes reais `SavingsOverview`
+  e `SavingsByCategory` usados na área de membro, com o perfil Ana e seis
+  utilizações demonstrativas (124,00 € poupados; saldo de 64,10 € após a
+  adesão anual de 59,90 €). Não depende de iframe, sessão, API ou rede.
+- ESLint dirigido aos componentes usados, Prettier, typecheck Web e
+  `git diff --check` passaram. Falta confirmar a renderização visual no browser.
+
+
+### 2026-10-01 — Secção “Veja como funciona a app”
+
+- Removida a frase “Interface real da área de membro; perfil e valores
+  ilustrativos.”; a natureza demonstrativa dos valores permanece explícita na
+  nota curta junto dos passos.
+- A secção ganhou título orientado à app e três passos concretos: encontrar um
+  parceiro, consultar condições do benefício e acompanhar poupanças. A lista
+  editorial acompanha no desktop e mobile a visualização do membro no telefone.
+- A estrutura segue a ideia didática da secção “Veja como funciona a app” da
+  Town4Two, com linguagem e visual próprios do Clube Daqui.
+- Prettier, ESLint direcionado, typecheck Web e `git diff --check` passaram.
+
+
+### 2026-10-01 — Secção de lugares na homepage
+
+- O título genérico foi substituído por “Descubra o Ribatejo, um lugar de cada
+  vez.” e uma introdução que evoca planos locais sem alegar parceiros ou
+  condições que não estejam confirmados.
+- Cartões do catálogo passaram a usar fotografia em destaque com gradiente,
+  categoria, localidade e seta; entradas sem foto recebem fundo gráfico com as
+  cores da marca, sem fotografia fictícia. Scroll-snap e controlos circulares
+  mantêm a navegação clara em mobile e desktop.
+- ESLint direcionado, Prettier, typecheck Web e `git diff --check` passaram.
+
+
+### 2026-10-01 — Carrossel inspirado em referência Dribbble
+
+- A secção de lugares passou de uma fila horizontal de cartões equivalentes
+  para um carrossel centrado: cartão ativo em destaque, cartões adjacentes
+  parcialmente visíveis, encaixe central ao deslizar, setas e posição/progresso.
+- Aplicada a composição ao catálogo real; não foram copiados ativos nem conteúdo
+  da referência visual.
+- ESLint direcionado, Prettier, typecheck Web e `git diff --check` passaram.
+
+
+### 2026-10-01 — Ajuste visual do carrossel à referência
+
+- A inspeção da imagem da referência mostrou um carrossel assimétrico: uma
+  fotografia larga em destaque, cartões adjacentes estreitos, fundo verde/azul
+  profundo e seta circular sobre a transição entre cartões. O primeiro ajuste
+  tinha apenas cartões centrados de dimensões próximas e não correspondia à
+  composição enviada.
+- A secção agora usa cartões com largura responsiva conforme o foco, imagens
+  em ecrã cheio, seta circular sobreposta e indicadores claros. Quando o
+  catálogo não tem fotografia, usa uma imagem genérica da categoria com a
+  indicação “Imagem ilustrativa”.
+- ESLint direcionado, Prettier, typecheck Web e `git diff --check` passaram;
+  captura local do browser indisponível nesta sessão.
+
+
+### 2026-10-01 — Variedade nas imagens genéricas do carrossel
+
+- Para cartões sem fotografia do catálogo, as imagens de exemplo agora alternam
+  entre as categorias Comer, Dormir e Lazer, com a categoria indicada junto à
+  marca “Imagem ilustrativa”. Fotografias próprias continuam a prevalecer.
+- ESLint direcionado, Prettier, typecheck Web e `git diff --check` passaram.
+
+
+### 2026-10-01 — Homepage orientada a captar parceiros
+
+- O bloco de adesão anual do membro e a chamada B2B repetida no rodapé foram
+  consolidados num único bloco de captação de parceiros logo após o catálogo.
+- A proposta destaca visibilidade local, definição do benefício e validação de
+  utilizações; CTA e link secundário levam à página `/parceiros`, cujo formulário
+  funcional já existia. Preço/benefícios do membro continuam disponíveis na
+  página própria e na navegação.
+- ESLint direcionado, Prettier, typecheck Web e `git diff --check` passaram.
+
+
+### 2026-10-01 — Imagem e motion na chamada para parceiros
+
+- O bloco de captação ganhou uma fotografia local já existente no projeto,
+  aplicada como fundo ilustrativo à área dos passos, com gradiente escuro para
+  preservar a leitura do texto.
+- Adicionados movimento lento de escala/deslocamento à fotografia e rotação
+  subtil dos círculos decorativos. As animações só correm quando o utilizador
+  não pediu redução de movimento; a regra global de redução mantém-se.
+- ESLint direcionado, Prettier, typecheck Web e `git diff --check` passaram.
+
+
+### 2026-10-01 — Revisão de cores e modo escuro da homepage
+
+- Revisão estática identificou contrastes insuficientes nos textos com opacidade
+  `cream-100/*` em superfícies escuras; no tema dark, o token `cream-100` muda
+  para verde escuro. O conteúdo do mockup de membro combina ainda fundo claro
+  fixo com tokens que se tornam claros no modo dark.
+- A seleção de idioma no footer usa `bg-cream-50 text-olive-900`; no dark ambos
+  resolvem para quase branco, reduzindo o contraste do estado selecionado.
+- Homepage e widgets referem `gold-400`/`gold-300`, mas o tema só define
+  `--color-gold-500`; esses acentos não têm utilitários CSS gerados.
+- Painéis de marca escuros agora mantêm texto claro nos dois temas; a prévia
+  dentro do telefone mantém uma paleta clara própria. Os cartões dos passos
+  ganham superfície legível no modo dark.
+- Definidos os tokens `gold-300` e `gold-400`; o estado vazio/erro do carrossel
+  usa texto claro e links dourados sobre o fundo escuro. O idioma ativo no
+  footer recebeu fundo dourado contrastante e o copyright passou a usar maior
+  opacidade.
+- Prettier, ESLint direcionado, typecheck Web e `git diff --check` passaram.
+
+
+### 2026-10-01 — Ajustes mobile da homepage
+
+- Reduzido o espaço vertical da secção de membro em mobile sem alterar a
+  composição em desktop.
+- A identificação da chamada para parceiros passa a empilhar texto e selo em
+  ecrãs estreitos; o bloco fotográfico também ganhou altura e padding menores.
+- O footer permite quebra segura da linha de copyright/controles. O seletor de
+  tema mostra um controlo compacto com ícone em mobile, mantendo o rótulo em
+  ecrãs maiores; os botões de idioma passaram a ter alvos de toque maiores.
+- Prettier, ESLint direcionado, typecheck Web e `git diff --check` passaram.
+- Não foi executada captura visual num viewport real nesta tarefa.
+
+
+### 2026-10-01 — Login ao iniciar uso de benefício
+
+- O CTA desktop antes tentava iniciar o resgate sem sessão e mostrava uma falha;
+  a barra mobile encaminhava para registo em vez de login.
+- Ambos agora encaminham para `/entrar` com `redirectTo` para a ficha atual. O
+  fluxo de login já valida o destino e devolve o membro à ficha após autenticar.
+- ESLint direcionado, Prettier, typecheck Web e `git diff --check` passaram.
+
+
+### 2026-10-01 — Texto de adesão na página de login
+
+- Removida a indicação incorreta de que era possível criar uma conta gratuita.
+  A página agora pergunta se a pessoa ainda não tem adesão e encaminha para
+  `/clube` com a chamada “Faça a sua adesão ao Clube agora.”
+- Prettier, ESLint direcionado, typecheck Web e `git diff --check` passaram.

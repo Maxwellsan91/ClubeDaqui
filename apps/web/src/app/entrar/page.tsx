@@ -121,12 +121,12 @@ export default function SignInPage() {
             Entre no Clube.
           </h1>
           <p className="mt-3 text-sm leading-6 text-olive-700">
-            Ainda não tem conta?{" "}
+            Ainda não tem adesão?{" "}
             <Link
-              href="/registar"
+              href="/clube"
               className="text-wine-700 hover:decoration-wine-700 font-semibold underline decoration-transparent underline-offset-4 transition-all"
             >
-              Crie uma gratuitamente.
+              Faça a sua adesão ao Clube agora.
             </Link>
           </p>
 

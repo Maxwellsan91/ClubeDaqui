@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { RecordSavingsForm } from "./record-savings-form";
 import type { SavingsRecord } from "@/types/member";
@@ -32,12 +33,14 @@ export function RedeemBenefitButton({
   businessLocationId,
   businessName,
   businessSlug,
+  isAuthenticated = true,
   onSaved,
 }: {
   benefitId?: string;
   businessLocationId?: string;
   businessName: string;
   businessSlug: string;
+  isAuthenticated?: boolean;
   onSaved?: (record: SavingsRecord) => void;
 }) {
   const [status, setStatus] = useState<"idle" | "loading" | "code" | "error">(
@@ -89,30 +92,39 @@ export function RedeemBenefitButton({
   if (status === "idle" || status === "loading" || status === "error") {
     return (
       <div className="mt-5">
-        <button
-          type="button"
-          onClick={redeem}
-          disabled={status === "loading"}
-          className="bg-gold-500 hover:bg-gold-500/90 inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl px-6 text-base font-semibold text-olive-900 transition disabled:opacity-60 sm:w-auto sm:rounded-full"
-        >
-          {status === "loading" ? (
-            <span className="flex items-center gap-2">
-              <svg
-                className="h-4 w-4 animate-spin"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-              </svg>
-              A preparar código…
-            </span>
-          ) : (
-            "Usar benefício"
-          )}
-        </button>
+        {isAuthenticated ? (
+          <button
+            type="button"
+            onClick={redeem}
+            disabled={status === "loading"}
+            className="bg-gold-500 hover:bg-gold-500/90 inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl px-6 text-base font-semibold text-olive-900 transition disabled:opacity-60 sm:w-auto sm:rounded-full"
+          >
+            {status === "loading" ? (
+              <span className="flex items-center gap-2">
+                <svg
+                  className="h-4 w-4 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                A preparar código…
+              </span>
+            ) : (
+              "Usar benefício"
+            )}
+          </button>
+        ) : (
+          <Link
+            href={`/entrar?redirectTo=${encodeURIComponent(`/explorar/${businessSlug}`)}`}
+            className="bg-gold-500 hover:bg-gold-500/90 inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl px-6 text-base font-semibold text-olive-900 transition sm:w-auto sm:rounded-full"
+          >
+            Entrar para usar benefício
+          </Link>
+        )}
         {status === "error" && (
           <p role="alert" className="text-wine-700 mt-3 text-sm">
             {errorMessage ?? "Confirme que tem uma adesão ativa."}

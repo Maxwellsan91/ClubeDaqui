@@ -5,7 +5,8 @@ import type { MemberSummaryData, SavingsRecord } from "@/types/member";
 const euro = new Intl.NumberFormat("pt-PT", {
   style: "currency",
   currency: "EUR",
-  maximumFractionDigits: 0,
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
 });
 
 export function SavingsOverview({
@@ -33,6 +34,7 @@ export function SavingsOverview({
   const used = summary?.usedBenefits ?? records.length;
   const ofTotal = summary?.totalBenefits;
   const active = summary?.subscriptionStatus === "active";
+  const netSavings = total - subscriptionPrice;
 
   return (
     <section className="text-cream-50 rounded-3xl bg-olive-900 p-5 sm:p-7">
@@ -87,6 +89,18 @@ export function SavingsOverview({
           poupados
         </span>
       </p>
+
+      {active && (
+        <div className="mt-2 flex items-center justify-between gap-3 border-t border-white/15 pt-2.5 text-sm">
+          <span className="text-cream-100/65">Saldo após a adesão</span>
+          <span
+            className={`font-semibold ${netSavings >= 0 ? "text-olive-300" : "text-cream-50"}`}
+          >
+            {netSavings > 0 ? "+" : ""}
+            {euro.format(netSavings)}
+          </span>
+        </div>
+      )}
 
       {/* Progress bar with tooltip */}
       <div className="relative mt-10 pb-1">

@@ -8,6 +8,8 @@
   --color-olive-900: #243029;
   --color-wine-700: #743b40;
   --color-wine-800: #5c2e32;
+  --color-gold-300: #ead7b5;
+  --color-gold-400: #c49a59;
   --color-gold-500: #b58b4a;
   /* next/font injects --font-display and --font-sans on <html>; these are fallbacks */
   --font-sans: system-ui, Arial, sans-serif;
@@ -134,6 +136,43 @@ html.dark .hero-search-shell .hero-search-input::placeholder {
   color: rgba(66, 80, 68, 0.62);
 }
 
+/* These brand-dark sections keep their own high-contrast light foregrounds
+   in both themes instead of inheriting dark-mode page text tokens. */
+.dark-olive-surface {
+  --color-cream-50: #fdfbf6;
+  --color-cream-100: #f6f0e4;
+  --color-olive-600: #5a6e5c;
+  --color-olive-700: #425044;
+  --color-olive-900: #243029;
+  --color-gold-300: #ead7b5;
+  --color-gold-400: #d5b16e;
+}
+
+/* The member-screen preview intentionally models the light account UI even
+   when the surrounding homepage is in dark mode. */
+.member-phone-screen {
+  color-scheme: light;
+  --color-cream-50: #f8f7f2;
+  --color-cream-100: #f2efe6;
+  --color-olive-600: #5a6e5c;
+  --color-olive-700: #425044;
+  --color-olive-900: #243029;
+  --color-wine-700: #743b40;
+  --color-gold-300: #ead7b5;
+  --color-gold-400: #c49a59;
+  --color-gold-500: #b58b4a;
+}
+
+html.dark .member-step-card {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(228, 234, 228, 0.16);
+}
+
+html.dark footer .language-toggle-active {
+  background-color: #d4a055;
+  color: #172923;
+}
+
 /* Footer: scoped token override so opacity variants (text-cream-100/70, /65, /40)
    resolve to near-white rather than the near-black dark-mode cream values. */
 html.dark footer {
@@ -197,6 +236,72 @@ body {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes member-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes member-shadow {
+  0%,
+  100% {
+    opacity: 0.22;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 0.1;
+    transform: scaleX(0.76);
+  }
+}
+
+@keyframes partner-cta-drift {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.12) translate3d(-1.2%, 1%, 0);
+  }
+}
+
+@keyframes partner-cta-orbit {
+  from {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.65;
+  }
+  to {
+    transform: rotate(22deg) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .member-phone {
+    animation: member-float 5.2s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .member-phone-shadow {
+    animation: member-shadow 5.2s ease-in-out infinite;
+  }
+
+  .partner-cta-image {
+    animation: partner-cta-drift 20s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  .partner-cta-orbit {
+    animation: partner-cta-orbit 11s ease-in-out infinite alternate;
+  }
+
+  .partner-cta-orbit-delayed {
+    animation-delay: -5s;
   }
 }
 

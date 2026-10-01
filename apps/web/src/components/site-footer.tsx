@@ -105,11 +105,11 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="border-cream-50/10 mt-6 flex items-center justify-between border-t pt-5 sm:mt-10 sm:pt-6">
-          <p className="text-cream-100/40 text-xs">
+        <div className="border-cream-50/10 mt-6 flex flex-wrap items-center justify-between gap-x-3 gap-y-4 border-t pt-5 sm:mt-10 sm:pt-6">
+          <p className="text-cream-100/65 text-[11px] sm:text-xs">
             © {new Date().getFullYear()} Clube Daqui
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <LanguageToggle />
             <ThemeToggle />
           </div>
