@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { PartnerLoyaltyValidator } from "@/components/loyalty/partner-loyalty-validator";
 
 type RedemptionPreview = {
   redemption_id: string;
@@ -374,6 +375,8 @@ export default function ValidateRedemptionPage() {
             </div>
           </div>
         )}
+
+        <PartnerLoyaltyValidator />
       </section>
     </div>
   );

@@ -12,6 +12,7 @@ import { PartnerRedemptionsModule } from "./modules/partners/partner-redemptions
 import { AdminModule } from "./modules/admin/admin.module.js";
 import { PaymentsModule } from "./modules/payments/payments.module.js";
 import { InvoicingModule } from "./modules/invoicing/invoicing.module.js";
+import { LoyaltyModule } from "./modules/loyalty/loyalty.module.js";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { InvoicingModule } from "./modules/invoicing/invoicing.module.js";
     AdminModule,
     InvoicingModule,
     PaymentsModule,
+    LoyaltyModule,
   ],
 })
 export class AppModule {}

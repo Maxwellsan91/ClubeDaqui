@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { PartnerLoyaltyStats } from "@/components/loyalty/partner-loyalty-stats";
 
 const euro = new Intl.NumberFormat("pt-PT", {
   style: "currency",
@@ -249,6 +250,8 @@ export default function PartnerDashboardPage() {
             </svg>
           </span>
         </Link>
+
+        <PartnerLoyaltyStats />
 
         {/* Loading */}
         {loadState === "loading" && (

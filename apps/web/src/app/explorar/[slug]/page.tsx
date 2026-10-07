@@ -3,6 +3,7 @@ import { AppHeader } from "@/components/app-header";
 import { ClubBenefitCard } from "@/components/club-benefit-card";
 import { RatingDisplay } from "@/components/rating-display";
 import { RedeemBenefitButton } from "@/components/redeem-benefit-button";
+import { BusinessLoyaltyBlock } from "@/components/loyalty/business-loyalty-block";
 import { StickyRedeemBar } from "@/components/sticky-redeem-bar";
 import { ExploreGoogleMap } from "@/components/explore-google-map";
 import { createClient } from "@/lib/supabase/server";
@@ -24,6 +25,7 @@ type DayHours = {
 };
 
 type BusinessDetail = {
+  id?: string;
   name: string;
   kind: string;
   city: string;
@@ -168,6 +170,7 @@ export default async function BusinessPage({
             imageUrl?: string;
           };
           business = {
+            id: (payload.data as { id?: string }).id,
             name: d.name,
             kind: d.kind ?? d.category ?? "Local",
             city: d.city,
@@ -505,6 +508,14 @@ export default async function BusinessPage({
                 ))}
               </ol>
             </section>
+
+            {/* Selos Daqui — fidelização por parceiro */}
+            {business.id ? (
+              <BusinessLoyaltyBlock
+                businessId={business.id}
+                businessSlug={slug}
+              />
+            ) : null}
 
             {/* Mais informações */}
             {(business.instagram ||

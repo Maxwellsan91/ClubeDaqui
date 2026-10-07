@@ -12,6 +12,7 @@ import ReviewForm from "@/components/review-form";
 import { SavingsByCategory } from "@/components/savings-by-category";
 import { SavingsHistory } from "@/components/savings-history";
 import { SavingsOverview } from "@/components/savings-overview";
+import { MyLoyaltySection } from "@/components/loyalty/my-loyalty-section";
 import type {
   MemberRedemption,
   MemberSummaryData,
@@ -455,6 +456,7 @@ function AccountPageInner() {
         <div className="mt-10">
           <SavingsHistory records={records} />
         </div>
+        {apiStatus === "connected" ? <MyLoyaltySection /> : null}
         <div className="mt-14">
           <div className="flex items-end justify-between gap-4">
             <div>
