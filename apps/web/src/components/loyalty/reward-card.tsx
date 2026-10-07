@@ -6,14 +6,18 @@ export function RewardCard({
   title,
   description,
   reached,
+  redeemed,
   available,
+  onRedeemed,
 }: {
   requiredStamps: number;
   title: string;
   description?: string | null;
   reached?: boolean;
+  redeemed?: boolean;
   // Quando desbloqueada e disponível, permite gerar o código de utilização.
   available?: { rewardRedemptionId: string } | null;
+  onRedeemed?: () => void;
 }) {
   return (
     <div
@@ -35,8 +39,15 @@ export function RewardCard({
         >
           {requiredStamps}
         </span>
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-olive-900">{title}</p>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-sm font-semibold text-olive-900">{title}</p>
+            {redeemed ? (
+              <span className="bg-olive-700/10 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide text-olive-700 uppercase">
+                Utilizada
+              </span>
+            ) : null}
+          </div>
           {description ? (
             <p className="text-xs text-olive-600">{description}</p>
           ) : (
@@ -46,10 +57,11 @@ export function RewardCard({
           )}
         </div>
       </div>
-      {available ? (
+      {available && !redeemed ? (
         <UseRewardButton
           rewardRedemptionId={available.rewardRedemptionId}
           title={title}
+          onRedeemed={onRedeemed}
         />
       ) : null}
     </div>

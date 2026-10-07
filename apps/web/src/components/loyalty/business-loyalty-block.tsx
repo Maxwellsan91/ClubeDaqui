@@ -113,7 +113,9 @@ export function BusinessLoyaltyBlock({
                   title={r.title}
                   description={r.description}
                   reached={r.reached && !redeemed}
+                  redeemed={redeemed}
                   available={available ? { rewardRedemptionId: available.rewardRedemptionId } : null}
+                  onRedeemed={() => setTimeout(() => setReloadKey((k) => k + 1), 0)}
                 />
               );
             })
