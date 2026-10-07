@@ -674,19 +674,26 @@ export function StickyRedeemBar({
       >
         <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className="truncate text-xs text-olive-600">Benefício Clube</p>
+            <p className="truncate text-xs text-olive-600">
+              {benefitUsed ? "Selos Daqui" : "Benefício Clube"}
+            </p>
             <p className="truncate text-sm font-semibold text-olive-900">
               {businessName}
             </p>
           </div>
 
           {benefitUsed ? (
-            <div className="flex-none rounded-full bg-olive-900/8 px-5 py-3 text-center">
-              <p className="text-xs font-semibold text-olive-500">
-                Benefício utilizado
-              </p>
-              <p className="text-[10px] text-olive-400">Até ao próximo ciclo</p>
-            </div>
+            <button
+              type="button"
+              onClick={() =>
+                document
+                  .getElementById("selos-daqui")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" })
+              }
+              className="bg-olive-900 hover:bg-olive-900/90 flex-none rounded-full px-6 py-3 text-sm font-semibold text-white transition"
+            >
+              Acumular selos
+            </button>
           ) : (
             <button
               type="button"

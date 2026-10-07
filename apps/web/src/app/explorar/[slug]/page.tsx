@@ -229,6 +229,15 @@ export default async function BusinessPage({
       </main>
     );
 
+  // Benefício principal já utilizado neste ciclo de adesão? (troca o CTA para Selos Daqui)
+  let benefitUsed = false;
+  if (user && benefit?.id) {
+    const { data: usedData } = await supabase.rpc("get_member_benefit_used", {
+      p_benefit_id: benefit.id,
+    });
+    benefitUsed = usedData === true;
+  }
+
   const backLink = (
     <Link
       href="/explorar"
@@ -511,10 +520,12 @@ export default async function BusinessPage({
 
             {/* Selos Daqui — fidelização por parceiro */}
             {business.id ? (
-              <BusinessLoyaltyBlock
-                businessId={business.id}
-                businessSlug={slug}
-              />
+              <div id="selos-daqui" className="scroll-mt-24">
+                <BusinessLoyaltyBlock
+                  businessId={business.id}
+                  businessSlug={slug}
+                />
+              </div>
             ) : null}
 
             {/* Mais informações */}
@@ -852,10 +863,12 @@ export default async function BusinessPage({
             />
             <RedeemBenefitButton
               benefitId={benefit?.id}
+              businessId={business.id}
               businessLocationId={business.businessLocationId}
               businessName={business.name}
               businessSlug={slug}
               isAuthenticated={isAuthenticated}
+              benefitUsed={benefitUsed}
             />
 
             {/* Rules — desktop sidebar */}

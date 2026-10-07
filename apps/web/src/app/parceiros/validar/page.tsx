@@ -27,6 +27,7 @@ export default function ValidateRedemptionPage() {
   >("idle");
   const [message, setMessage] = useState("");
   const [signingOut, setSigningOut] = useState(false);
+  const [tab, setTab] = useState<"benefit" | "loyalty">("benefit");
 
   async function callApi(path: "preview" | "confirm") {
     const { data } = await createClient().auth.getSession();
@@ -157,18 +158,49 @@ export default function ValidateRedemptionPage() {
           Área de parceiros
         </p>
         <h1 className="font-display mt-3 text-3xl tracking-tight text-olive-900 sm:text-4xl">
-          Validar benefício
+          Validar código
         </h1>
         <p className="mt-3 text-sm leading-6 text-olive-700">
-          Introduza o código de 6 dígitos apresentado pelo membro para confirmar
-          a utilização do benefício.
+          Escolha o tipo de código apresentado pelo membro e introduza os 6
+          dígitos para confirmar.
         </p>
 
-        {/* Code input */}
-        <form
-          onSubmit={(e) => void previewCode(e)}
-          className="mt-8 overflow-hidden rounded-2xl border border-olive-900/10 bg-white"
-        >
+        {/* Toggle: benefício principal vs Selos Daqui */}
+        <div className="bg-cream-100 mt-6 grid grid-cols-2 gap-1 rounded-xl p-1">
+          {(
+            [
+              { key: "benefit", label: "Benefício principal" },
+              { key: "loyalty", label: "Selos Daqui" },
+            ] as const
+          ).map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => {
+                setTab(t.key);
+                reset();
+              }}
+              className={
+                "min-h-[44px] rounded-lg text-sm font-semibold transition " +
+                (tab === t.key
+                  ? "bg-white text-olive-900 shadow-sm"
+                  : "text-olive-600")
+              }
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {tab === "loyalty" ? (
+          <PartnerLoyaltyValidator />
+        ) : (
+          <>
+            {/* Code input */}
+            <form
+              onSubmit={(e) => void previewCode(e)}
+              className="mt-6 overflow-hidden rounded-2xl border border-olive-900/10 bg-white"
+            >
           <div className="p-5 sm:p-6">
             <label
               htmlFor="code-input"
@@ -373,10 +405,10 @@ export default function ValidateRedemptionPage() {
                 )}
               </div>
             </div>
-          </div>
+              </div>
+            )}
+          </>
         )}
-
-        <PartnerLoyaltyValidator />
       </section>
     </div>
   );

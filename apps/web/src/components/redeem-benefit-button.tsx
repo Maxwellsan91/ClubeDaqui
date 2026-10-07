@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { RecordSavingsForm } from "./record-savings-form";
+import { LoyaltyVisitButton } from "./loyalty/loyalty-visit-button";
 import type { SavingsRecord } from "@/types/member";
 
 function CountdownTimer({ seconds }: { seconds: number }) {
@@ -30,17 +31,21 @@ function CountdownTimer({ seconds }: { seconds: number }) {
 
 export function RedeemBenefitButton({
   benefitId,
+  businessId,
   businessLocationId,
   businessName,
   businessSlug,
   isAuthenticated = true,
+  benefitUsed = false,
   onSaved,
 }: {
   benefitId?: string;
+  businessId?: string;
   businessLocationId?: string;
   businessName: string;
   businessSlug: string;
   isAuthenticated?: boolean;
+  benefitUsed?: boolean;
   onSaved?: (record: SavingsRecord) => void;
 }) {
   const [status, setStatus] = useState<"idle" | "loading" | "code" | "error">(
@@ -88,6 +93,30 @@ export function RedeemBenefitButton({
   }
 
   if (!benefitId || !businessLocationId) return null;
+
+  // Benefício de boas-vindas já utilizado neste ciclo: a ação passa a ser
+  // acumular selos no Selos Daqui, não voltar a usar o benefício principal.
+  if (benefitUsed && isAuthenticated && status === "idle") {
+    return (
+      <div className="mt-5">
+        <div className="bg-cream-100 rounded-2xl border border-olive-900/10 p-5">
+          <p className="text-sm font-semibold text-olive-900">
+            Benefício de boas-vindas utilizado
+          </p>
+          <p className="mt-1 text-sm text-olive-600">
+            Continue a visitar e acumule selos para desbloquear recompensas.
+          </p>
+          {businessId ? (
+            <LoyaltyVisitButton
+              businessId={businessId}
+              businessSlug={businessSlug}
+              isAuthenticated
+            />
+          ) : null}
+        </div>
+      </div>
+    );
+  }
 
   if (status === "idle" || status === "loading" || status === "error") {
     return (
